@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "370478588887",
+    "project_id": "smartcube-fcm",
+    "storage_bucket": "smartcube-fcm.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:370478588887:android:16b8ccc74cdef7dc63e192",
+        "android_client_info": {
+          "package_name": "com.ppidev.smartcube"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBN4yV1mSV42R_LkAQDFdy-BV86HEZYwnY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
