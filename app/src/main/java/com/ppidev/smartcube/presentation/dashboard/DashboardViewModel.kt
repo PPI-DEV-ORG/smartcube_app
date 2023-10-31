@@ -1,21 +1,192 @@
 package com.ppidev.smartcube.presentation.dashboard
 
-import android.util.Log
 import androidx.compose.runtime.getValue
-import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.ppidev.smartcube.domain.service.HiveMqttService
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.ppidev.smartcube.BuildConfig
+import com.ppidev.smartcube.common.Resource
+import com.ppidev.smartcube.contract.data.remote.service.IMqttService
+import com.ppidev.smartcube.contract.domain.use_case.notification.IListNotificationsUseCase
+import com.ppidev.smartcube.data.remote.dto.DeviceConfigDto
+import com.ppidev.smartcube.data.remote.dto.DeviceStatusDto
+import com.ppidev.smartcube.data.remote.dto.MLModelDto
+import com.ppidev.smartcube.data.remote.dto.toDeviceConfigModel
+import com.ppidev.smartcube.data.remote.dto.toMLModel
+import com.ppidev.smartcube.domain.model.DeviceStatusModel
+import com.ppidev.smartcube.domain.model.NotificationModel
+import com.ppidev.smartcube.presentation.dashboard.model.CommandMqtt
+import dagger.Lazy
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
+import javax.inject.Inject
 
+@HiltViewModel
+class DashboardViewModel @Inject constructor(
+    private val getNotificationsUseCase: Lazy<IListNotificationsUseCase>,
+    private val mqttService: Lazy<IMqttService>,
+) : ViewModel() {
 
-class DashboardViewModel : ViewModel() {
+    private val gson = Gson()
+
+    data class HostDevice (
+        val id: Int,
+        val name: String,
+        val description: String,
+        val topic1: String,
+        val topic2: String
+    )
+
     var state by mutableStateOf(DashboardState())
+        private set
 
-    private val mqttService = HiveMqttService.getInstance()
+    init {
+        viewModelScope.launch {
+            listenReceiveMessageMqtt()
+        }
+    }
 
-    fun subscribeToMqttClient() {
-        mqttService.subscribeToTopic(HiveMqttService.MQTT_TOPIC, callback = {
-            Log.d("PAYLOAD : ", String(it.payloadAsBytes))
-        })
+    fun onEvent(event: DashboardEvent) {
+        when (event) {
+            DashboardEvent.GetListNotification -> getNotifications()
+            DashboardEvent.GetServerSummary -> getServerSummary()
+            DashboardEvent.SubscribeToMqttService -> subscribeToMqttClient()
+            DashboardEvent.GetDeviceConfig -> getListCameras()
+            DashboardEvent.GetListModelInstalled -> getListModelsInstalled()
+            DashboardEvent.UnsubscribeToMqttService -> unsubscribeFromTopic()
+        }
+    }
+
+    private fun getNotifications() {
+        getNotificationsUseCase.get().invoke().onEach { result ->
+            when (result) {
+                is Resource.Success -> {
+                    updateNotifications(result.data)
+                    state = state.copy(
+                        isLoadingNotification = false
+                    )
+                }
+
+                is Resource.Error -> {
+                }
+
+                is Resource.Loading -> {
+                    state = state.copy(
+                        isLoadingNotification = true
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun subscribeToMqttClient() {
+        viewModelScope.launch {
+            mqttService.get().subscribeToTopic(BuildConfig.MQTT_TOPIC2)
+        }
+    }
+
+    private fun getServerSummary() {
+        viewModelScope.launch {
+            mqttService.get().publishToTopic(BuildConfig.MQTT_TOPIC, CommandMqtt.GET_SERVER_INFO)
+        }
+    }
+
+    private fun getListModelsInstalled() {
+        viewModelScope.launch {
+            mqttService.get()
+                .publishToTopic(BuildConfig.MQTT_TOPIC, CommandMqtt.GET_INSTALLED_MODEL)
+        }
+    }
+
+    private fun getListCameras() {
+        viewModelScope.launch {
+            mqttService.get().publishToTopic(BuildConfig.MQTT_TOPIC, CommandMqtt.GET_DEVICES_CONFIG)
+        }
+    }
+
+    private fun listenReceiveMessageMqtt() {
+        mqttService.get().listenSubscribedTopic { mqttMessage ->
+            val json = String(mqttMessage.payloadAsBytes)
+            val result = gson.fromJson<Map<String, Any>>(
+                json,
+                object : TypeToken<Map<String, Any>>() {}.type
+            )
+
+            if (result.containsKey("hostDeviceStatus")) {
+                val hostDeviceStatusResponse = result["hostDeviceStatus"]
+                val hostDeviceStatus =
+                    Json.decodeFromString<DeviceStatusDto>(gson.toJson(hostDeviceStatusResponse))
+                updateServerSummary(hostDeviceStatus)
+            }
+
+            if (result.containsKey("getInstalledModels")) {
+                val installedModelsResponse = result["getInstalledModels"]
+                val listInstalledModels =
+                    Json.decodeFromString<List<MLModelDto>>(gson.toJson(installedModelsResponse))
+                updateListMLModel(listInstalledModels)
+            }
+
+            if (result.containsKey("getDeviceConfig")) {
+                val devicesConfigResponse = result["getDeviceConfig"]
+                val listDevicesConfig =
+                    Json.decodeFromString<List<DeviceConfigDto>>(gson.toJson(devicesConfigResponse))
+                updateListDeviceConfig(listDevicesConfig)
+            }
+
+        }
+    }
+
+    private fun unsubscribeFromTopic() {
+        viewModelScope.launch {
+            mqttService.get().unsubscribeFromTopic(BuildConfig.MQTT_TOPIC2)
+        }
+    }
+
+    private fun updateServerSummary(newServerSummary: DeviceStatusDto) {
+        viewModelScope.launch {
+            state = state.copy(
+                serverSummary = DeviceStatusModel(
+                    memoryFree = newServerSummary.memoryFree,
+                    cpuTemp = newServerSummary.cpuTemp,
+                    storageFree = newServerSummary.storage.freeSpace,
+                    fanSpeed = newServerSummary.fanSpeed,
+                    upTime = newServerSummary.upTime
+                )
+            )
+        }
+    }
+
+    private fun updateListMLModel(listModelsML: List<MLModelDto>) {
+        viewModelScope.launch {
+            state = state.copy(
+                listModelsML = listModelsML.map {
+                    it.toMLModel()
+                }
+            )
+        }
+    }
+
+    private fun updateListDeviceConfig(listDeviceConfig: List<DeviceConfigDto>) {
+        viewModelScope.launch {
+            state = state.copy(
+                listDevicesConfig = listDeviceConfig.map {
+                    it.toDeviceConfigModel()
+                }
+            )
+        }
+    }
+
+    private fun updateNotifications(listNotifications: List<NotificationModel>?) {
+        viewModelScope.launch {
+            state = state.copy(
+                notifications = listNotifications ?: emptyList()
+            )
+        }
     }
 }

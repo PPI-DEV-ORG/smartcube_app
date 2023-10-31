@@ -4,12 +4,11 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.ppidev.smartcube.contract.data.local.storage.ISharedPreferencesManager
 
-// Kelas implementasi SharedPreferences
 class SharedPreferencesManager(context: Context) : ISharedPreferencesManager {
     private val sharedPreferences: SharedPreferences = context.getSharedPreferences(
-        PREFERENCE_FILE_KEY, Context.MODE_PRIVATE)
+        PREFERENCE_FILE_KEY, Context.MODE_PRIVATE
+    )
     private val editor: SharedPreferences.Editor = sharedPreferences.edit()
-
 
     override fun getString(key: String, defaultValue: String): String {
         return sharedPreferences.getString(key, defaultValue) ?: defaultValue
@@ -37,6 +36,5 @@ class SharedPreferencesManager(context: Context) : ISharedPreferencesManager {
 
     companion object {
         const val PREFERENCE_FILE_KEY = "preferences"
-        const val PREFERENCE_KEY_FCM_TOKEN = "fcm_token"
     }
 }

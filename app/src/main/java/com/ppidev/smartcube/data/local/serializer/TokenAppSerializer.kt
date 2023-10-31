@@ -1,7 +1,7 @@
 package com.ppidev.smartcube.data.local.serializer
 
 import androidx.datastore.core.Serializer
-import com.ppidev.smartcube.data.local.dataclass.TokenAppEntity
+import com.ppidev.smartcube.data.local.entity.TokenAppEntity
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.io.InputStream

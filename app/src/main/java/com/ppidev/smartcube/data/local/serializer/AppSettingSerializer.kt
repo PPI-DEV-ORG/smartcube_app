@@ -1,21 +1,21 @@
 package com.ppidev.smartcube.data.local.serializer
 
 import androidx.datastore.core.Serializer
-import com.ppidev.smartcube.data.local.dataclass.AppSettingModel
+import com.ppidev.smartcube.data.local.entity.AppSettingEntity
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.io.InputStream
 import java.io.OutputStream
 
 @Suppress("BlockingMethodInNonBlockingContext")
-object AppSettingSerializer : Serializer<AppSettingModel> {
-    override val defaultValue: AppSettingModel
-        get() = AppSettingModel()
+object AppSettingSerializer : Serializer<AppSettingEntity> {
+    override val defaultValue: AppSettingEntity
+        get() = AppSettingEntity()
 
-    override suspend fun readFrom(input: InputStream): AppSettingModel {
+    override suspend fun readFrom(input: InputStream): AppSettingEntity {
         return try {
             Json.decodeFromString(
-                deserializer = AppSettingModel.serializer(),
+                deserializer = AppSettingEntity.serializer(),
                 string = input.readBytes().decodeToString()
             )
         } catch (e: SerializationException) {
@@ -24,10 +24,10 @@ object AppSettingSerializer : Serializer<AppSettingModel> {
         }
     }
 
-    override suspend fun writeTo(t: AppSettingModel, output: OutputStream) {
+    override suspend fun writeTo(t: AppSettingEntity, output: OutputStream) {
         output.write(
             Json.encodeToString(
-                serializer = AppSettingModel.serializer(),
+                serializer = AppSettingEntity.serializer(),
                 value = t
             ).encodeToByteArray()
         )

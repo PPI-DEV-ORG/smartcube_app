@@ -1,6 +1,5 @@
 package com.ppidev.smartcube.contract.data.local.storage
 
-// Interface untuk SharedPreferences
 interface ISharedPreferencesManager {
     fun getString(key: String, defaultValue: String): String
     fun putString(key: String, value: String)

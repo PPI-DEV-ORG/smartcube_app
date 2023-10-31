@@ -6,6 +6,7 @@ plugins {
     id("com.google.gms.google-services")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.google.dagger.hilt.android")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     kotlin("kapt")
 }
 
@@ -44,6 +45,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
@@ -52,7 +54,6 @@ android {
         resources {
 //            excludes += "/META-INF/{AL2.0,LGPL2.1}"
             excludes += listOf("/META-INF/{AL2.0,LGPL2.1}","META-INF/INDEX.LIST", "META-INF/io.netty.versions.properties")
-
         }
     }
 }
@@ -67,6 +68,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+    implementation("com.google.android.gms:play-services-wallet:19.2.1")
     // test dependencies
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -77,6 +79,8 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     // === additional dependencies ===
+
+    implementation("androidx.compose.material:material-icons-extended")
 
     // firebase
     implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
@@ -93,6 +97,7 @@ dependencies {
 
     // coil image loader
     implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("io.coil-kt:coil-svg:2.4.0")
 
     // navigation
     val navVersion = "2.6.0"
@@ -100,13 +105,16 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:$navVersion")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:$lifecycleVersion")
 
+    // ViewModel Compose
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+
     // Dagger - hilt
     val hiltVersion = "2.44"
+    implementation("com.google.dagger:hilt-android:$hiltVersion")
     kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
-    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
+//    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
     kapt("androidx.hilt:hilt-compiler:1.0.0")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
-    implementation("com.google.dagger:hilt-android:2.44")
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -116,6 +124,13 @@ dependencies {
 
     // MQTT
     implementation("com.hivemq:hivemq-mqtt-client:1.3.0")
+
+    implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
+    implementation("androidx.activity:activity-ktx:1.6.1")
+
+
+
 
 //    retrofix("net.sourceforge.streamsupport:android-retrostreams:1.7.4")
 //    retrofix("net.sourceforge.streamsupport:android-retrofuture:1.7.4")
