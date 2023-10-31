@@ -34,8 +34,8 @@ class LoginUseCase @Inject constructor(
             } catch (e: IOException) {
                 emit(
                     Resource.Error(
-                        EExceptionCode.HTTPException.ordinal,
-                        "Couldn't reach server. Check your internxet connection."
+                        EExceptionCode.HTTPException.code,
+                        "Couldn't reach server. Check your internet connection."
                     )
                 )
             }
