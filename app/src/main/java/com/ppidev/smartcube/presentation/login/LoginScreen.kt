@@ -25,16 +25,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.ppidev.smartcube.ui.Screen
 import com.ppidev.smartcube.ui.components.form.CustomInputField
 
 @Composable
 fun LoginScreen(
     state: LoginState,
-    onEvent: (LoginEvent) -> Unit,
-    navHostController: NavHostController
+    onEvent: (LoginEvent) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -117,11 +113,7 @@ fun LoginScreen(
 
         Button(
             modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                onEvent(LoginEvent.HandleLogin {
-                    navHostController.navigate(Screen.Dashboard.screenRoute)
-                })
-            },
+            onClick = { onEvent(LoginEvent.HandleLogin) },
             enabled = !state.isLoginLoading
         ) {
             Text(text = "Login")
@@ -140,9 +132,7 @@ fun LoginScreen(
         Text(
             modifier = Modifier
                 .clickable {
-                    onEvent(LoginEvent.ToRegisterScreen {
-                        navHostController.navigate(Screen.Register.screenRoute)
-                    })
+                    onEvent(LoginEvent.ToRegisterScreen)
                 }
                 .fillMaxWidth(),
             text = "Register",
@@ -159,7 +149,6 @@ fun LoginScreenPreview() {
         state = LoginState(
             "", ""
         ),
-        onEvent = {},
-        navHostController = rememberNavController()
+        onEvent = {}
     )
 }
