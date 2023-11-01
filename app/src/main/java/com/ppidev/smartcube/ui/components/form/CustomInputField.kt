@@ -23,7 +23,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -34,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import com.ppidev.smartcube.ui.theme.SmartcubeAppTheme
 
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CustomInputField(
     modifier: Modifier = Modifier,
@@ -43,6 +48,7 @@ fun CustomInputField(
     ),
     text: String,
     errorText: String,
+    errorTestTag: String = "",
     placeholder: String = "Placeholder",
     label: String = "Label",
     iconStart: Boolean = true,
@@ -104,9 +110,13 @@ fun CustomInputField(
                     }
                 }
             })
+
         Spacer(modifier = Modifier.size(5.dp))
+
         if (errorText.isNotEmpty()){
-            Text(text = errorText, style = TextStyle(
+            Text(
+                modifier = Modifier.semantics { testTagsAsResourceId = true }.testTag(errorTestTag),
+                        text = errorText, style = TextStyle(
                 fontSize = 14.sp,
                 color = Color.Red
             ))
