@@ -38,4 +38,16 @@ class SplashViewModel @Inject constructor(
             }
         }
     }
+
+    fun onEvent(event: SplashEvent) {
+        when (event) {
+            is SplashEvent.ToDashboardScreen -> {
+                event.callback()
+            }
+
+            is SplashEvent.ToLoginScreen -> {
+                event.callback()
+            }
+        }
+    }
 }

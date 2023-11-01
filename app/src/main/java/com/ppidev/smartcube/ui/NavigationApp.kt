@@ -19,6 +19,8 @@ import com.ppidev.smartcube.presentation.login.LoginScreen
 import com.ppidev.smartcube.presentation.login.LoginViewModel
 import com.ppidev.smartcube.presentation.notification.NotificationListScreen
 import com.ppidev.smartcube.presentation.profile.ProfileScreen
+import com.ppidev.smartcube.presentation.register.RegisterScreen
+import com.ppidev.smartcube.presentation.register.RegisterViewModel
 import com.ppidev.smartcube.presentation.splash.SplashScreenCustom
 import com.ppidev.smartcube.presentation.splash.SplashViewModel
 
@@ -32,15 +34,25 @@ fun NavigationApp(navController: NavHostController) {
             val viewModel = hiltViewModel<SplashViewModel>()
             val state = viewModel.state
             SplashScreenCustom(
-                navController = navController,
                 state = state,
+                onEvent = viewModel::onEvent,
+                navController = navController
             )
         }
         composable(Screen.Login.screenRoute) {
             val viewModel = hiltViewModel<LoginViewModel>()
             val state = viewModel.state
             LoginScreen(
-                state = state, onEvent = viewModel::onEvent
+                state = state, onEvent = viewModel::onEvent, navHostController = navController
+            )
+        }
+        composable(Screen.Register.screenRoute) {
+            val viewModel = hiltViewModel<RegisterViewModel>()
+            val state = viewModel.state
+            RegisterScreen(
+                state = state,
+                onEvent = viewModel::onEvent,
+                navHostController = navController
             )
         }
         composable(Screen.Dashboard.screenRoute) {
@@ -78,6 +90,7 @@ fun NavigationApp(navController: NavHostController) {
 sealed class Screen(val screenRoute: String) {
     object Splash : Screen(screenRoute = "splash")
     object Login : Screen(screenRoute = "login")
+    object Register : Screen(screenRoute = "register")
     object Dashboard : Screen(screenRoute = "dashboard")
     object Notifications : Screen(screenRoute = "Notifications")
     object DetailNotification : Screen(screenRoute = "notification/detail")

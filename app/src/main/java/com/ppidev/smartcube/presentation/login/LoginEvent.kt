@@ -8,4 +8,6 @@ sealed class LoginEvent {
     data class OnPasswordChange(val str: String) : LoginEvent()
 
     object ToggleShowPassword: LoginEvent()
+
+    object ToRegisterScreen: LoginEvent()
 }
