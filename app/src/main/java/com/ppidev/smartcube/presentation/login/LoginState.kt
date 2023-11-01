@@ -8,9 +8,9 @@ data class LoginState(
     val error: LoginError = LoginError("", "", "")
 ) {
     data class LoginError(
-        val email: String,
-        val password: String,
-        val message: String
+        val email: String = "",
+        val password: String = "",
+        val message: String = ""
     )
 
 }

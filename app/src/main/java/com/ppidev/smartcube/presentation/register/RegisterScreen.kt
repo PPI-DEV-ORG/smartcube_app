@@ -1,4 +1,4 @@
-package com.ppidev.smartcube.presentation.login
+package com.ppidev.smartcube.presentation.register
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -22,18 +22,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.ppidev.smartcube.ui.Screen
 import com.ppidev.smartcube.ui.components.form.CustomInputField
 
 @Composable
-fun LoginScreen(
-    state: LoginState,
-    onEvent: (LoginEvent) -> Unit,
+fun RegisterScreen(
+    state: RegisterState,
+    onEvent: (event: RegisterEvent) -> Unit,
     navHostController: NavHostController
 ) {
     Column(
@@ -49,7 +47,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.size(100.dp))
 
         Text(
-            text = "Sign In", style = TextStyle(
+            text = "Sign Up", style = TextStyle(
                 fontSize = 28.sp,
                 textAlign = TextAlign.Left
             )
@@ -74,7 +72,7 @@ fun LoginScreen(
             errorText = state.error.email,
             keyboardType = KeyboardType.Email,
             onTextChanged = {
-                onEvent(LoginEvent.OnEmailChange(it))
+                onEvent(RegisterEvent.OnEmailChange(it))
             })
 
         Spacer(modifier = Modifier.size(20.dp))
@@ -86,7 +84,7 @@ fun LoginScreen(
             iconStart = false,
             errorText = state.error.password,
             onClickIcon = {
-                onEvent(LoginEvent.ToggleShowPassword)
+                onEvent(RegisterEvent.ToggleShowPassword)
             },
             icon = {
                 if (state.isShowPassword)
@@ -102,36 +100,53 @@ fun LoginScreen(
             },
             keyboardType = KeyboardType.Password,
             onTextChanged = {
-                onEvent(LoginEvent.OnPasswordChange(it))
+                onEvent(RegisterEvent.OnPasswordChange(it))
             })
 
         Spacer(modifier = Modifier.size(20.dp))
 
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = "Forgot Password",
-            textAlign = TextAlign.Right
-        )
+        CustomInputField(
+            text = state.confirmPassword,
+            label = "Confirmation Password",
+            showText = state.isShowConfirmPassword,
+            iconStart = false,
+            errorText = state.error.confirmPassword,
+            onClickIcon = {
+                onEvent(RegisterEvent.ToggleShowConfirmPassword)
+            },
+            icon = {
+                if (state.isShowConfirmPassword)
+                    Icon(
+                        imageVector = Icons.Filled.RemoveRedEye,
+                        contentDescription = "hide password"
+                    )
+                else
+                    Icon(
+                        imageVector = Icons.Outlined.HideSource,
+                        contentDescription = "show password"
+                    )
+            },
+            keyboardType = KeyboardType.Password,
+            onTextChanged = {
+                onEvent(RegisterEvent.OnConfirmPasswordChange(it))
+            })
+
 
         Spacer(modifier = Modifier.size(40.dp))
 
         Button(
             modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                onEvent(LoginEvent.HandleLogin {
-                    navHostController.navigate(Screen.Dashboard.screenRoute)
-                })
-            },
-            enabled = !state.isLoginLoading
+            onClick = { onEvent(RegisterEvent.HandleRegister) },
+            enabled = true
         ) {
-            Text(text = "Login")
+            Text(text = "Sign Up")
         }
 
         Spacer(modifier = Modifier.size(100.dp))
 
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = "Don't have account ?",
+            text = "Have an account ?",
             textAlign = TextAlign.Center
         )
 
@@ -140,26 +155,18 @@ fun LoginScreen(
         Text(
             modifier = Modifier
                 .clickable {
-                    onEvent(LoginEvent.ToRegisterScreen {
-                        navHostController.navigate(Screen.Register.screenRoute)
+                    onEvent(RegisterEvent.ToLoginScreen {
+                        navHostController.navigate(Screen.Login.screenRoute){
+                            popUpTo(Screen.Login.screenRoute){
+                                inclusive = true
+                            }
+                        }
                     })
                 }
                 .fillMaxWidth(),
-            text = "Register",
+            text = "Login",
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.primary
         )
     }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun LoginScreenPreview() {
-    LoginScreen(
-        state = LoginState(
-            "", ""
-        ),
-        onEvent = {},
-        navHostController = rememberNavController()
-    )
 }

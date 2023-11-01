@@ -15,8 +15,9 @@ import com.ppidev.smartcube.ui.Screen
 
 @Composable
 fun SplashScreenCustom(
-    navController: NavHostController,
     state: SplashState,
+    onEvent: (event: SplashEvent) -> Unit,
+    navController: NavHostController
 ) {
     val degrees = remember { Animatable(0f) }
 
@@ -33,12 +34,22 @@ fun SplashScreenCustom(
             )
         )
 
-        navController.popBackStack()
-
         if (state.isAuthenticated) {
-            navController.navigate(Screen.Dashboard.screenRoute)
+            onEvent(SplashEvent.ToDashboardScreen {
+                navController.navigate(Screen.Dashboard.screenRoute) {
+                    popUpTo(Screen.Splash.screenRoute) {
+                        inclusive = true
+                    }
+                }
+            })
         } else {
-            navController.navigate(Screen.Login.screenRoute)
+            onEvent(SplashEvent.ToLoginScreen {
+                navController.navigate(Screen.Login.screenRoute) {
+                    popUpTo(Screen.Splash.screenRoute) {
+                        inclusive = true
+                    }
+                }
+            })
         }
     }
 }
