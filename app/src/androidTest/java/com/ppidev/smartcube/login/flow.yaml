@@ -1,0 +1,36 @@
+appId: com.ppidev.smartcube
+---
+- launchApp
+
+- tapOn:
+    id: "input_email"
+
+- inputText: "bocil1@"
+- assertVisible:
+    id: "text_errorEmail"
+    enabled: true
+
+- eraseText
+
+- inputText: "testing1@mail.com"
+
+- tapOn:
+    id: "input_password"
+- inputText: "prass2"
+
+- hideKeyboard
+
+- assertVisible:
+    id: "btn_login"
+    enabled: true
+
+- tapOn:
+    id: "btn_login"
+
+- assertVisible:
+    id: "btn_login"
+    enabled: false
+
+- assertVisible:
+    id: "text_errorMessage"
+    enabled: true

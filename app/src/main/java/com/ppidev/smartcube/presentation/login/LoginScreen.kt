@@ -16,8 +16,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -26,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ppidev.smartcube.ui.components.form.CustomInputField
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun LoginScreen(
     state: LoginState,
@@ -54,6 +59,7 @@ fun LoginScreen(
 
         if (state.error.message.isNotEmpty()) {
             Text(
+                modifier = Modifier.semantics { testTagsAsResourceId = true }.testTag("text_errorMessage"),
                 text = state.error.message, style = TextStyle(
                     fontSize = 14.sp,
                     color = Color.Red
@@ -64,10 +70,12 @@ fun LoginScreen(
         Spacer(modifier = Modifier.size(20.dp))
 
         CustomInputField(
+            modifier = Modifier.semantics { testTagsAsResourceId = true }.testTag("input_email"),
             text = state.email,
             label = "Email",
             errorText = state.error.email,
             keyboardType = KeyboardType.Email,
+            errorTestTag = "text_errorEmail",
             onTextChanged = {
                 onEvent(LoginEvent.OnEmailChange(it))
             })
@@ -75,6 +83,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.size(20.dp))
 
         CustomInputField(
+            modifier = Modifier.semantics { testTagsAsResourceId = true }.testTag("input_password"),
             text = state.password,
             label = "Password",
             showText = state.isShowPassword,
@@ -111,7 +120,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.size(40.dp))
 
         Button(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().semantics { testTagsAsResourceId = true }.testTag("btn_login"),
             onClick = { onEvent(LoginEvent.HandleLogin) },
             enabled = !state.isLoginLoading
         ) {

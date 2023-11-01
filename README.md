@@ -11,3 +11,7 @@
 ## Using SDK
 1. minSdk = 30
 2. targetSdk = 33
+
+## Running testing 
+Unit Test using JUnit4 = https://junit.org/junit4/
+UI Test using maestro = https://maestro.mobile.dev/

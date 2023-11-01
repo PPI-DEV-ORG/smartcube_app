@@ -1,6 +1,5 @@
 package com.ppidev.smartcube.data.repository
 
-import android.util.Log
 import com.ppidev.smartcube.common.Response
 import com.ppidev.smartcube.contract.data.local.storage.ITokenAppDataStorePref
 import com.ppidev.smartcube.contract.data.repository.IAuthRepository
@@ -19,8 +18,6 @@ class AuthRepositoryImpl @Inject constructor(
         if (!response.status) {
             return response
         }
-
-        Log.d("RESPONSE", response.toString())
 
         return try {
             response.data?.let { tokenAppDataStorePref.updateAccessToken(it.accessToken) }
