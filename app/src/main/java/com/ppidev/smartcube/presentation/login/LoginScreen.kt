@@ -29,13 +29,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.ppidev.smartcube.ui.Screen
 import com.ppidev.smartcube.ui.components.form.CustomInputField
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun LoginScreen(
     state: LoginState,
-    onEvent: (LoginEvent) -> Unit
+    onEvent: (LoginEvent) -> Unit,
+    navHostController: NavHostController
 ) {
     Column(
         modifier = Modifier
@@ -60,7 +64,9 @@ fun LoginScreen(
 
         if (state.error.message.isNotEmpty()) {
             Text(
-                modifier = Modifier.semantics { testTagsAsResourceId = true }.testTag("text_errorMessage"),
+                modifier = Modifier
+                    .semantics { testTagsAsResourceId = true }
+                    .testTag("text_errorMessage"),
                 text = state.error.message, style = TextStyle(
                     fontSize = 14.sp,
                     color = Color.Red
@@ -71,7 +77,9 @@ fun LoginScreen(
         Spacer(modifier = Modifier.size(20.dp))
 
         CustomInputField(
-            modifier = Modifier.semantics { testTagsAsResourceId = true }.testTag("input_email"),
+            modifier = Modifier
+                .semantics { testTagsAsResourceId = true }
+                .testTag("input_email"),
             text = state.email,
             label = "Email",
             errorText = state.error.email,
@@ -84,7 +92,9 @@ fun LoginScreen(
         Spacer(modifier = Modifier.size(20.dp))
 
         CustomInputField(
-            modifier = Modifier.semantics { testTagsAsResourceId = true }.testTag("input_password"),
+            modifier = Modifier
+                .semantics { testTagsAsResourceId = true }
+                .testTag("input_password"),
             text = state.password,
             label = "Password",
             showText = state.isShowPassword,
@@ -121,8 +131,14 @@ fun LoginScreen(
         Spacer(modifier = Modifier.size(40.dp))
 
         Button(
-            modifier = Modifier.fillMaxWidth().semantics { testTagsAsResourceId = true }.testTag("btn_login"),
-            onClick = { onEvent(LoginEvent.HandleLogin) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .semantics { testTagsAsResourceId = true }
+                .testTag("btn_login"),
+            onClick = { onEvent(LoginEvent.HandleLogin{
+                navHostController.popBackStack()
+                navHostController.navigate(Screen.Dashboard.screenRoute)
+            }) },
             enabled = !state.isLoginLoading
         ) {
             Text(text = "Login")
@@ -141,7 +157,9 @@ fun LoginScreen(
         Text(
             modifier = Modifier
                 .clickable {
-                    onEvent(LoginEvent.ToRegisterScreen)
+                    onEvent(LoginEvent.ToRegisterScreen {
+                        navHostController.navigate(Screen.Register.screenRoute)
+                    })
                 }
                 .fillMaxWidth(),
             text = "Register",
@@ -158,6 +176,7 @@ fun LoginScreenPreview() {
         state = LoginState(
             "", ""
         ),
-        onEvent = {}
+        onEvent = {},
+        navHostController = rememberNavController()
     )
 }
