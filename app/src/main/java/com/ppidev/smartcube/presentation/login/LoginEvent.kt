@@ -1,7 +1,9 @@
 package com.ppidev.smartcube.presentation.login
 
 sealed class LoginEvent {
-    object HandleLogin : LoginEvent()
+    data class HandleLogin(
+        val callback: () -> Unit
+    ) : LoginEvent()
 
     data class OnEmailChange(val str: String) : LoginEvent()
 
@@ -9,5 +11,7 @@ sealed class LoginEvent {
 
     object ToggleShowPassword: LoginEvent()
 
-    object ToRegisterScreen: LoginEvent()
+    data class ToRegisterScreen(
+        val callback: () -> Unit
+    ): LoginEvent()
 }
