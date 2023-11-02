@@ -67,10 +67,24 @@ fun RegisterScreen(
         Spacer(modifier = Modifier.size(20.dp))
 
         CustomInputField(
+            text = state.username,
+            label = "Username",
+            errorText = state.error.username,
+            keyboardType = KeyboardType.Text,
+            enabled = !state.isLoading,
+            onTextChanged = {
+                onEvent(RegisterEvent.OnUsernameChange(it))
+            })
+
+
+        Spacer(modifier = Modifier.size(20.dp))
+
+        CustomInputField(
             text = state.email,
             label = "Email",
             errorText = state.error.email,
             keyboardType = KeyboardType.Email,
+            enabled = !state.isLoading,
             onTextChanged = {
                 onEvent(RegisterEvent.OnEmailChange(it))
             })
@@ -98,6 +112,7 @@ fun RegisterScreen(
                         contentDescription = "show password"
                     )
             },
+            enabled = !state.isLoading,
             keyboardType = KeyboardType.Password,
             onTextChanged = {
                 onEvent(RegisterEvent.OnPasswordChange(it))
@@ -126,6 +141,7 @@ fun RegisterScreen(
                         contentDescription = "show password"
                     )
             },
+            enabled = !state.isLoading,
             keyboardType = KeyboardType.Password,
             onTextChanged = {
                 onEvent(RegisterEvent.OnConfirmPasswordChange(it))

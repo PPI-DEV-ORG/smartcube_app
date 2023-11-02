@@ -9,3 +9,24 @@ data class LoginDto(
     @SerialName("accessToken")
     val accessToken: String
 )
+
+@Serializable
+data class RegisterDto(
+    @SerialName("id")
+    val id: UInt,
+
+    @SerialName("username")
+    val username: String,
+
+    @SerialName("email")
+    val email: String,
+
+    @SerialName("password")
+    val password: String? = null,
+
+    @SerialName("isVerified")
+    val isVerified: Boolean,
+
+    @SerialName("verificationCode")
+    val verificationCode: String,
+)

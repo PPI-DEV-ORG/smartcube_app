@@ -4,15 +4,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.ppidev.smartcube.common.Resource
+import com.ppidev.smartcube.contract.domain.use_case.auth.IRegisterUseCase
 //import com.ppidev.smartcube.di.NavigationService
 import com.ppidev.smartcube.ui.Screen
 import com.ppidev.smartcube.utils.validateEmail
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
+    private val registerUseCase: Lazy<IRegisterUseCase>
 ) : ViewModel() {
     var state by mutableStateOf(
         RegisterState(
@@ -35,6 +39,10 @@ class RegisterViewModel @Inject constructor(
                 onConfirmPasswordChange(event.str)
             }
 
+            is RegisterEvent.OnUsernameChange -> {
+                onUsernameChange(event.str)
+            }
+
             RegisterEvent.HandleRegister -> {}
 
             RegisterEvent.ToggleShowPassword -> {
@@ -53,6 +61,22 @@ class RegisterViewModel @Inject constructor(
                 event.callback()
             }
         }
+    }
+
+    private fun handleRegister() {
+        registerUseCase.get().invoke(username = state.username, email = state.email, password = state.password, confirmPassword = state.confirmPassword).onEach {
+            when(it) {
+                is Resource.Loading ->{}
+                is Resource.Success -> {}
+                is Resource.Error -> {}
+            }
+        }
+    }
+
+    private fun onUsernameChange(str: String) {
+        state = state.copy(
+            username = str
+        )
     }
 
     private fun onEmailChange(str: String) {

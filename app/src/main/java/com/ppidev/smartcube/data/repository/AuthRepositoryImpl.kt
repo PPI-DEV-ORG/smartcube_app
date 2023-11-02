@@ -6,6 +6,7 @@ import com.ppidev.smartcube.contract.data.repository.IAuthRepository
 import com.ppidev.smartcube.data.local.entity.TokenAppEntity
 import com.ppidev.smartcube.data.remote.api.SmartCubeApi
 import com.ppidev.smartcube.data.remote.dto.LoginDto
+import com.ppidev.smartcube.data.remote.dto.RegisterDto
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -28,6 +29,25 @@ class AuthRepositoryImpl @Inject constructor(
                 status = false,
                 statusCode = -1,
                 message = "Failed Save Token",
+                data = null
+            )
+        }
+    }
+
+    override suspend fun register(
+        username: String,
+        email: String,
+        password: String,
+        confirmPassword: String
+    ): Response<RegisterDto?> {
+        val response = api.register(username, email, password, confirmPassword)
+        return try {
+            response
+        } catch (e: Exception) {
+            Response<RegisterDto?>(
+                status = false,
+                statusCode = -1,
+                message = "Something wrong!",
                 data = null
             )
         }

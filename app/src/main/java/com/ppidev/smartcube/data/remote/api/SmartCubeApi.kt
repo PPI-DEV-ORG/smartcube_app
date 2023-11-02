@@ -3,6 +3,7 @@ package com.ppidev.smartcube.data.remote.api
 import com.ppidev.smartcube.common.Response
 import com.ppidev.smartcube.data.remote.dto.LoginDto
 import com.ppidev.smartcube.data.remote.dto.NotificationDto
+import com.ppidev.smartcube.data.remote.dto.RegisterDto
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -29,4 +30,13 @@ interface AuthApi {
         @Field("email") email: String,
         @Field("password") password: String
     ): Response<LoginDto?>
+
+    @FormUrlEncoded
+    @POST("register")
+    suspend fun register(
+        @Field("username") username: String,
+        @Field("email") email: String,
+        @Field("password") password: String,
+        @Field("cpassword") confirmPassword: String
+    ): Response<RegisterDto?>
 }

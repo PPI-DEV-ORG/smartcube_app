@@ -5,6 +5,8 @@ import com.ppidev.smartcube.presentation.login.LoginEvent
 sealed class RegisterEvent {
     object HandleRegister : RegisterEvent()
 
+    data class OnUsernameChange(val str: String) : RegisterEvent()
+
     data class OnEmailChange(val str: String) : RegisterEvent()
 
     data class OnPasswordChange(val str: String) : RegisterEvent()
