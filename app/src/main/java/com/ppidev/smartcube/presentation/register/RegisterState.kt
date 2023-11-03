@@ -1,14 +1,18 @@
 package com.ppidev.smartcube.presentation.register
 
 data class RegisterState(
+    val error: RegisterError,
+    val username: String = "",
     val email: String = "",
     val password: String = "",
     val confirmPassword: String = "",
     val isShowPassword: Boolean = false,
     val isShowConfirmPassword: Boolean = false,
-    val error: RegisterError
+    val isLoading: Boolean = false,
+    val isShowDialog: Boolean = false
 ) {
     data class RegisterError(
+        val username: String = "",
         val email: String = "",
         val password: String = "",
         val confirmPassword: String = "",
