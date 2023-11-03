@@ -1,17 +1,22 @@
 package com.ppidev.smartcube.presentation.register
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material.icons.outlined.HideSource
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,12 +24,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.ppidev.smartcube.R
 import com.ppidev.smartcube.ui.Screen
 import com.ppidev.smartcube.ui.components.form.CustomInputField
 
@@ -75,7 +86,6 @@ fun RegisterScreen(
             onTextChanged = {
                 onEvent(RegisterEvent.OnUsernameChange(it))
             })
-
 
         Spacer(modifier = Modifier.size(20.dp))
 
@@ -153,7 +163,7 @@ fun RegisterScreen(
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = { onEvent(RegisterEvent.HandleRegister) },
-            enabled = true
+            enabled = !state.isLoading
         ) {
             Text(text = "Sign Up")
         }
@@ -172,8 +182,8 @@ fun RegisterScreen(
             modifier = Modifier
                 .clickable {
                     onEvent(RegisterEvent.ToLoginScreen {
-                        navHostController.navigate(Screen.Login.screenRoute){
-                            popUpTo(Screen.Login.screenRoute){
+                        navHostController.navigate(Screen.Login.screenRoute) {
+                            popUpTo(Screen.Login.screenRoute) {
                                 inclusive = true
                             }
                         }
@@ -184,5 +194,108 @@ fun RegisterScreen(
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.primary
         )
+
+        if (state.isShowDialog) {
+            DialogRegister(
+                onDismiss = {},
+                onConfirm = {
+                    onEvent(RegisterEvent.HandleCloseDialog)
+                }
+            )
+        }
     }
+}
+
+
+@Composable
+fun DialogRegister(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    Dialog(
+        onDismissRequest = { onDismiss() },
+//        properties = DialogProperties(
+//            usePlatformDefaultWidth = false
+//        )
+    ) {
+        Card(
+            shape = RoundedCornerShape(15.dp),
+            modifier = Modifier
+                .fillMaxWidth(0.95f)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(15.dp),
+                verticalArrangement = Arrangement.spacedBy(25.dp)
+            ) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "Registration Successfully",
+                    textAlign = TextAlign.Center,
+                    style = TextStyle(
+                        fontSize = 20.sp
+                    )
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        modifier = Modifier.size(90.dp),
+                        painter = painterResource(id = R.drawable.ic_check_circle),
+                        contentDescription = "Success",
+                        tint = Color.Unspecified
+                    )
+                }
+
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "Please check your email to verify account",
+                    textAlign = TextAlign.Center,
+                    style = TextStyle(
+                        fontSize = 16.sp
+                    )
+                )
+
+                Button(
+                    onClick = {
+                        onConfirm()
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    shape = CircleShape
+                ) {
+                    Text(
+                        text = "Confirm",
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DialogRegisterPreview() {
+    DialogRegister(
+        onConfirm = {},
+        onDismiss = {}
+    )
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun RegisterScreenPreview() {
+    RegisterScreen(
+        state = RegisterState(
+            error = RegisterState.RegisterError()
+        ),
+        onEvent = {},
+        navHostController = rememberNavController()
+    )
 }

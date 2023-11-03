@@ -37,6 +37,7 @@ class RegisterUseCase @Inject constructor(
                         registerResponse.message
                     )
                 )
+                return@flow
             }
 
             emit(Resource.Success(registerResponse))

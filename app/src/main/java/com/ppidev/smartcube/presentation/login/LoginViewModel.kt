@@ -1,5 +1,6 @@
 package com.ppidev.smartcube.presentation.login
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -77,11 +78,13 @@ class LoginViewModel @Inject constructor(
         loginUseCase.get().invoke(state.email, state.password).onEach {
             when (it) {
                 is Resource.Loading -> {
+                    Log.d("LOGIN", "loading")
                     setIsLoading(true)
                 }
 
                 is Resource.Success -> {
                     setIsLoading(false)
+                    Log.d("LOGIN", "success")
                     state = state.copy(
                         error = LoginState.LoginError(
                             message = ""
@@ -92,6 +95,7 @@ class LoginViewModel @Inject constructor(
 
                 is Resource.Error -> {
                     setIsLoading(false)
+                    Log.d("LOGIN", "Error")
                     state = state.copy(
                         error = LoginState.LoginError(
                             message = it.message ?: ""

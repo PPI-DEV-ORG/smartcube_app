@@ -32,11 +32,11 @@ interface AuthApi {
     ): Response<LoginDto?>
 
     @FormUrlEncoded
-    @POST("register")
+    @POST("signup")
     suspend fun register(
         @Field("username") username: String,
         @Field("email") email: String,
         @Field("password") password: String,
-        @Field("cpassword") confirmPassword: String
+        @Field("cPassword") confirmPassword: String
     ): Response<RegisterDto?>
 }
