@@ -74,6 +74,9 @@ class DashboardViewModel @Inject constructor(
                 }
 
                 is Resource.Error -> {
+                    state = state.copy(
+                        isLoadingNotification = false
+                    )
                 }
 
                 is Resource.Loading -> {

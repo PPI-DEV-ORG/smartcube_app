@@ -1,5 +1,6 @@
 package com.ppidev.smartcube.domain.use_case.notification
 
+import android.util.Log
 import com.ppidev.smartcube.common.EExceptionCode
 import com.ppidev.smartcube.common.Resource
 import com.ppidev.smartcube.contract.data.repository.INotificationRepository
@@ -21,6 +22,7 @@ class ListNotificationsUseCase @Inject constructor(
             emit(Resource.Loading())
             val notificationsData =
                 notificationRepository.get().getAllNotifications().data.map { it.toNotificationModel() }
+
             emit(Resource.Success(notificationsData))
         } catch (e: HttpException) {
             emit(

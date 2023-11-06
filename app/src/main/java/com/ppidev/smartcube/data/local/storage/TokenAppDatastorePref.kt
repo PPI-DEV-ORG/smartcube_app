@@ -10,6 +10,7 @@ import com.ppidev.smartcube.contract.data.local.storage.ITokenAppDataStorePref
 import com.ppidev.smartcube.data.local.entity.TokenAppEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 import javax.inject.Inject
@@ -32,6 +33,14 @@ class TokenAppDatastorePref @Inject constructor(private val dataStore: DataStore
             accessToken = it[ACCESS_TOKEN_KEY] ?: "",
             fcmToken = it[FCM_TOKEN_KEY] ?: ""
         )
+    }
+
+    override suspend fun getAccessToken(): String? {
+        return dataStore.data.firstOrNull()?.get(ACCESS_TOKEN_KEY)
+    }
+
+    override suspend fun getFcmToken(): String? {
+        return dataStore.data.firstOrNull()?.get(FCM_TOKEN_KEY)
     }
 
     override suspend fun reset(): Boolean {
