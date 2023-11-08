@@ -39,4 +39,6 @@ interface AuthApi {
         @Field("password") password: String,
         @Field("cPassword") confirmPassword: String
     ): Response<RegisterDto?>
+
+
 }
