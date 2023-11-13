@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.RemoveRedEye
@@ -23,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -85,6 +87,7 @@ fun LoginScreen(
             errorText = state.error.email,
             keyboardType = KeyboardType.Email,
             errorTestTag = "text_errorEmail",
+            enabled = !state.isLoginLoading,
             onTextChanged = {
                 onEvent(LoginEvent.OnEmailChange(it))
             })
@@ -99,6 +102,7 @@ fun LoginScreen(
             label = "Password",
             showText = state.isShowPassword,
             iconStart = false,
+            enabled = !state.isLoginLoading,
             errorText = state.error.password,
             onClickIcon = {
                 onEvent(LoginEvent.ToggleShowPassword)
@@ -122,11 +126,23 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.size(20.dp))
 
-        Text(
+        Column(
             modifier = Modifier.fillMaxWidth(),
-            text = "Forgot Password",
-            textAlign = TextAlign.Right
-        )
+            horizontalAlignment = Alignment.End
+        ) {
+            ClickableText(
+                text = AnnotatedString("Forgot password ?"),
+                onClick = {
+                    onEvent(LoginEvent.ToResetPasswordScreen {
+                        navHostController.navigate(Screen.ResetPassword.screenRoute)
+                    })
+                }, style = TextStyle(
+                    textAlign = TextAlign.Right,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            )
+        }
+
 
         Spacer(modifier = Modifier.size(40.dp))
 
@@ -135,10 +151,12 @@ fun LoginScreen(
                 .fillMaxWidth()
                 .semantics { testTagsAsResourceId = true }
                 .testTag("btn_login"),
-            onClick = { onEvent(LoginEvent.HandleLogin{
-                navHostController.popBackStack()
-                navHostController.navigate(Screen.Dashboard.screenRoute)
-            }) },
+            onClick = {
+                onEvent(LoginEvent.HandleLogin {
+                    navHostController.popBackStack()
+                    navHostController.navigate(Screen.Dashboard.screenRoute)
+                })
+            },
             enabled = !state.isLoginLoading
         ) {
             Text(text = "Login")

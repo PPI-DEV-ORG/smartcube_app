@@ -1,46 +1,40 @@
 package com.ppidev.smartcube.domain.use_case.auth
 
+import android.util.Log
 import com.ppidev.smartcube.common.EExceptionCode
 import com.ppidev.smartcube.common.Resource
 import com.ppidev.smartcube.common.ResponseApp
 import com.ppidev.smartcube.contract.data.repository.IAuthRepository
-import com.ppidev.smartcube.contract.domain.use_case.auth.IRegisterUseCase
-import com.ppidev.smartcube.data.remote.dto.RegisterDto
+import com.ppidev.smartcube.contract.domain.use_case.auth.IChangePasswordUseCase
 import dagger.Lazy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import java.io.IOException
 import javax.inject.Inject
 
-class RegisterUseCase @Inject constructor(
+class ChangePasswordUseCase @Inject constructor(
     private val authRepository: Lazy<IAuthRepository>
-) : IRegisterUseCase {
+): IChangePasswordUseCase {
     override fun invoke(
-        username: String,
-        email: String,
-        password: String,
-        confirmPassword: String
-    ): Flow<Resource<ResponseApp<RegisterDto?>>> = flow {
+        resetToken: String,
+        newPassword: String,
+        newConfirmationPassword: String
+    ): Flow<Resource<ResponseApp<Boolean?>>> = flow {
         try {
             emit(Resource.Loading())
-            val registerResponse = authRepository.get().register(
-                email = email,
-                username = username,
-                password = password,
-                confirmPassword = confirmPassword
-            )
+            val response = authRepository.get().changePassword(resetToken, newPassword, newConfirmationPassword)
 
-            if (!registerResponse.status) {
+            if (!response.status) {
                 emit(
                     Resource.Error(
-                        registerResponse.statusCode,
-                        registerResponse.message
+                        response.statusCode,
+                        response.message
                     )
                 )
+
                 return@flow
             }
 
-            emit(Resource.Success(registerResponse))
+            emit(Resource.Success(response))
         } catch (e: Exception) {
             emit(
                 Resource.Error(

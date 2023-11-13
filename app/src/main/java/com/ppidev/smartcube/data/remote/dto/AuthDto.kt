@@ -30,3 +30,9 @@ data class RegisterDto(
     @SerialName("verificationCode")
     val verificationCode: String,
 )
+
+@Serializable
+data class ResetPasswordRequestDto(
+    @SerialName("data")
+    val data: String
+)

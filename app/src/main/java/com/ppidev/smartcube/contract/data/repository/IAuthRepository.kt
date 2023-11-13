@@ -1,6 +1,6 @@
 package com.ppidev.smartcube.contract.data.repository
 
-import com.ppidev.smartcube.common.Response
+import com.ppidev.smartcube.common.ResponseApp
 import com.ppidev.smartcube.data.remote.dto.LoginDto
 import com.ppidev.smartcube.data.remote.dto.RegisterDto
 
@@ -8,16 +8,19 @@ interface IAuthRepository {
     suspend fun login(
         email: String,
         password: String
-    ): Response<LoginDto?>
+    ): ResponseApp<LoginDto?>
 
     suspend fun register(
         username: String,
         email: String,
         password: String,
         confirmPassword: String
-    ): Response<RegisterDto?>
+    ): ResponseApp<RegisterDto?>
 
-    suspend fun resetPasswordRequest(): Response<String>
+    suspend fun resetPasswordRequest(email: String): ResponseApp<String?>
 
-    suspend fun resetPassword(): Response<String>
+    suspend fun changePassword(
+        resetToken: String,
+        newPassword: String, confirmNewPassword: String
+    ): ResponseApp<Boolean?>
 }
