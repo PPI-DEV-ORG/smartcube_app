@@ -5,6 +5,7 @@ import com.ppidev.smartcube.data.remote.dto.LoginDto
 import com.ppidev.smartcube.data.remote.dto.RegisterDto
 import com.ppidev.smartcube.data.remote.dto.VerificationDto
 
+
 interface IAuthRepository {
     suspend fun login(
         email: String,

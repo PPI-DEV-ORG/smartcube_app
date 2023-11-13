@@ -14,7 +14,10 @@ class NotificationRepositoryImpl @Inject constructor(
     private val appContext: Application
 ) : INotificationRepository {
     override suspend fun getAllNotifications(): Response<List<NotificationDto>> {
-        return api.getListNotifications()
+
+        val response = api.getListNotifications()
+        Log.d("NOTIF_", response.toString())
+        return response
     }
 
     override suspend fun getDetailNotification(notificationId: UInt): NotificationDto {

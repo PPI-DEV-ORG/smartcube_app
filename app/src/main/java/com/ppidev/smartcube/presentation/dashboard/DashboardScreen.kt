@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ppidev.smartcube.ui.components.HeaderSection
@@ -62,6 +61,7 @@ fun DashboardScreen(
         onEvent(DashboardEvent.SubscribeToMqttService)
         onEvent(DashboardEvent.GetListModelInstalled)
         onEvent(DashboardEvent.GetDeviceConfig)
+        onEvent(DashboardEvent.GetListNotification)
     }
 
     DisposableEffect(Unit) {

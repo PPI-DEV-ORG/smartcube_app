@@ -210,7 +210,6 @@ fun RegisterScreen(
 }
 
 
-
 @Composable
 fun DialogRegister(
     onDismiss: () -> Unit,
