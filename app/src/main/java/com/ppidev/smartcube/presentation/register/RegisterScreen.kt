@@ -201,7 +201,7 @@ fun RegisterScreen(
                 onDismiss = {},
                 onConfirm = {
                     onEvent(RegisterEvent.HandleCloseDialog{
-                        navHostController.navigate(Screen.Verification.screenRoute)
+                        navHostController.navigate(Screen.Verification.screenRoute + "/${state.email}")
                     })
                 }
             )

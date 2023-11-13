@@ -64,14 +64,24 @@ fun NavigationApp(navController: NavHostController) {
             )
         }
 
-        composable(Screen.Verification.screenRoute) {
+        composable(
+            route = Screen.Verification.screenRoute + "/{emailArg}",
+            arguments = listOf(navArgument("emailArg") { type = NavType.StringType})
+        ) {
             val viewModel = hiltViewModel<VerificationViewModel>()
             val state = viewModel.state
-            VerificationScreen(
-                state = state,
-                onEvent = viewModel::onEvent,
-                navHostController = navController
-            )
+
+            val arguments = it.arguments
+
+            arguments?.getString("emailArg")?.let { emailArg ->
+                VerificationScreen(
+                    state = state,
+                    onEvent = viewModel::onEvent,
+                    email = emailArg,
+                    navHostController = navController
+                )
+            }
+
         }
 
         composable(Screen.ResetPassword.screenRoute) {

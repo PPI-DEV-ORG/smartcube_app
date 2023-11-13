@@ -91,7 +91,6 @@ class RegisterViewModel @Inject constructor(
 
                     state = state.copy(
                         isShowDialog = true,
-                        email = "",
                         username = "",
                         password = "",
                         confirmPassword = ""

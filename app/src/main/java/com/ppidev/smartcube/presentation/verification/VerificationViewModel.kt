@@ -34,15 +34,13 @@ class VerificationViewModel @Inject constructor(
                 onVerificationCodeChange(event.code)
             }
 
-            VerificationEvent.HandleVerification -> {
-                handleVerification()
+            is VerificationEvent.HandleVerification -> {
+                handleVerification(event.email, event.callback)
             }
 
             VerificationEvent.HandleCloseDialog -> {
                 state = state.copy(isVerificationSuccessful = false)
             }
-
-            else -> {}
         }
     }
 
@@ -52,11 +50,13 @@ class VerificationViewModel @Inject constructor(
         }
     }
 
-    private fun handleVerification() {
-        verificationUseCase.get().invoke(state.email,state.verificationCode).onEach {
+    private fun handleVerification(email: String, callback: () -> Unit) {
+        verificationUseCase.get().invoke(email, state.verificationCode).onEach {
             when (it) {
                 is Resource.Success -> {
                     state = state.copy(isVerificationSuccessful = true)
+
+                    callback()
                 }
 
                 is Resource.Error -> {
