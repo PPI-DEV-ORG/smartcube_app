@@ -1,47 +1,40 @@
 package com.ppidev.smartcube.domain.use_case.auth
 
+import android.util.Log
 import com.ppidev.smartcube.common.EExceptionCode
 import com.ppidev.smartcube.common.Resource
 import com.ppidev.smartcube.common.ResponseApp
 import com.ppidev.smartcube.contract.data.repository.IAuthRepository
-import com.ppidev.smartcube.contract.domain.use_case.auth.IRegisterUseCase
-import com.ppidev.smartcube.data.remote.dto.RegisterDto
+import com.ppidev.smartcube.contract.domain.use_case.auth.IRequestLinkResetPasswordUseCase
 import dagger.Lazy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.io.IOException
 import javax.inject.Inject
 
-class RegisterUseCase @Inject constructor(
+class RequestLinkResetPasswordUseCase @Inject constructor(
     private val authRepository: Lazy<IAuthRepository>
-) : IRegisterUseCase {
-    override fun invoke(
-        username: String,
-        email: String,
-        password: String,
-        confirmPassword: String
-    ): Flow<Resource<ResponseApp<RegisterDto?>>> = flow {
+) : IRequestLinkResetPasswordUseCase {
+    override fun invoke(email: String): Flow<Resource<ResponseApp<String?>>> = flow {
         try {
             emit(Resource.Loading())
-            val registerResponse = authRepository.get().register(
-                email = email,
-                username = username,
-                password = password,
-                confirmPassword = confirmPassword
+
+            val requestLinkResetPasswordResponse = authRepository.get().resetPasswordRequest(
+                email = email
             )
 
-            if (!registerResponse.status) {
+            if (!requestLinkResetPasswordResponse.status) {
                 emit(
                     Resource.Error(
-                        registerResponse.statusCode,
-                        registerResponse.message
+                        requestLinkResetPasswordResponse.statusCode,
+                        requestLinkResetPasswordResponse.message
                     )
                 )
                 return@flow
             }
 
-            emit(Resource.Success(registerResponse))
-        } catch (e: Exception) {
+            emit(Resource.Success(requestLinkResetPasswordResponse))
+        } catch (e: IOException) {
             emit(
                 Resource.Error(
                     EExceptionCode.UseCaseError.code,

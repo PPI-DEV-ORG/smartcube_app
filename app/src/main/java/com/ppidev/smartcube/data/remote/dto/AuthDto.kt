@@ -54,5 +54,10 @@ data class VerificationDto(
     val verificationCode : String? = null,
 
     @SerialName("fcmRegistrationToken")
-    val fcmRegistrationToken : String? = null
+    val fcmRegistrationToken : String? = null,
+)
+
+data class ResetPasswordRequestDto(
+    @SerialName("data")
+    val data: String
 )

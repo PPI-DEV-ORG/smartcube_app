@@ -1,27 +1,31 @@
 package com.ppidev.smartcube.data.remote.api
 
-import com.ppidev.smartcube.common.Response
+import com.ppidev.smartcube.BuildConfig
+import com.ppidev.smartcube.common.ResponseApp
 import com.ppidev.smartcube.data.remote.dto.LoginDto
 import com.ppidev.smartcube.data.remote.dto.NotificationDto
 import com.ppidev.smartcube.data.remote.dto.RegisterDto
 import com.ppidev.smartcube.data.remote.dto.VerificationDto
+import com.ppidev.smartcube.data.remote.dto.WeatherDto
+import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
-interface SmartCubeApi : NotificationApi, AuthApi {
-}
+interface SmartCubeApi : NotificationApi, AuthApi
 
 interface NotificationApi {
     @GET("notification")
-    suspend fun getListNotifications(): Response<List<NotificationDto>>
+    suspend fun getListNotifications(): Response<ResponseApp<List<NotificationDto>?>>
 
     @GET("notification/{notificationId}")
     suspend fun getListNotificationById(
         @Path("notificationId") notificationId: Int
-    ): Response<NotificationDto>
+    ): ResponseApp<NotificationDto>
 }
 
 interface AuthApi {
@@ -30,7 +34,7 @@ interface AuthApi {
     suspend fun login(
         @Field("email") email: String,
         @Field("password") password: String
-    ): Response<LoginDto?>
+    ): Response<ResponseApp<LoginDto?>>
 
     @FormUrlEncoded
     @POST("signup")
@@ -39,12 +43,35 @@ interface AuthApi {
         @Field("email") email: String,
         @Field("password") password: String,
         @Field("cPassword") confirmPassword: String
-    ): Response<RegisterDto?>
+    ): Response<ResponseApp<RegisterDto?>>
 
     @FormUrlEncoded
     @POST("verification")
     suspend fun verification(
         @Field("email") email: String,
         @Field("verificationCode") verificationCode : String
-    ):Response<VerificationDto?>
+    ):Response<ResponseApp<VerificationDto?>>
+
+    @FormUrlEncoded
+    @POST("reset-password-request")
+    suspend fun resetToken(
+        @Field("email") email: String
+    ): Response<ResponseApp<String?>>
+
+    @FormUrlEncoded
+    @POST("reset-password")
+    suspend fun changePassword(
+        @Header("Authorization") authorizationHeader: String,
+        @Field("password") password: String,
+        @Field("cPassword") confirmationPassword: String
+    ): Response<ResponseApp<Boolean?>>
+}
+
+interface WeatherApi {
+    @GET("current.json")
+    suspend fun getCurrentWeather(
+        @Query("q") q: String = "auto:ip",
+        @Query("lang") lang: String = "en",
+        @Query("key") apiKey: String = BuildConfig.WEATHER_API_KEY
+    ): Response<WeatherDto?>
 }

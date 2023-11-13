@@ -2,7 +2,7 @@ package com.ppidev.smartcube.domain.use_case.auth
 
 import com.ppidev.smartcube.common.EExceptionCode
 import com.ppidev.smartcube.common.Resource
-import com.ppidev.smartcube.common.Response
+import com.ppidev.smartcube.common.ResponseApp
 import com.ppidev.smartcube.contract.data.repository.IAuthRepository
 import com.ppidev.smartcube.contract.domain.use_case.auth.IVerificationUseCase
 import com.ppidev.smartcube.data.remote.dto.VerificationDto
@@ -15,7 +15,7 @@ import javax.inject.Inject
 class VerificationUseCase @Inject constructor(
     private val authRepository: Lazy<IAuthRepository>
 ) : IVerificationUseCase {
-    override fun invoke(email: String, verificationCode: String): Flow<Resource<Response<VerificationDto?>>> = flow {
+    override fun invoke(email: String, verificationCode: String): Flow<Resource<ResponseApp<VerificationDto?>>> = flow {
         try {
             emit(Resource.Loading())
             val verificationResponse = authRepository.get().verification(

@@ -1,7 +1,9 @@
 package com.ppidev.smartcube.data.repository
 
-import android.util.Log
-import com.ppidev.smartcube.common.Response
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.ppidev.smartcube.common.EExceptionCode
+import com.ppidev.smartcube.common.ResponseApp
 import com.ppidev.smartcube.contract.data.local.storage.ITokenAppDataStorePref
 import com.ppidev.smartcube.contract.data.repository.IAuthRepository
 import com.ppidev.smartcube.data.local.entity.TokenAppEntity
@@ -15,22 +17,41 @@ class AuthRepositoryImpl @Inject constructor(
     private val api: SmartCubeApi,
     private val tokenAppDataStorePref: ITokenAppDataStorePref<TokenAppEntity>
 ) : IAuthRepository {
-    override suspend fun login(email: String, password: String): Response<LoginDto?> {
-        val response = api.login(email, password)
+    override suspend fun login(email: String, password: String): ResponseApp<LoginDto?> {
+        try {
+            val response = api.login(email, password)
 
-        if (!response.status) {
-            return response
-        }
+            if (!response.isSuccessful) {
+                val errorResponse = response.errorBody()?.string()
+                return Gson().fromJson(
+                    errorResponse,
+                    object : TypeToken<ResponseApp<LoginDto?>>() {}.type
+                )
+            }
 
-        return try {
-            response.data?.let { tokenAppDataStorePref.updateAccessToken(it.accessToken) }
+            val responseBody = response.body()
+                ?: return ResponseApp(
+                    status = response.isSuccessful,
+                    statusCode = response.code(),
+                    message = response.message(),
+                    data = null
+                )
 
-            response
+            responseBody.data?.let { data ->
+                tokenAppDataStorePref.updateAccessToken(data.accessToken)
+            }
+
+            return ResponseApp(
+                status = responseBody.status,
+                statusCode = response.code(),
+                message = responseBody.message,
+                data = null
+            )
         } catch (e: Exception) {
-            Response<LoginDto?>(
+            return ResponseApp(
                 status = false,
-                statusCode = -1,
-                message = "Failed Save Token",
+                statusCode = EExceptionCode.RepositoryError.code,
+                message = e.message ?: "Repository Error",
                 data = null
             )
         }
@@ -41,15 +62,38 @@ class AuthRepositoryImpl @Inject constructor(
         email: String,
         password: String,
         confirmPassword: String
-    ): Response<RegisterDto?> {
-        val response = api.register(username, email, password, confirmPassword)
-        return try {
-            response
+    ): ResponseApp<RegisterDto?> {
+        try {
+            val response = api.register(username, email, password, confirmPassword)
+
+            if (!response.isSuccessful) {
+                val errorResponse = response.errorBody()?.string()
+                return Gson().fromJson(
+                    errorResponse,
+                    object : TypeToken<ResponseApp<LoginDto?>>() {}.type
+                )
+            }
+
+
+            val responseBody = response.body()
+                ?: return ResponseApp(
+                    status = response.isSuccessful,
+                    statusCode = response.code(),
+                    message = response.message(),
+                    data = null
+                )
+
+            return ResponseApp(
+                status = responseBody.status,
+                statusCode = response.code(),
+                message = responseBody.message,
+                data = responseBody.data
+            )
         } catch (e: Exception) {
-            Response<RegisterDto?>(
+            return ResponseApp(
                 status = false,
-                statusCode = -1,
-                message = "Something wrong!",
+                statusCode = EExceptionCode.RepositoryError.code,
+                message = e.message ?: "Repository Error",
                 data = null
             )
         }
@@ -58,13 +102,34 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun verification(
         email: String,
         verificationCode: String
-    ): Response<VerificationDto?> {
-        return try {
+    ): ResponseApp<VerificationDto?> {
+         try {
             val response = api.verification(email,verificationCode)
-            Log.d("Res",response.toString())
-            response
+
+            if (!response.isSuccessful) {
+                val errorResponse = response.errorBody()?.string()
+                return Gson().fromJson(
+                    errorResponse,
+                    object : TypeToken<ResponseApp<VerificationDto?>>() {}.type
+                )
+            }
+
+             val responseBody = response.body()
+                 ?: return ResponseApp(
+                     status = response.isSuccessful,
+                     statusCode = response.code(),
+                     message = response.message(),
+                     data = null
+                 )
+
+            return ResponseApp(
+                status = responseBody.status,
+                statusCode = response.code(),
+                message = responseBody.message,
+                data = responseBody.data
+            )
         } catch (e:Exception){
-            Response<VerificationDto?>(
+            return ResponseApp<VerificationDto?>(
                 status = false,
                 statusCode = -1,
                 message = "Verification Fail",
@@ -73,11 +138,79 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun resetPasswordRequest(): Response<String> {
-        TODO("Not yet implemented")
+    override suspend fun resetPasswordRequest(email: String): ResponseApp<String?> {
+        try {
+            val response = api.resetToken(email = email)
+
+            if (!response.isSuccessful) {
+                val errorResponse = response.errorBody()?.string()
+                return Gson().fromJson(
+                    errorResponse,
+                    object : TypeToken<ResponseApp<LoginDto?>>() {}.type
+                )
+            }
+
+            val responseBody = response.body()
+                ?: return ResponseApp(
+                    status = response.isSuccessful,
+                    statusCode = response.code(),
+                    message = response.message(),
+                    data = null
+                )
+
+            return ResponseApp(
+                status = responseBody.status,
+                statusCode = response.code(),
+                message = responseBody.message,
+                data = responseBody.data
+            )
+
+        } catch (e: Exception) {
+            return ResponseApp(
+                status = false,
+                statusCode = EExceptionCode.RepositoryError.code,
+                message = e.message ?: "Repository Error",
+                data = null
+            )
+        }
     }
 
-    override suspend fun resetPassword(): Response<String> {
-        TODO("Not yet implemented")
+    override suspend fun changePassword(
+        resetToken: String,
+        newPassword: String,
+        confirmNewPassword: String
+    ): ResponseApp<Boolean?> {
+        try {
+            val response =  api.changePassword(resetToken, newPassword, confirmNewPassword)
+            if (!response.isSuccessful) {
+                val errorResponse = response.errorBody()?.string()
+                return Gson().fromJson(
+                    errorResponse,
+                    object : TypeToken<ResponseApp<LoginDto?>>() {}.type
+                )
+            }
+
+            val responseBody = response.body()
+                ?: return ResponseApp(
+                    status = response.isSuccessful,
+                    statusCode = response.code(),
+                    message = response.message(),
+                    data = null
+                )
+
+            return ResponseApp(
+                status = responseBody.status,
+                statusCode = response.code(),
+                message = responseBody.message,
+                data = responseBody.data
+            )
+        } catch (e: Exception) {
+            return ResponseApp(
+                status = false,
+                statusCode = EExceptionCode.RepositoryError.code,
+                message = e.message ?: "Repository Error",
+                data = null
+            )
+        }
     }
 }

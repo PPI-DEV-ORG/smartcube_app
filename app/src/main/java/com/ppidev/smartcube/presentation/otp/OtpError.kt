@@ -1,3 +1,5 @@
 package com.ppidev.smartcube.presentation.otp
 
-data class OtpError()
+data class OtpError(
+    val error: String = ""
+)
