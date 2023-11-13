@@ -16,14 +16,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
@@ -34,6 +36,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ppidev.smartcube.ui.theme.SmartcubeAppTheme
 
@@ -45,6 +48,7 @@ fun CustomInputField(
     textStyle: TextStyle = TextStyle(
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
+        color = MaterialTheme.colorScheme.onBackground
     ),
     text: String,
     errorText: String,
@@ -73,53 +77,57 @@ fun CustomInputField(
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
             visualTransformation = if (showText) VisualTransformation.None else PasswordVisualTransformation(),
             decorationBox = { innerTextField ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(1.dp, Color.Gray, shape = RoundedCornerShape(10.dp))
-                        .padding(horizontal = 20.dp, vertical = 19.dp),
-                    horizontalArrangement = if (iconStart) Arrangement.Start else Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    if (icon != null && iconStart) {
-                        IconButton(modifier = Modifier.size(24.dp), onClick = onClickIcon ?: {}) {
-                            icon.invoke()
-                        }
-                        Spacer(modifier = Modifier.size(10.dp))
-                    }
-
-                    Box(
-                        contentAlignment = Alignment.CenterStart
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .border(1.dp, Color.Gray, shape = RoundedCornerShape(10.dp))
+                            .padding(horizontal = 20.dp, vertical = 19.dp),
+                        horizontalArrangement = if (iconStart) Arrangement.Start else Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        if (text.isEmpty()) {
-                            Text(
-                                text = placeholder,
-                                fontWeight = FontWeight.Normal,
-                                color = Color.LightGray
-                            )
+                        if (icon != null && iconStart) {
+                            IconButton(modifier = Modifier.size(24.dp), onClick = onClickIcon ?: {}) {
+                                icon.invoke()
+                            }
+                            Spacer(modifier = Modifier.size(10.dp))
                         }
 
-                        innerTextField()
-                    }
+                        Box(
+                            contentAlignment = Alignment.CenterStart,
+                        ) {
+                            innerTextField()
 
-                    if (icon != null && !iconStart) {
-                        Spacer(modifier = Modifier.size(10.dp))
-                        IconButton(modifier = Modifier.size(24.dp), onClick = onClickIcon ?: {}) {
-                            icon.invoke()
+                            if (text.isEmpty()) {
+                                Text(
+                                    text = placeholder,
+                                    fontWeight = FontWeight.Normal,
+                                    color = Color.LightGray
+                                )
+                            }
+
+                        }
+
+                        if (icon != null && !iconStart) {
+                            Spacer(modifier = Modifier.size(10.dp))
+                            IconButton(modifier = Modifier.size(24.dp), onClick = onClickIcon ?: {}) {
+                                icon.invoke()
+                            }
                         }
                     }
-                }
             })
+
 
         Spacer(modifier = Modifier.size(5.dp))
 
-        if (errorText.isNotEmpty()){
+        if (errorText.isNotEmpty()) {
             Text(
-                modifier = Modifier.semantics { testTagsAsResourceId = true }.testTag(errorTestTag),
-                        text = errorText, style = TextStyle(
-                fontSize = 14.sp,
-                color = Color.Red
-            ))
+                modifier = Modifier
+                    .semantics { testTagsAsResourceId = true }
+                    .testTag(errorTestTag),
+                text = errorText, style = TextStyle(
+                    fontSize = 14.sp,
+                    color = Color.Red
+                ))
         }
     }
 }

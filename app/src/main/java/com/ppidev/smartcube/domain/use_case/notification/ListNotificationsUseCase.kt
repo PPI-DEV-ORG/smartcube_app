@@ -21,7 +21,7 @@ class ListNotificationsUseCase @Inject constructor(
         try {
             emit(Resource.Loading())
             val notificationsData =
-                notificationRepository.get().getAllNotifications().data.map { it.toNotificationModel() }
+                notificationRepository.get().getAllNotifications().data?.map { it.toNotificationModel() }
 
             emit(Resource.Success(notificationsData))
         } catch (e: HttpException) {
@@ -31,7 +31,7 @@ class ListNotificationsUseCase @Inject constructor(
                     e.localizedMessage ?: "An unexpected error occured"
                 )
             )
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             emit(
                 Resource.Error<List<NotificationModel>>(
                     EExceptionCode.HTTPException.ordinal,
