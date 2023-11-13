@@ -10,14 +10,11 @@ import com.ppidev.smartcube.data.remote.dto.WeatherDto
 import javax.inject.Inject
 
 class WeatherRepositoryImpl @Inject constructor(
-    private val api: WeatherApi
+    private val weatherApi: WeatherApi
 ) : IWeatherRepository {
     override suspend fun getCurrentWeather(): ResponseApp<WeatherDto?> {
         try {
-            val response = api.getCurrentWeather()
-
-            Log.d("RES", response.toString())
-
+            val response = weatherApi.getCurrentWeather()
             if (!response.isSuccessful) {
                 return ResponseApp(
                     status = false,
