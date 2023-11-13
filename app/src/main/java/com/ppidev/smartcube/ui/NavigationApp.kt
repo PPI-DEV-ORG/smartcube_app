@@ -23,6 +23,8 @@ import com.ppidev.smartcube.presentation.register.RegisterScreen
 import com.ppidev.smartcube.presentation.register.RegisterViewModel
 import com.ppidev.smartcube.presentation.splash.SplashScreenCustom
 import com.ppidev.smartcube.presentation.splash.SplashViewModel
+import com.ppidev.smartcube.presentation.verification.VerificationScreen
+import com.ppidev.smartcube.presentation.verification.VerificationViewModel
 
 @Composable
 fun NavigationApp(navController: NavHostController) {
@@ -55,6 +57,18 @@ fun NavigationApp(navController: NavHostController) {
                 navHostController = navController
             )
         }
+
+        composable(Screen.Verification.screenRoute) {
+            val viewModel = hiltViewModel<VerificationViewModel>()
+            val state = viewModel.state
+            VerificationScreen(
+                state = state,
+                onEvent = viewModel::onEvent,
+                navHostController = navController
+            )
+        }
+
+
         composable(Screen.Dashboard.screenRoute) {
             val viewModel = hiltViewModel<DashboardViewModel>()
             val state = viewModel.state
@@ -91,6 +105,7 @@ sealed class Screen(val screenRoute: String) {
     object Splash : Screen(screenRoute = "splash")
     object Login : Screen(screenRoute = "login")
     object Register : Screen(screenRoute = "register")
+    object Verification : Screen(screenRoute = "verification")
     object Dashboard : Screen(screenRoute = "dashboard")
     object Notifications : Screen(screenRoute = "Notifications")
     object DetailNotification : Screen(screenRoute = "notification/detail")

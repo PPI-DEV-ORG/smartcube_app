@@ -4,6 +4,7 @@ import com.ppidev.smartcube.common.Response
 import com.ppidev.smartcube.data.remote.dto.LoginDto
 import com.ppidev.smartcube.data.remote.dto.NotificationDto
 import com.ppidev.smartcube.data.remote.dto.RegisterDto
+import com.ppidev.smartcube.data.remote.dto.VerificationDto
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -39,4 +40,11 @@ interface AuthApi {
         @Field("password") password: String,
         @Field("cPassword") confirmPassword: String
     ): Response<RegisterDto?>
+
+    @FormUrlEncoded
+    @POST("verification")
+    suspend fun verification(
+        @Field("email") email: String,
+        @Field("verificationCode") verificationCode : String
+    ):Response<VerificationDto?>
 }

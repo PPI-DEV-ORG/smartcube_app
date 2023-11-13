@@ -39,6 +39,7 @@ import com.ppidev.smartcube.R
 import com.ppidev.smartcube.ui.Screen
 import com.ppidev.smartcube.ui.components.form.CustomInputField
 
+
 @Composable
 fun RegisterScreen(
     state: RegisterState,
@@ -199,12 +200,15 @@ fun RegisterScreen(
             DialogRegister(
                 onDismiss = {},
                 onConfirm = {
-                    onEvent(RegisterEvent.HandleCloseDialog)
+                    onEvent(RegisterEvent.HandleCloseDialog{
+                        navHostController.navigate(Screen.Verification.screenRoute)
+                    })
                 }
             )
         }
     }
 }
+
 
 
 @Composable

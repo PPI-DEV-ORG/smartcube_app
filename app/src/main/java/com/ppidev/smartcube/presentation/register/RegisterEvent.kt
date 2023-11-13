@@ -17,7 +17,9 @@ sealed class RegisterEvent {
 
     object ToggleShowConfirmPassword: RegisterEvent()
 
-    object HandleCloseDialog: RegisterEvent()
+    data class HandleCloseDialog(
+        val callback: () -> Unit
+    ): RegisterEvent()
 
     data class ToLoginScreen(
         val callback: () -> Unit

@@ -1,5 +1,6 @@
 package com.ppidev.smartcube.data.repository
 
+import android.util.Log
 import com.ppidev.smartcube.common.Response
 import com.ppidev.smartcube.contract.data.local.storage.ITokenAppDataStorePref
 import com.ppidev.smartcube.contract.data.repository.IAuthRepository
@@ -7,6 +8,7 @@ import com.ppidev.smartcube.data.local.entity.TokenAppEntity
 import com.ppidev.smartcube.data.remote.api.SmartCubeApi
 import com.ppidev.smartcube.data.remote.dto.LoginDto
 import com.ppidev.smartcube.data.remote.dto.RegisterDto
+import com.ppidev.smartcube.data.remote.dto.VerificationDto
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -48,6 +50,24 @@ class AuthRepositoryImpl @Inject constructor(
                 status = false,
                 statusCode = -1,
                 message = "Something wrong!",
+                data = null
+            )
+        }
+    }
+
+    override suspend fun verification(
+        email: String,
+        verificationCode: String
+    ): Response<VerificationDto?> {
+        return try {
+            val response = api.verification(email,verificationCode)
+            Log.d("Res",response.toString())
+            response
+        } catch (e:Exception){
+            Response<VerificationDto?>(
+                status = false,
+                statusCode = -1,
+                message = "Verification Fail",
                 data = null
             )
         }
