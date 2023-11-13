@@ -76,6 +76,9 @@ fun BottomAppBar(
                 },
                 onClick = {
                     selectedItemIndex = index
+
+                    navController.popBackStack()
+
                     navController.navigate(item.screen.screenRoute) {
                         navController.graph.startDestinationRoute?.let { screenRoute ->
                             popUpTo(screenRoute) {

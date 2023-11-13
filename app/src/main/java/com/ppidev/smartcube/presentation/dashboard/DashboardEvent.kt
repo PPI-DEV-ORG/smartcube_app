@@ -10,4 +10,12 @@ sealed class DashboardEvent {
     object GetDeviceConfig : DashboardEvent()
 
     object UnsubscribeToMqttService : DashboardEvent()
+
+    object GetCurrentWeather : DashboardEvent()
+
+    object OpenBottomSheet : DashboardEvent()
+
+    object CloseBottomSheet : DashboardEvent()
+
+    data class OnSelectServer(val index: Int, val callback: (() -> Unit)? = null) : DashboardEvent()
 }
