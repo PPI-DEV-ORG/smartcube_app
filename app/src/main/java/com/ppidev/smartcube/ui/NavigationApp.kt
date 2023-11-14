@@ -64,6 +64,9 @@ fun NavigationApp(navController: NavHostController) {
             )
         }
 
+
+
+
         composable(
             route = Screen.Verification.screenRoute + "/{emailArg}",
             arguments = listOf(navArgument("emailArg") { type = NavType.StringType})
@@ -92,6 +95,7 @@ fun NavigationApp(navController: NavHostController) {
                 state = state, onEvent = viewModel::onEvent, navHostController = navController
             )
         }
+
 
         composable(
             route = Screen.ChangePassword.screenRoute,
@@ -122,9 +126,15 @@ fun NavigationApp(navController: NavHostController) {
                 state = state, onEvent = viewModel::onEvent
             )
         }
+
+
         composable(Screen.Profile.screenRoute) {
             ProfileScreen()
+
         }
+
+
+
         composable(Screen.Notifications.screenRoute) {
             NotificationListScreen()
         }
@@ -146,6 +156,9 @@ fun NavigationApp(navController: NavHostController) {
         }
     }
 }
+
+
+
 
 sealed class Screen(val screenRoute: String) {
     object Splash : Screen(screenRoute = "splash")

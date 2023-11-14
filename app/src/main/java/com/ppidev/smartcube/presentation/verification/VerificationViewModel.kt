@@ -39,8 +39,10 @@ class VerificationViewModel @Inject constructor(
             }
 
             VerificationEvent.HandleCloseDialog -> {
-                state = state.copy(isVerificationSuccessful = false)
+                state = state.copy(isShowDialog = false)
             }
+
+            else -> {}
         }
     }
 
@@ -54,12 +56,12 @@ class VerificationViewModel @Inject constructor(
         verificationUseCase.get().invoke(email, state.verificationCode).onEach {
             when (it) {
                 is Resource.Success -> {
-                    state = state.copy(isVerificationSuccessful = true)
-
+                    state = state.copy(isVerificationSuccessful = true, isShowDialog = true)
                     callback()
                 }
-
                 is Resource.Error -> {
+                    state = state.copy(isVerificationSuccessful = false, isShowDialog = true)
+                    callback()
                 }
 
                 else -> {}

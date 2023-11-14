@@ -1,5 +1,7 @@
 package com.ppidev.smartcube.presentation.verification
 
+import com.ppidev.smartcube.presentation.register.RegisterEvent
+
 
 sealed class VerificationEvent {
     data class OnVerificationCodeChange(val code: String) : VerificationEvent()
@@ -8,5 +10,7 @@ sealed class VerificationEvent {
         val callback : () -> Unit
     ) : VerificationEvent()
     object HandleCloseDialog : VerificationEvent()
+
+
 
 }
