@@ -44,6 +44,7 @@ import com.ppidev.smartcube.ui.Screen
 import com.ppidev.smartcube.ui.components.form.CustomInputField
 
 
+
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun RegisterScreen(

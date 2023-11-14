@@ -11,8 +11,8 @@
         <option name="gradleJvm" value="jbr-17" />
         <option name="modules">
           <set>
-            <option value="/media/iqbal/DATA/Iqbal Maulana/Developments/BANGKIT/capstone/SmartcubeApp" />
-            <option value="/media/iqbal/DATA/Iqbal Maulana/Developments/BANGKIT/capstone/SmartcubeApp/app" />
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/app" />
           </set>
         </option>
       </GradleProjectSettings>
