@@ -22,9 +22,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -40,6 +44,7 @@ import com.ppidev.smartcube.ui.Screen
 import com.ppidev.smartcube.ui.components.form.CustomInputField
 
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun RegisterScreen(
     state: RegisterState,
@@ -79,6 +84,9 @@ fun RegisterScreen(
         Spacer(modifier = Modifier.size(20.dp))
 
         CustomInputField(
+            modifier = Modifier
+                .semantics { testTagsAsResourceId = true }
+                .testTag("input_username"),
             text = state.username,
             label = "Username",
             errorText = state.error.username,
@@ -91,6 +99,10 @@ fun RegisterScreen(
         Spacer(modifier = Modifier.size(20.dp))
 
         CustomInputField(
+            modifier = Modifier
+                .semantics { testTagsAsResourceId = true }
+                .testTag("input_email"),
+            errorTestTag= "text_error_email" ,
             text = state.email,
             label = "Email",
             errorText = state.error.email,
@@ -103,6 +115,9 @@ fun RegisterScreen(
         Spacer(modifier = Modifier.size(20.dp))
 
         CustomInputField(
+            modifier = Modifier
+                .semantics { testTagsAsResourceId = true }
+                .testTag("input_password"),
             text = state.password,
             label = "Password",
             showText = state.isShowPassword,
@@ -132,6 +147,9 @@ fun RegisterScreen(
         Spacer(modifier = Modifier.size(20.dp))
 
         CustomInputField(
+            modifier = Modifier
+                .semantics { testTagsAsResourceId = true }
+                .testTag("input_confirm_password"),
             text = state.confirmPassword,
             label = "Confirmation Password",
             showText = state.isShowConfirmPassword,
@@ -162,7 +180,8 @@ fun RegisterScreen(
         Spacer(modifier = Modifier.size(40.dp))
 
         Button(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().semantics { testTagsAsResourceId = true }
+                .testTag("btn_signup"),
             onClick = { onEvent(RegisterEvent.HandleRegister) },
             enabled = !state.isLoading
         ) {

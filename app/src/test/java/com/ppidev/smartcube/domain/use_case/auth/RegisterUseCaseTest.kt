@@ -35,6 +35,13 @@ class RegisterUseCaseTest {
         val password = "freya123"
         val confirmPassword = "freya123"
 
+        val errorResponse = Resource.Error(
+            message = "email not valid",
+            statusCode = 400,
+            data = null
+        )
+
+
         `when`(authRepository.register(username, wrongEmail, password, confirmPassword)).thenReturn(
                 ResponseApp(
                         status = false,
@@ -44,14 +51,43 @@ class RegisterUseCaseTest {
                 )
         )
 
-
-        val result: Resource<ResponseApp<RegisterDto?>> =
+        val result =
                 registerUseCase.invoke(username, wrongEmail, password, confirmPassword).filter { it is Resource.Error }
                         .first()
 
         assert(result is Resource.Error)
-        val res = (result as Resource.Success).statusCode
-        assert(res == 400)
+        assert(result.statusCode == errorResponse.statusCode)
     }
 
+
+    @Test
+    fun `test register success`() = runBlocking {
+        val username = "testingUser"
+        val email = "testing@gmail.com"
+        val password = "freya123"
+        val confirmPassword = "freya123"
+
+        val expectedResponseDataRegister = RegisterDto(
+            id = UInt.MIN_VALUE,
+            username = "test",
+            email = "testing@gmail.com",
+            password = "",
+            isVerified = false,
+            verificationCode = "41kdnf"
+        )
+
+        `when`(authRepository.register(username, email, password, confirmPassword)).thenReturn(
+            ResponseApp(
+                status = true,
+                statusCode = 200,
+                message = "success register account",
+                data = expectedResponseDataRegister
+            )
+        )
+
+        val result : Resource<ResponseApp<RegisterDto?>> = registerUseCase.invoke(username, email, password, confirmPassword).filter { it is Resource.Success }.first()
+
+        assert(result is Resource.Success)
+        assert(result.data?.data == expectedResponseDataRegister)
+    }
 }
