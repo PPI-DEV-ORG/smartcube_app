@@ -118,22 +118,6 @@ class RegisterViewModel @Inject constructor(
         }
     }
 
-    private fun handleRegister() {
-        registerUseCase.get().invoke(username = state.username, email = state.email, password = state.password, confirmPassword = state.confirmPassword).onEach {
-            when(it) {
-                is Resource.Loading ->{}
-                is Resource.Success -> {}
-                is Resource.Error -> {}
-            }
-        }
-    }
-
-    private fun onUsernameChange(str: String) {
-        state = state.copy(
-            username = str
-        )
-    }
-
     private fun onEmailChange(str: String) {
         viewModelScope.launch {
 
