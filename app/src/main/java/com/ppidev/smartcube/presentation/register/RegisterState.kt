@@ -9,7 +9,8 @@ data class RegisterState(
     val isShowPassword: Boolean = false,
     val isShowConfirmPassword: Boolean = false,
     val isLoading: Boolean = false,
-    val isShowDialog: Boolean = false
+    val isShowDialog: Boolean = false,
+    val succesToken : String = ""
 ) {
     data class RegisterError(
         val username: String = "",

@@ -64,11 +64,13 @@ class RegisterViewModel @Inject constructor(
                 event.callback()
             }
 
-            RegisterEvent.HandleCloseDialog -> {
+           is RegisterEvent.HandleCloseDialog -> {
                 state = state.copy(
                     isShowDialog = false
                 )
+                event.callback()
             }
+
         }
     }
 
@@ -89,7 +91,6 @@ class RegisterViewModel @Inject constructor(
 
                     state = state.copy(
                         isShowDialog = true,
-                        email = "",
                         username = "",
                         password = "",
                         confirmPassword = ""

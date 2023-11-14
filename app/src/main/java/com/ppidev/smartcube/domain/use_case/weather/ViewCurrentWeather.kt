@@ -15,30 +15,26 @@ class ViewCurrentWeather @Inject constructor(
     private val weatherRepository: Lazy<IWeatherRepository>
 ) : IViewCurrentWeather {
     override fun invoke(): Flow<Resource<ResponseApp<WeatherDto?>>> = flow {
+        emit(Resource.Loading())
+        emit(getCurrentWeather())
+    }
+
+    private suspend fun getCurrentWeather(): Resource<ResponseApp<WeatherDto?>> {
         try {
-
-            emit(Resource.Loading())
-
             val response = weatherRepository.get().getCurrentWeather()
 
             if (!response.status) {
-                emit(
-                    Resource.Error(
-                        response.statusCode,
-                        response.message
-                    )
+                return Resource.Error(
+                    response.statusCode,
+                    response.message
                 )
-
-                return@flow
             }
 
-            emit(Resource.Success(response))
+            return Resource.Success(response)
         } catch (e: Exception) {
-            emit(
-                Resource.Error(
-                    EExceptionCode.UseCaseError.code,
-                    e.message ?: "Something wrong"
-                )
+            return Resource.Error(
+                EExceptionCode.UseCaseError.code,
+                e.message ?: "Something wrong"
             )
         }
     }

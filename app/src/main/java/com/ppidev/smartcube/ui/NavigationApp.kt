@@ -29,6 +29,8 @@ import com.ppidev.smartcube.presentation.reset_password.change_password.ChangePa
 import com.ppidev.smartcube.presentation.reset_password.change_password.ChangePasswordViewModel
 import com.ppidev.smartcube.presentation.splash.SplashScreenCustom
 import com.ppidev.smartcube.presentation.splash.SplashViewModel
+import com.ppidev.smartcube.presentation.verification.VerificationScreen
+import com.ppidev.smartcube.presentation.verification.VerificationViewModel
 
 @Composable
 fun NavigationApp(navController: NavHostController) {
@@ -60,6 +62,26 @@ fun NavigationApp(navController: NavHostController) {
                 onEvent = viewModel::onEvent,
                 navHostController = navController
             )
+        }
+
+        composable(
+            route = Screen.Verification.screenRoute + "/{emailArg}",
+            arguments = listOf(navArgument("emailArg") { type = NavType.StringType})
+        ) {
+            val viewModel = hiltViewModel<VerificationViewModel>()
+            val state = viewModel.state
+
+            val arguments = it.arguments
+
+            arguments?.getString("emailArg")?.let { emailArg ->
+                VerificationScreen(
+                    state = state,
+                    onEvent = viewModel::onEvent,
+                    email = emailArg,
+                    navHostController = navController
+                )
+            }
+
         }
 
         composable(Screen.ResetPassword.screenRoute) {
@@ -129,11 +151,9 @@ sealed class Screen(val screenRoute: String) {
     object Splash : Screen(screenRoute = "splash")
     object Login : Screen(screenRoute = "login")
     object Register : Screen(screenRoute = "register")
-
+    object Verification : Screen(screenRoute = "verification")
     object ResetPassword : Screen(screenRoute = "resetPassword")
-
     object ChangePassword : Screen(screenRoute = "changePassword")
-
     object Dashboard : Screen(screenRoute = "dashboard")
     object Notifications : Screen(screenRoute = "Notifications")
     object DetailNotification : Screen(screenRoute = "notification/detail")

@@ -5,6 +5,7 @@ import com.ppidev.smartcube.common.ResponseApp
 import com.ppidev.smartcube.data.remote.dto.LoginDto
 import com.ppidev.smartcube.data.remote.dto.NotificationDto
 import com.ppidev.smartcube.data.remote.dto.RegisterDto
+import com.ppidev.smartcube.data.remote.dto.VerificationDto
 import com.ppidev.smartcube.data.remote.dto.WeatherDto
 import retrofit2.Response
 import retrofit2.http.Field
@@ -43,6 +44,13 @@ interface AuthApi {
         @Field("password") password: String,
         @Field("cPassword") confirmPassword: String
     ): Response<ResponseApp<RegisterDto?>>
+
+    @FormUrlEncoded
+    @POST("verification")
+    suspend fun verification(
+        @Field("email") email: String,
+        @Field("verificationCode") verificationCode : String
+    ):Response<ResponseApp<VerificationDto?>>
 
     @FormUrlEncoded
     @POST("reset-password-request")
