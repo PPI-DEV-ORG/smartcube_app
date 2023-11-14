@@ -1,7 +1,7 @@
 package com.ppidev.smartcube.domain.use_case.auth
 
 import com.ppidev.smartcube.common.Resource
-import com.ppidev.smartcube.common.Response
+import com.ppidev.smartcube.common.ResponseApp
 import com.ppidev.smartcube.contract.data.repository.IAuthRepository
 import com.ppidev.smartcube.data.remote.dto.LoginDto
 import dagger.Lazy
@@ -39,7 +39,7 @@ class LoginUseCaseTest {
 
         // Mock the loginResponse from authRepository
         `when`(authRepository.login(email, password)).thenReturn(
-            Response(
+            ResponseApp(
                 statusCode = 200,
                 status = true,
                 message = "login success",
@@ -47,7 +47,7 @@ class LoginUseCaseTest {
             )
         )
 
-        val result: Resource<Response<LoginDto?>> =
+        val result: Resource<ResponseApp<LoginDto?>> =
             loginUseCase.invoke(email, password).filter { it is Resource.Success }
                 .first()
 
@@ -68,7 +68,7 @@ class LoginUseCaseTest {
         )
 
         // Mock the loginResponse from authRepository
-        `when`(authRepository.login(email, password)).thenReturn(Response(
+        `when`(authRepository.login(email, password)).thenReturn(ResponseApp(
             statusCode = 400,
             status = false,
             message = "login failed",

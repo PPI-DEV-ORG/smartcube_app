@@ -1,5 +1,6 @@
 package com.ppidev.smartcube.presentation.dashboard
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -11,6 +12,7 @@ import com.ppidev.smartcube.BuildConfig
 import com.ppidev.smartcube.common.Resource
 import com.ppidev.smartcube.contract.data.remote.service.IMqttService
 import com.ppidev.smartcube.contract.domain.use_case.notification.IListNotificationsUseCase
+import com.ppidev.smartcube.contract.domain.use_case.weather.IViewCurrentWeather
 import com.ppidev.smartcube.data.remote.dto.DeviceConfigDto
 import com.ppidev.smartcube.data.remote.dto.DeviceStatusDto
 import com.ppidev.smartcube.data.remote.dto.MLModelDto
@@ -31,11 +33,12 @@ import javax.inject.Inject
 class DashboardViewModel @Inject constructor(
     private val getNotificationsUseCase: Lazy<IListNotificationsUseCase>,
     private val mqttService: Lazy<IMqttService>,
+    private val viewCurrentWeather: Lazy<IViewCurrentWeather>
 ) : ViewModel() {
 
     private val gson = Gson()
 
-    data class HostDevice (
+    data class HostDevice(
         val id: Int,
         val name: String,
         val description: String,
@@ -60,6 +63,38 @@ class DashboardViewModel @Inject constructor(
             DashboardEvent.GetDeviceConfig -> getListCameras()
             DashboardEvent.GetListModelInstalled -> getListModelsInstalled()
             DashboardEvent.UnsubscribeToMqttService -> unsubscribeFromTopic()
+            DashboardEvent.GetCurrentWeather -> getCurrentWeather()
+            DashboardEvent.CloseBottomSheet -> onCloseBottomSheet()
+            DashboardEvent.OpenBottomSheet -> onOpenBottomSheet()
+            is DashboardEvent.OnSelectServer -> onSelectServer(
+                event.index,
+                callback = { event.callback })
+        }
+    }
+
+    private fun onCloseBottomSheet() {
+        viewModelScope.launch {
+            state = state.copy(
+                openBottomSheet = false
+            )
+        }
+    }
+
+    private fun onOpenBottomSheet() {
+        viewModelScope.launch {
+            state = state.copy(
+                openBottomSheet = true
+            )
+        }
+    }
+
+    private fun onSelectServer(index: Int, callback: () -> Unit) {
+        viewModelScope.launch {
+            state = state.copy(
+                serverSelected = index
+            )
+
+            callback()
         }
     }
 
@@ -74,6 +109,9 @@ class DashboardViewModel @Inject constructor(
                 }
 
                 is Resource.Error -> {
+                    state = state.copy(
+                        isLoadingNotification = false
+                    )
                 }
 
                 is Resource.Loading -> {
@@ -180,6 +218,28 @@ class DashboardViewModel @Inject constructor(
                 }
             )
         }
+    }
+
+    private fun getCurrentWeather() {
+        viewCurrentWeather.get().invoke().onEach {
+            when (it) {
+                is Resource.Error -> {
+                    Log.d("WEATHER_ERR", it.data.toString())
+
+                }
+
+                is Resource.Loading -> {
+
+                }
+
+                is Resource.Success -> {
+                    Log.d("WEATHER", it.data?.data.toString())
+                    state = state.copy(
+                        weather = it.data?.data
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     private fun updateNotifications(listNotifications: List<NotificationModel>?) {

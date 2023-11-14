@@ -2,14 +2,13 @@ package com.ppidev.smartcube.domain.use_case.auth
 
 import com.ppidev.smartcube.common.EExceptionCode
 import com.ppidev.smartcube.common.Resource
-import com.ppidev.smartcube.common.Response
+import com.ppidev.smartcube.common.ResponseApp
 import com.ppidev.smartcube.contract.data.repository.IAuthRepository
 import com.ppidev.smartcube.contract.domain.use_case.auth.IRegisterUseCase
 import com.ppidev.smartcube.data.remote.dto.RegisterDto
 import dagger.Lazy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import java.io.IOException
 import javax.inject.Inject
 
 class RegisterUseCase @Inject constructor(
@@ -20,9 +19,18 @@ class RegisterUseCase @Inject constructor(
         email: String,
         password: String,
         confirmPassword: String
-    ): Flow<Resource<Response<RegisterDto?>>> = flow {
+    ): Flow<Resource<ResponseApp<RegisterDto?>>> = flow {
+        emit(Resource.Loading())
+        emit(register(username, email, password, confirmPassword))
+    }
+
+    private suspend fun register(
+        username: String,
+        email: String,
+        password: String,
+        confirmPassword: String
+    ): Resource<ResponseApp<RegisterDto?>> {
         try {
-            emit(Resource.Loading())
             val registerResponse = authRepository.get().register(
                 email = email,
                 username = username,
@@ -31,21 +39,16 @@ class RegisterUseCase @Inject constructor(
             )
 
             if (!registerResponse.status) {
-                emit(
-                    Resource.Error(
-                        registerResponse.statusCode,
-                        registerResponse.message
-                    )
+                return Resource.Error(
+                    registerResponse.statusCode,
+                    registerResponse.message
                 )
             }
-
-            emit(Resource.Success(registerResponse))
-        } catch (e: IOException) {
-            emit(
-                Resource.Error(
-                    EExceptionCode.HTTPException.code,
-                    "Couldn't reach server. Check your internet connection."
-                )
+            return Resource.Success(registerResponse)
+        } catch (e: Exception) {
+            return Resource.Error(
+                EExceptionCode.UseCaseError.code,
+                e.message ?: "Something wrong"
             )
         }
     }

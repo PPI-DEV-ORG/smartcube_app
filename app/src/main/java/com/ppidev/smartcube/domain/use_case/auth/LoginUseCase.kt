@@ -2,42 +2,39 @@ package com.ppidev.smartcube.domain.use_case.auth
 
 import com.ppidev.smartcube.common.EExceptionCode
 import com.ppidev.smartcube.common.Resource
-import com.ppidev.smartcube.common.Response
+import com.ppidev.smartcube.common.ResponseApp
 import com.ppidev.smartcube.contract.data.repository.IAuthRepository
 import com.ppidev.smartcube.contract.domain.use_case.auth.ILoginUseCase
 import com.ppidev.smartcube.data.remote.dto.LoginDto
 import dagger.Lazy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import java.io.IOException
 import javax.inject.Inject
 
 class LoginUseCase @Inject constructor(
     private val authRepository: Lazy<IAuthRepository>
 ) : ILoginUseCase {
-    override fun invoke(email: String, password: String): Flow<Resource<Response<LoginDto?>>> =
+    override fun invoke(email: String, password: String): Flow<Resource<ResponseApp<LoginDto?>>> =
         flow {
-            try {
-                emit(Resource.Loading())
-                val loginResponse = authRepository.get().login(email, password)
-                if (!loginResponse.status) {
-                    emit(
-                        Resource.Error(
-                            loginResponse.statusCode,
-                            loginResponse.message
-                        )
-                    )
-                    return@flow
-                }
+            emit(Resource.Loading())
+            emit(login(email, password))
+        }
 
-                emit(Resource.Success(loginResponse))
-            } catch (e: IOException) {
-                emit(
-                    Resource.Error(
-                        EExceptionCode.HTTPException.code,
-                        "Couldn't reach server. Check your internet connection."
-                    )
+    private suspend fun login(email: String, password: String): Resource<ResponseApp<LoginDto?>> {
+        try {
+            val loginResponse = authRepository.get().login(email, password)
+            if (!loginResponse.status) {
+                return Resource.Error(
+                    loginResponse.statusCode,
+                    loginResponse.message
                 )
             }
+            return Resource.Success(loginResponse)
+        } catch (e: Exception) {
+            return Resource.Error(
+                EExceptionCode.UseCaseError.code,
+                e.message ?: "Something wrong"
+            )
         }
+    }
 }

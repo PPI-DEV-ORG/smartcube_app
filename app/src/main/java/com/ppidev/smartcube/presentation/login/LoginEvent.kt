@@ -14,4 +14,8 @@ sealed class LoginEvent {
     data class ToRegisterScreen(
         val callback: () -> Unit
     ): LoginEvent()
+
+    data class ToResetPasswordScreen(
+        val callback: () -> Unit
+    ): LoginEvent()
 }

@@ -64,7 +64,6 @@ fun MainLayout() {
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
     ) {
         Scaffold (
             bottomBar = {
