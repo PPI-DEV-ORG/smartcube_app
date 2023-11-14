@@ -172,17 +172,21 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.size(6.dp))
 
-        Text(
+        ClickableText(
             modifier = Modifier
-                .clickable {
-                    onEvent(LoginEvent.ToRegisterScreen {
-                        navHostController.navigate(Screen.Register.screenRoute)
-                    })
-                }
-                .fillMaxWidth(),
-            text = "Register",
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.primary
+                .fillMaxWidth()
+                .semantics { testTagsAsResourceId = true }
+                .testTag("to_register_screen"),
+            onClick = {
+                onEvent(LoginEvent.ToRegisterScreen {
+                    navHostController.navigate(Screen.Register.screenRoute)
+                })
+            },
+            text = AnnotatedString("Register"),
+            style = TextStyle(
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.primary
+            )
         )
     }
 }

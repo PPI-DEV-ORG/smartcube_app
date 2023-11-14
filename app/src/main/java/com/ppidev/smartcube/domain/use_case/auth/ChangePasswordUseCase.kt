@@ -1,6 +1,5 @@
 package com.ppidev.smartcube.domain.use_case.auth
 
-import android.util.Log
 import com.ppidev.smartcube.common.EExceptionCode
 import com.ppidev.smartcube.common.Resource
 import com.ppidev.smartcube.common.ResponseApp
@@ -14,33 +13,31 @@ import javax.inject.Inject
 class ChangePasswordUseCase @Inject constructor(
     private val authRepository: Lazy<IAuthRepository>
 ): IChangePasswordUseCase {
+
     override fun invoke(
-        resetToken: String,
-        newPassword: String,
-        newConfirmationPassword: String
+        resetToken: String, newPassword: String, newConfirmationPassword: String
     ): Flow<Resource<ResponseApp<Boolean?>>> = flow {
+        emit(Resource.Loading())
+        emit(changePassword(resetToken, newPassword, newConfirmationPassword))
+    }
+
+    private suspend fun changePassword(
+        resetToken: String, newPassword: String, newConfirmationPassword: String
+    ): Resource<ResponseApp<Boolean?>> {
         try {
-            emit(Resource.Loading())
-            val response = authRepository.get().changePassword(resetToken, newPassword, newConfirmationPassword)
+            val response = authRepository.get()
+                .changePassword(resetToken, newPassword, newConfirmationPassword)
 
             if (!response.status) {
-                emit(
-                    Resource.Error(
-                        response.statusCode,
-                        response.message
-                    )
+                return Resource.Error(
+                    response.statusCode, response.message
                 )
-
-                return@flow
             }
 
-            emit(Resource.Success(response))
+            return Resource.Success(response)
         } catch (e: Exception) {
-            emit(
-                Resource.Error(
-                    EExceptionCode.UseCaseError.code,
-                    e.message ?: "Something wrong"
-                )
+            return Resource.Error(
+                EExceptionCode.UseCaseError.code, e.message ?: "Something wrong"
             )
         }
     }

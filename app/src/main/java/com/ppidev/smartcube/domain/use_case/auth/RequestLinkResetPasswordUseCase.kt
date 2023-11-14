@@ -1,6 +1,5 @@
 package com.ppidev.smartcube.domain.use_case.auth
 
-import android.util.Log
 import com.ppidev.smartcube.common.EExceptionCode
 import com.ppidev.smartcube.common.Resource
 import com.ppidev.smartcube.common.ResponseApp
@@ -12,34 +11,32 @@ import kotlinx.coroutines.flow.flow
 import java.io.IOException
 import javax.inject.Inject
 
+
 class RequestLinkResetPasswordUseCase @Inject constructor(
     private val authRepository: Lazy<IAuthRepository>
 ) : IRequestLinkResetPasswordUseCase {
     override fun invoke(email: String): Flow<Resource<ResponseApp<String?>>> = flow {
-        try {
-            emit(Resource.Loading())
+        emit(Resource.Loading())
+        emit(requestLinkResetPassword(email))
+    }
 
+    private suspend fun requestLinkResetPassword(email: String): Resource<ResponseApp<String?>> {
+        try {
             val requestLinkResetPasswordResponse = authRepository.get().resetPasswordRequest(
                 email = email
             )
 
             if (!requestLinkResetPasswordResponse.status) {
-                emit(
-                    Resource.Error(
-                        requestLinkResetPasswordResponse.statusCode,
-                        requestLinkResetPasswordResponse.message
-                    )
+                return Resource.Error(
+                    requestLinkResetPasswordResponse.statusCode,
+                    requestLinkResetPasswordResponse.message
                 )
-                return@flow
             }
-
-            emit(Resource.Success(requestLinkResetPasswordResponse))
+            return Resource.Success(requestLinkResetPasswordResponse)
         } catch (e: IOException) {
-            emit(
-                Resource.Error(
-                    EExceptionCode.UseCaseError.code,
-                    e.message ?: "Something wrong"
-                )
+            return Resource.Error(
+                EExceptionCode.UseCaseError.code,
+                e.message ?: "Something wrong"
             )
         }
     }

@@ -1,0 +1,47 @@
+appId: com.ppidev.smartcube
+---
+- launchApp
+
+- tapOn:
+    id: "to_register_screen"
+
+- tapOn:
+      id: "input_username"
+- inputText: "testing username"
+
+- tapOn:
+      id: "input_email"
+- inputText: "emailsalah@"
+
+- assertVisible:
+      id: "text_error_email"
+      enabled: true
+
+- eraseText
+
+- inputText: "testing@mail.com"
+
+- assertNotVisible:
+    id: "text_error_email"
+    enabled: true
+
+- hideKeyboard
+
+- tapOn:
+      id: "input_password"
+- inputText: "freya"
+
+- hideKeyboard
+
+- tapOn:
+      id: "input_confirm_password"
+- inputText: "freya"
+
+- hideKeyboard
+
+- assertVisible:
+      id: "btn_signup"
+      enabled: true
+
+- tapOn:
+      id: "btn_signup"

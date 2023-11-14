@@ -1,5 +1,6 @@
 package com.ppidev.smartcube.presentation.dashboard
 
+import com.ppidev.smartcube.data.remote.dto.WeatherDto
 import com.ppidev.smartcube.domain.model.DeviceConfigModel
 import com.ppidev.smartcube.domain.model.NotificationModel
 import com.ppidev.smartcube.domain.model.DeviceStatusModel
@@ -11,5 +12,8 @@ data class DashboardState(
     val serverSummary: DeviceStatusModel = DeviceStatusModel("0", "0", "0", "0",  "0"),
     val notifications: List<NotificationModel> = emptyList(),
     val listModelsML: List<MLModel> = emptyList(),
-    val listDevicesConfig: List<DeviceConfigModel> = emptyList()
+    val listDevicesConfig: List<DeviceConfigModel> = emptyList(),
+    val weather: WeatherDto? = null,
+    val openBottomSheet: Boolean = false,
+    val serverSelected: Int = 0
 )
