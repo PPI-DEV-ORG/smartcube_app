@@ -15,31 +15,37 @@ import javax.inject.Inject
 class VerificationUseCase @Inject constructor(
     private val authRepository: Lazy<IAuthRepository>
 ) : IVerificationUseCase {
-    override fun invoke(email: String, verificationCode: String): Flow<Resource<ResponseApp<VerificationDto?>>> = flow {
+    override fun invoke(
+        email: String,
+        verificationCode: String
+    ): Flow<Resource<ResponseApp<VerificationDto?>>> = flow {
+        emit(Resource.Loading())
+        emit(verificationOtp(email, verificationCode))
+    }
+
+    private suspend fun verificationOtp(
+        email: String,
+        verificationCode: String
+    ): Resource<ResponseApp<VerificationDto?>> {
         try {
-            emit(Resource.Loading())
             val verificationResponse = authRepository.get().verification(
                 email = email,
                 verificationCode = verificationCode
             )
 
             if (!verificationResponse.status) {
-                emit(
-                    Resource.Error(
-                        verificationResponse.statusCode,
-                        verificationResponse.message
-                    )
+                return Resource.Error(
+                    verificationResponse.statusCode,
+                    verificationResponse.message
                 )
-                return@flow
+
             }
 
-            emit(Resource.Success(verificationResponse))
-        } catch (e: IOException) {
-            emit(
-                Resource.Error(
-                    EExceptionCode.HTTPException.code,
-                    "Couldn't reach server. Check your internet connection."
-                )
+            return Resource.Success(verificationResponse)
+        } catch (e: Exception) {
+            return Resource.Error(
+                EExceptionCode.UseCaseError.code,
+                e.message ?: "Something wrong"
             )
         }
     }
