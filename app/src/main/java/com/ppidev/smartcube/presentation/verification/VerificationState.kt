@@ -5,6 +5,7 @@ data class VerificationState(
     val email: String = "",
     val verificationCode: String = "",
     val isVerificationSuccessful: Boolean = false,
+    val isVerificationFailed: Boolean = false,
     val isLoading: Boolean = false,
     val isShowDialog: Boolean = false,
     val successToken: Any = ""
