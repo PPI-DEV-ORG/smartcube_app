@@ -65,8 +65,6 @@ fun NavigationApp(navController: NavHostController) {
         }
 
 
-
-
         composable(
             route = Screen.Verification.screenRoute + "/{emailArg}",
             arguments = listOf(navArgument("emailArg") { type = NavType.StringType})
