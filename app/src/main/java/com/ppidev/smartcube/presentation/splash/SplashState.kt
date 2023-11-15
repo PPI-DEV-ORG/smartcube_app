@@ -1,5 +1,8 @@
 package com.ppidev.smartcube.presentation.splash
 
+import kotlinx.coroutines.flow.Flow
+
+
 data class SplashState(
-    val isAuthenticated: Boolean = false
+    val isAuth: Flow<Boolean>
 )

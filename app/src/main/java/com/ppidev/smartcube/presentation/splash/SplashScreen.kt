@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.ppidev.smartcube.ui.Screen
+import kotlinx.coroutines.flow.collect
 
 @Composable
 fun SplashScreenCustom(
@@ -25,7 +26,7 @@ fun SplashScreenCustom(
         Text(text = "Splash Screen")
     }
 
-    LaunchedEffect(key1 = state.isAuthenticated) {
+    LaunchedEffect(key1 = state.isAuth) {
         degrees.animateTo(
             targetValue = 360f,
             animationSpec = tween(
@@ -34,22 +35,28 @@ fun SplashScreenCustom(
             )
         )
 
-        if (state.isAuthenticated) {
-            onEvent(SplashEvent.ToDashboardScreen {
-                navController.navigate(Screen.Dashboard.screenRoute) {
-                    popUpTo(Screen.Splash.screenRoute) {
-                        inclusive = true
-                    }
+        state.isAuth.collect {
+            when(it) {
+                true -> {
+                    onEvent(SplashEvent.ToDashboardScreen {
+                        navController.navigate(Screen.Dashboard.screenRoute) {
+                            popUpTo(Screen.Splash.screenRoute) {
+                                inclusive = true
+                            }
+                        }
+                    })
                 }
-            })
-        } else {
-            onEvent(SplashEvent.ToLoginScreen {
-                navController.navigate(Screen.Login.screenRoute) {
-                    popUpTo(Screen.Splash.screenRoute) {
-                        inclusive = true
-                    }
+                false -> {
+                    onEvent(SplashEvent.ToLoginScreen {
+                        navController.navigate(Screen.Login.screenRoute) {
+                            popUpTo(Screen.Splash.screenRoute) {
+                                inclusive = true
+                            }
+                        }
+                    })
                 }
-            })
+            }
         }
+
     }
 }
