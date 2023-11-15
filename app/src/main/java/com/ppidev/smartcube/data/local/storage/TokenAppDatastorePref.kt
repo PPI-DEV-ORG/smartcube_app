@@ -28,8 +28,7 @@ class TokenAppDatastorePref @Inject constructor(private val dataStore: DataStore
             throw exception
         }
     }.map {
-        Log.d("TOKEN_KEY", it[ACCESS_TOKEN_KEY].toString())
-        TokenAppEntity(
+            TokenAppEntity(
             accessToken = it[ACCESS_TOKEN_KEY] ?: "",
             fcmToken = it[FCM_TOKEN_KEY] ?: ""
         )
