@@ -11,7 +11,7 @@ import com.google.gson.reflect.TypeToken
 import com.ppidev.smartcube.BuildConfig
 import com.ppidev.smartcube.common.Resource
 import com.ppidev.smartcube.contract.data.remote.service.IMqttService
-import com.ppidev.smartcube.contract.domain.use_case.notification.IListNotificationsUseCase
+import com.ppidev.smartcube.contract.domain.use_case.notification.IListNotificationUseCase
 import com.ppidev.smartcube.contract.domain.use_case.weather.IViewCurrentWeather
 import com.ppidev.smartcube.data.remote.dto.DeviceConfigDto
 import com.ppidev.smartcube.data.remote.dto.DeviceStatusDto
@@ -31,7 +31,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
-    private val getNotificationsUseCase: Lazy<IListNotificationsUseCase>,
+    private val getNotificationsUseCase: Lazy<IListNotificationUseCase>,
     private val mqttService: Lazy<IMqttService>,
     private val viewCurrentWeather: Lazy<IViewCurrentWeather>
 ) : ViewModel() {
