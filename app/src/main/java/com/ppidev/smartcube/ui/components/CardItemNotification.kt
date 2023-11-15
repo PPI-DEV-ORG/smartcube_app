@@ -1,5 +1,6 @@
 package com.ppidev.smartcube.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -31,11 +33,16 @@ import com.ppidev.smartcube.domain.model.NotificationModel
 @Composable
 fun CardItemNotification(
     modifier: Modifier = Modifier,
-    data: NotificationModel
+    data: NotificationModel,
+    onClick: (() -> Unit)? = null
 ) {
     Column(
         modifier = modifier.width(329.dp)
-            .height(150.dp)
+            .height(150.dp).clickable {
+                if (onClick != null) {
+                    onClick()
+                }
+            }
     ) {
         Card(
             shape = RoundedCornerShape(topStart = 14.dp, topEnd = 14.dp, bottomStart = 14.dp),
