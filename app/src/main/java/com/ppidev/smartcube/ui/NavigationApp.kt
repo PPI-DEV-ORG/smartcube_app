@@ -20,6 +20,7 @@ import com.ppidev.smartcube.presentation.dashboard.DashboardViewModel
 import com.ppidev.smartcube.presentation.login.LoginScreen
 import com.ppidev.smartcube.presentation.login.LoginViewModel
 import com.ppidev.smartcube.presentation.notification.NotificationListScreen
+import com.ppidev.smartcube.presentation.notification.NotificationViewModel
 import com.ppidev.smartcube.presentation.profile.ProfileScreen
 import com.ppidev.smartcube.presentation.register.RegisterScreen
 import com.ppidev.smartcube.presentation.register.RegisterViewModel
@@ -67,7 +68,7 @@ fun NavigationApp(navController: NavHostController) {
 
         composable(
             route = Screen.Verification.screenRoute + "/{emailArg}",
-            arguments = listOf(navArgument("emailArg") { type = NavType.StringType})
+            arguments = listOf(navArgument("emailArg") { type = NavType.StringType })
         ) {
             val viewModel = hiltViewModel<VerificationViewModel>()
             val state = viewModel.state
@@ -125,19 +126,21 @@ fun NavigationApp(navController: NavHostController) {
             )
         }
 
-
         composable(Screen.Profile.screenRoute) {
             ProfileScreen()
 
         }
 
-
-
         composable(Screen.Notifications.screenRoute) {
-            NotificationListScreen()
+            val viewModel = hiltViewModel<NotificationViewModel>()
+            NotificationListScreen(
+                state = viewModel.state,
+                onEvent = viewModel::onEvent,
+                navHostController = navController
+            )
         }
         composable(
-            route = Screen.DetailNotification.screenRoute,
+            route = Screen.DetailNotification.screenRoute + "/{$NOTIFICATION_ARG}",
             arguments = listOf(navArgument(NOTIFICATION_ARG) { type = NavType.IntType }),
             deepLinks = listOf(navDeepLink {
                 uriPattern = "$APP_URL/$NOTIFICATION_ARG={$NOTIFICATION_ARG}"
@@ -156,8 +159,6 @@ fun NavigationApp(navController: NavHostController) {
 }
 
 
-
-
 sealed class Screen(val screenRoute: String) {
     object Splash : Screen(screenRoute = "splash")
     object Login : Screen(screenRoute = "login")
@@ -167,8 +168,8 @@ sealed class Screen(val screenRoute: String) {
     object ResetPassword : Screen(screenRoute = "resetPassword")
     object ChangePassword : Screen(screenRoute = "changePassword")
     object Dashboard : Screen(screenRoute = "dashboard")
-    object Notifications : Screen(screenRoute = "Notifications")
-    object DetailNotification : Screen(screenRoute = "notification/detail")
+    object Notifications : Screen(screenRoute = "notifications")
+    object DetailNotification : Screen(screenRoute = "notification")
     object Profile : Screen(screenRoute = "profile")
 }
 
