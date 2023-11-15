@@ -18,7 +18,7 @@ class AuthInterceptor(private val tokenDataStorePref: ITokenAppDataStorePref<Tok
         Log.d("TOKEN_ACCESS", authToken.toString())
 
         if (!authToken.isNullOrBlank()) {
-            request.addHeader("Authorization", "$authToken")
+            request.addHeader("Authorization", "Bearer $authToken")
         }
 
         return chain.proceed(request.build())
