@@ -29,7 +29,6 @@ class ListNotificationsUseCase @Inject constructor(
             Resource.Error<List<NotificationModel>>(
                 EExceptionCode.HTTPException.ordinal, e.message ?: "Something wrong"
             )
-
         }
     }
 }

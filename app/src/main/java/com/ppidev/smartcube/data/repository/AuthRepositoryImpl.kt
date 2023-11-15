@@ -110,17 +110,17 @@ class AuthRepositoryImpl @Inject constructor(
                 val errorResponse = response.errorBody()?.string()
                 return Gson().fromJson(
                     errorResponse,
-                    object : TypeToken<ResponseApp<VerificationDto?>>() {}.type
+                    object : TypeToken<ResponseApp<LoginDto?>>() {}.type
                 )
             }
 
-             val responseBody = response.body()
-                 ?: return ResponseApp(
-                     status = response.isSuccessful,
-                     statusCode = response.code(),
-                     message = response.message(),
-                     data = null
-                 )
+            val responseBody = response.body()
+                ?: return ResponseApp(
+                    status = response.isSuccessful,
+                    statusCode = response.code(),
+                    message = response.message(),
+                    data = null
+                )
 
             return ResponseApp(
                 status = responseBody.status,
@@ -128,15 +128,17 @@ class AuthRepositoryImpl @Inject constructor(
                 message = responseBody.message,
                 data = responseBody.data
             )
-        } catch (e:Exception){
-            return ResponseApp<VerificationDto?>(
-                status = false,
-                statusCode = -1,
-                message = "Verification Fail",
-                data = null
-            )
+
+        } catch (e: Exception) {
+             return ResponseApp(
+                 status = false,
+                 statusCode = EExceptionCode.RepositoryError.code,
+                 message = e.message ?: "Repository Error",
+                 data = null
+             )
         }
     }
+
 
     override suspend fun resetPasswordRequest(email: String): ResponseApp<String?> {
         try {

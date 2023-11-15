@@ -140,7 +140,7 @@ fun NavigationApp(navController: NavHostController) {
             route = Screen.DetailNotification.screenRoute,
             arguments = listOf(navArgument(NOTIFICATION_ARG) { type = NavType.IntType }),
             deepLinks = listOf(navDeepLink {
-                uriPattern = "$APP_URL/$NOTIFICATION_ARG/{$NOTIFICATION_ARG}"
+                uriPattern = "$APP_URL/$NOTIFICATION_ARG={$NOTIFICATION_ARG}"
             })
         ) {
             val arguments = it.arguments
@@ -162,6 +162,7 @@ sealed class Screen(val screenRoute: String) {
     object Splash : Screen(screenRoute = "splash")
     object Login : Screen(screenRoute = "login")
     object Register : Screen(screenRoute = "register")
+
     object Verification : Screen(screenRoute = "verification")
     object ResetPassword : Screen(screenRoute = "resetPassword")
     object ChangePassword : Screen(screenRoute = "changePassword")

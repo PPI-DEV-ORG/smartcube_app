@@ -44,7 +44,6 @@ class RegisterUseCase @Inject constructor(
                     registerResponse.message
                 )
             }
-
             return Resource.Success(registerResponse)
         } catch (e: Exception) {
             return Resource.Error(

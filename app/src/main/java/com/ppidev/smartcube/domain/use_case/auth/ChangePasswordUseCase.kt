@@ -12,7 +12,8 @@ import javax.inject.Inject
 
 class ChangePasswordUseCase @Inject constructor(
     private val authRepository: Lazy<IAuthRepository>
-) : IChangePasswordUseCase {
+): IChangePasswordUseCase {
+
     override fun invoke(
         resetToken: String, newPassword: String, newConfirmationPassword: String
     ): Flow<Resource<ResponseApp<Boolean?>>> = flow {
