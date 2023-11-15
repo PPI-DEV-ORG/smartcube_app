@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,10 +45,10 @@ fun NotificationDetailScreen(
                 Text(text = state.error, color = Color.Red)
             }
 
-//            AsyncImage(
-//                model = state.notificationModel.imageUrl,
-//                contentDescription = "object detected"
-//            )
+            AsyncImage(
+                model = state.notificationModel.imageUrl,
+                contentDescription = "object detected"
+            )
 
             Spacer(modifier = Modifier.size(22.dp))
 
