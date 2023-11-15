@@ -61,10 +61,9 @@ class VerificationViewModel @Inject constructor(
                 }
                 is Resource.Error -> {
                     state = state.copy(isVerificationSuccessful = false, isShowDialog = true)
-                    callback()
                 }
 
-                is Resource.Error -> {
+                is Resource.Loading -> {
                 }
 
                 else -> {}
