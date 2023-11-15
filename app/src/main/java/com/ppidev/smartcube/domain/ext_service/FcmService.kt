@@ -1,16 +1,25 @@
 package com.ppidev.smartcube.domain.ext_service
 
+import android.app.PendingIntent
+import android.app.TaskStackBuilder
+import android.content.Intent
 import android.net.Uri
+import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.net.toUri
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.ppidev.smartcube.R
+import com.ppidev.smartcube.common.APP_URL
+import com.ppidev.smartcube.common.NOTIFICATION_ARG
 import com.ppidev.smartcube.contract.data.remote.service.IMessagingService
 import com.ppidev.smartcube.contract.data.repository.ITokenAppRepository
 import com.ppidev.smartcube.data.local.entity.ENotificationChannel
 import com.ppidev.smartcube.data.remote.dto.FcmMessage
+import com.ppidev.smartcube.presentation.MainActivity
 import com.ppidev.smartcube.utils.getBitmapFromUrl
 import com.ppidev.smartcube.utils.manager.MyNotificationManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,7 +34,6 @@ class FcmService: FirebaseMessagingService(), IMessagingService<RemoteMessage> {
     lateinit var tokenAppRepositoryImpl: ITokenAppRepository
 
     private lateinit var notificationManager: MyNotificationManager
-    private lateinit var soundUri: Uri
 
     override fun onCreate() {
         super.onCreate()
@@ -50,13 +58,15 @@ class FcmService: FirebaseMessagingService(), IMessagingService<RemoteMessage> {
     }
 
     override fun handleOnMessageReceived(messages: RemoteMessage) {
+        Log.d("MESSAGE_FCM", messages.toString())
         messages.data.apply {
             val imageUrl = this[KEY_IMAGE_URL].toString()
             val notificationTitle = this[KEY_TITLE].toString()
             val notificationBody = this[KEY_BODY].toString()
+            val notificationId = this["notificationId"].toString()
 
             // show notification
-            showNotification(FcmMessage(notificationTitle, notificationBody, imageUrl))
+            showNotification(FcmMessage(notificationTitle, notificationBody, imageUrl, notificationId))
         }
     }
 
@@ -69,7 +79,6 @@ class FcmService: FirebaseMessagingService(), IMessagingService<RemoteMessage> {
             setBody(data.description)
             setSmallIcon(R.drawable.ic_stat_notification)
             setVibrate(longArrayOf(1000, 1000, 1000, 1000, 1000))
-            setSound(soundUri)
 
             bitmapImage?.apply {
                 setStyle(
@@ -77,6 +86,30 @@ class FcmService: FirebaseMessagingService(), IMessagingService<RemoteMessage> {
                 )
                 setLargeIcon(this)
             }
+
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                "$APP_URL/$NOTIFICATION_ARG=${data.notificationId}".toUri(),
+                applicationContext,
+                MainActivity::class.java
+            )
+
+            val flag =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                    PendingIntent.FLAG_IMMUTABLE
+                else
+                    0
+
+            setIntent(
+                intent
+            )
+
+            setPendingIntent(
+                TaskStackBuilder.create(applicationContext).run {
+                    addNextIntentWithParentStack(intent)
+                    getPendingIntent(1, flag)
+                }
+            )
         }
     }
 

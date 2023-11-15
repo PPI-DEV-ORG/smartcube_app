@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.flow
 import java.io.IOException
 import javax.inject.Inject
 
+
 class RequestLinkResetPasswordUseCase @Inject constructor(
     private val authRepository: Lazy<IAuthRepository>
 ) : IRequestLinkResetPasswordUseCase {
@@ -31,7 +32,6 @@ class RequestLinkResetPasswordUseCase @Inject constructor(
                     requestLinkResetPasswordResponse.message
                 )
             }
-
             return Resource.Success(requestLinkResetPasswordResponse)
         } catch (e: IOException) {
             return Resource.Error(
