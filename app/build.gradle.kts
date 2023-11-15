@@ -67,7 +67,7 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material3:material3:1.1.2")
     implementation("com.google.android.gms:play-services-wallet:19.2.1")
     // test dependencies
     testImplementation("junit:junit:4.13.2")
@@ -129,9 +129,12 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
     implementation("androidx.activity:activity-ktx:1.6.1")
 
-
-
-
+    // testing
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation("org.mockito:mockito-core:5.6.0")
+    testImplementation("org.mockito:mockito-inline:5.2.0")
+    
 //    retrofix("net.sourceforge.streamsupport:android-retrostreams:1.7.4")
 //    retrofix("net.sourceforge.streamsupport:android-retrofuture:1.7.4")
 }

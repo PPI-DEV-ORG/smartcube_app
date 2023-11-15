@@ -31,35 +31,9 @@ import androidx.navigation.compose.rememberNavController
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomAppBar(
-    navController: NavHostController
+    navController: NavHostController,
+    listNavigationItem: List<NavigationItem>
 ) {
-    val items = listOf(
-        NavigationItem(
-            title = "Notifications",
-            unselectedIcon = Icons.Outlined.Notifications,
-            selectedIcon = Icons.Filled.Notifications,
-            hasNews = false,
-            badgeCount = null,
-            screen = Screen.Notifications
-        ),
-        NavigationItem(
-            title = "Dashboard",
-            unselectedIcon = Icons.Outlined.Home,
-            selectedIcon = Icons.Filled.Home,
-            hasNews = false,
-            badgeCount = null,
-            screen = Screen.Dashboard
-        ),
-        NavigationItem(
-            title = "Dashboard",
-            unselectedIcon = Icons.Outlined.Person,
-            selectedIcon = Icons.Filled.Person,
-            hasNews = false,
-            badgeCount = null,
-            screen = Screen.Profile
-        )
-    )
-
     var selectedItemIndex: Int by rememberSaveable {
         mutableIntStateOf(1)
     }
@@ -71,7 +45,7 @@ fun BottomAppBar(
                 RoundedCornerShape(48.dp)
             )
     ) {
-        items.forEachIndexed { index, item ->
+        listNavigationItem.forEachIndexed { index, item ->
             NavigationBarItem(
                 selected = selectedItemIndex == index,
                 label = {
@@ -102,6 +76,9 @@ fun BottomAppBar(
                 },
                 onClick = {
                     selectedItemIndex = index
+
+                    navController.popBackStack()
+
                     navController.navigate(item.screen.screenRoute) {
                         navController.graph.startDestinationRoute?.let { screenRoute ->
                             popUpTo(screenRoute) {
@@ -122,6 +99,7 @@ fun BottomAppBar(
 @Composable
 fun BottomAppBarPreview() {
     BottomAppBar(
-        navController = rememberNavController()
+        navController = rememberNavController(),
+        listNavigationItem =  listOf()
     )
 }

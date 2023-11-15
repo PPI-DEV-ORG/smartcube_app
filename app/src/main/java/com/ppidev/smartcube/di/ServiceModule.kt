@@ -33,13 +33,3 @@ abstract class ServiceModule {
     ): WebSocketListener
 
 }
-
-@Singleton
-class NavigationService @Inject constructor(
-    @ApplicationContext context: Context,
-) {
-    val navController = NavHostController(context).apply {
-        navigatorProvider.addNavigator(ComposeNavigator())
-        navigatorProvider.addNavigator(DialogNavigator())
-    }
-}

@@ -1,7 +1,15 @@
 package com.ppidev.smartcube.utils
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -27,3 +35,25 @@ fun validateEmail(email: String): Boolean {
     val emailRegex = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+".toRegex()
     return email.matches(emailRegex)
 }
+
+fun Color.fromHex(color: String) = Color(android.graphics.Color.parseColor("#$color"))
+
+@SuppressLint("ModifierFactoryUnreferencedReceiver")
+fun Modifier.bottomBorder(strokeWidth: Dp, color: Color) = composed(
+    factory = {
+        val density = LocalDensity.current
+        val strokeWidthPx = density.run { strokeWidth.toPx() }
+
+        Modifier.drawBehind {
+            val width = size.width
+            val height = size.height - strokeWidthPx/2
+
+            drawLine(
+                color = color,
+                start = Offset(x = 0f, y = height),
+                end = Offset(x = width , y = height),
+                strokeWidth = strokeWidthPx
+            )
+        }
+    }
+)
