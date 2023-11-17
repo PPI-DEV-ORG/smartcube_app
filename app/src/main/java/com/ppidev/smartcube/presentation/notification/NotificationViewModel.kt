@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ppidev.smartcube.common.Resource
-import com.ppidev.smartcube.contract.domain.use_case.notification.IListNotificationsUseCase
+import com.ppidev.smartcube.contract.domain.use_case.notification.IListNotificationUseCase
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NotificationViewModel @Inject constructor(
-    private val listNotificationsUseCase: Lazy<IListNotificationsUseCase>
+    private val listNotificationsUseCase: Lazy<IListNotificationUseCase>
 ): ViewModel() {
     var state by mutableStateOf(NotificationState())
         private set
