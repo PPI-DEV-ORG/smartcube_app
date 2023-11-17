@@ -25,7 +25,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,9 +36,8 @@ fun BottomAppBar(
     navController: NavHostController,
     listNavigationItem: List<NavigationItem>
 ) {
-    var selectedItemIndex: Int by rememberSaveable {
-        mutableIntStateOf(1)
-    }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
 
     NavigationBar(
         modifier = Modifier
@@ -47,7 +48,7 @@ fun BottomAppBar(
     ) {
         listNavigationItem.forEachIndexed { index, item ->
             NavigationBarItem(
-                selected = selectedItemIndex == index,
+                selected = currentRoute == item.screen.screenRoute,
                 label = {
                     Text(text = item.title)
                 },
@@ -64,7 +65,7 @@ fun BottomAppBar(
                             }
                         }
                     ) {
-                        (if (index == selectedItemIndex) {
+                        (if (currentRoute == item.screen.screenRoute) {
                             item.selectedIcon
                         } else item.unselectedIcon).let {
                             Icon(
@@ -75,18 +76,12 @@ fun BottomAppBar(
                     }
                 },
                 onClick = {
-                    selectedItemIndex = index
-
-                    navController.popBackStack()
-
                     navController.navigate(item.screen.screenRoute) {
-                        navController.graph.startDestinationRoute?.let { screenRoute ->
-                            popUpTo(screenRoute) {
-                                saveState = true
-                            }
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
                         }
-                        launchSingleTop = true
                         restoreState = true
+                        launchSingleTop = true
                     }
                 },
             )
