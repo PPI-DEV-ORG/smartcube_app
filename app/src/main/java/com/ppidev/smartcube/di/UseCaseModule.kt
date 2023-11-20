@@ -90,4 +90,5 @@ abstract class UseCaseModule {
     abstract fun bindListEdgeServerUseCase(
         listEdgeServerUseCase: ListEdgeServerUseCase
     ): IListEdgeServerUseCase
+
 }

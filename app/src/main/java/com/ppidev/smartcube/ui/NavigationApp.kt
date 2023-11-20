@@ -176,6 +176,7 @@ fun NavigationApp(navController: NavHostController) {
             val viewModel = hiltViewModel<ListEdgeServerViewModel>()
             ListEdgeServerScreen(state = viewModel.state, event = viewModel::onEvent, navHostController = navController)
         }
+
     }
 }
 

@@ -19,6 +19,7 @@ data class CreateEdgeServerDto(
 
     @SerializedName("egde_server_access_token")
     val egdeServerAccessToken: String? = "",
+
 )
 
 @Serializable
