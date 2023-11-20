@@ -77,7 +77,7 @@ fun DialogApp(
                             modifier = Modifier.size(90.dp),
                             imageVector = Icons.Outlined.SmsFailed,
                             contentDescription = message,
-                            tint = Color.Unspecified
+                            tint = Color.Red
                         )
                     }
 

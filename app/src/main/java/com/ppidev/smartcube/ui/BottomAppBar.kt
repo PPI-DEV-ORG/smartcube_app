@@ -46,7 +46,7 @@ fun BottomAppBar(
                 RoundedCornerShape(48.dp)
             )
     ) {
-        listNavigationItem.forEachIndexed { index, item ->
+        listNavigationItem.forEachIndexed { _, item ->
             NavigationBarItem(
                 selected = currentRoute == item.screen.screenRoute,
                 label = {
