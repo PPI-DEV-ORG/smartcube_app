@@ -2,6 +2,7 @@ package com.ppidev.smartcube.data.remote.api
 
 import com.ppidev.smartcube.BuildConfig
 import com.ppidev.smartcube.common.ResponseApp
+import com.ppidev.smartcube.data.remote.dto.CreateEdgeServerDto
 import com.ppidev.smartcube.data.remote.dto.LoginDto
 import com.ppidev.smartcube.data.remote.dto.NotificationDto
 import com.ppidev.smartcube.data.remote.dto.RegisterDto
@@ -16,7 +17,7 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface SmartCubeApi : NotificationApi, AuthApi
+interface SmartCubeApi : NotificationApi, AuthApi, EdgeServerApi
 
 interface NotificationApi {
     @GET("notification")
@@ -49,8 +50,8 @@ interface AuthApi {
     @POST("verification")
     suspend fun verification(
         @Field("email") email: String,
-        @Field("verificationCode") verificationCode : String
-    ):Response<ResponseApp<VerificationDto?>>
+        @Field("verificationCode") verificationCode: String
+    ): Response<ResponseApp<VerificationDto?>>
 
     @FormUrlEncoded
     @POST("reset-password-request")
@@ -66,6 +67,17 @@ interface AuthApi {
         @Field("cPassword") confirmationPassword: String
     ): Response<ResponseApp<Boolean?>>
 }
+
+interface EdgeServerApi {
+    @FormUrlEncoded
+    @POST("edge-server")
+    suspend fun createEdgeServer(
+        @Field("name") name: String,
+        @Field("vendor") vendor: String,
+        @Field("description") description: String
+    ): Response<ResponseApp<CreateEdgeServerDto?>>
+}
+
 
 interface WeatherApi {
     @GET("current.json")

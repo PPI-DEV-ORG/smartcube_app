@@ -1,5 +1,7 @@
 package com.ppidev.smartcube.presentation.edge_server.form_add
 
+import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,18 +14,22 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Warning
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -34,54 +40,29 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ppidev.smartcube.ui.components.TagLabel
 import com.ppidev.smartcube.ui.components.form.CustomInputField
+import com.ppidev.smartcube.ui.components.modal.DialogApp
 import com.ppidev.smartcube.ui.theme.LightGreen
 import com.ppidev.smartcube.utils.bottomBorder
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FormAddEdgeServerScreen() {
+fun FormAddEdgeServerScreen(
+    state: FormAddEdgeServerState,
+    onEvent: (event: FormAddEdgeServerEvent) -> Unit
+) {
     Column(
         modifier = Modifier.verticalScroll(rememberScrollState())
     ) {
         TopAppBar(
             modifier = Modifier.bottomBorder(1.dp, Color.LightGray),
             title = {
-            Text(
-                text = "Add Edge Server", style = TextStyle(
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 16.sp
+                Text(
+                    text = "Add Edge Server", style = TextStyle(
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 16.sp
+                    )
                 )
-            )
-        })
-//        Row(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .height(48.dp)
-//                .background(color = Color.White)
-//                .bottomBorder(1.dp, Color.LightGray)
-//                .padding(horizontal = 16.dp),
-//            horizontalArrangement = Arrangement.SpaceBetween,
-//            verticalAlignment = Alignment.CenterVertically,
-//        ) {
-//            ClickableText(
-//                text = AnnotatedString("Cancel"), onClick = {}, style = TextStyle(
-//                    color = Color.Red
-//                )
-//            )
-//
-//            Text(
-//                text = "Add Edge Server", style = TextStyle(
-//                    fontWeight = FontWeight.Medium,
-//                    fontSize = 16.sp
-//                )
-//            )
-//
-//            ClickableText(
-//                text = AnnotatedString("Save"), onClick = {}, style = TextStyle(
-//                    color = LightGreen
-//                )
-//            )
-//        }
+            })
 
         Spacer(modifier = Modifier.size(44.dp))
 
@@ -114,22 +95,83 @@ fun FormAddEdgeServerScreen() {
         Spacer(modifier = Modifier.size(32.dp))
         CardItemAddServer(
             titleTag = "Server",
-            serverName = "",
-            description = "",
-            serverVendor = "",
-            onServerNameChange = { /*TODO*/ },
-            onDescriptionChange = { /*TODO*/ }) {
+            serverName = state.serverName,
+            description = state.description,
+            serverVendor = state.serverVendor,
+            errorServerName = state.error.serverName,
+            errorDescription = state.error.description,
+            errorVendor = state.error.serverVendor,
+            onServerNameChange = {
+                onEvent(FormAddEdgeServerEvent.OnNameEdgeServerChange(it))
+            },
+            onDescriptionChange = {
+                onEvent(FormAddEdgeServerEvent.OnDescriptionEdgeServerChange(it))
+            },
+            onServerVendorChange = {
+                onEvent(FormAddEdgeServerEvent.OnVendorEdgeServerChange(it))
+            }
+        )
 
-        }
         Spacer(modifier = Modifier.size(32.dp))
 
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+        ) {
+            Button(
+                onClick = { },
+                shape = RoundedCornerShape(8),
+                modifier = Modifier.weight(1f),
+                elevation = null,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFDB5050),
+                ),
+            ) {
+                Text(text = "Cancel")
+            }
+
+            Spacer(modifier = Modifier.size(36.dp))
+
+            Button(
+                onClick = {
+                    onEvent(FormAddEdgeServerEvent.HandleAddEdgeServer)
+                },
+                shape = RoundedCornerShape(8),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent,
+                    contentColor = MaterialTheme.colorScheme.primary
+                ),
+            ) {
+                Text(text = "Save")
+            }
+        }
+
+
+        state.isSuccess?.let {
+            DialogApp(
+                message = if (it) "Success" else "Failed",
+                contentMessage = state.message,
+                isSuccess = it,
+                onDismiss = {
+                },
+                onConfirm = {
+                    onEvent(FormAddEdgeServerEvent.HandleCloseDialog {
+                        Log.d("CALLback", "masuk")
+                    })
+                }
+            )
+        }
     }
 }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun FormAddEdgeServerScreenPreview() {
-    FormAddEdgeServerScreen()
+//    FormAddEdgeServerScreen()
 }
 
 @Composable
@@ -138,9 +180,12 @@ fun CardItemAddServer(
     serverName: String,
     description: String,
     serverVendor: String,
-    onServerNameChange: () -> Unit,
-    onDescriptionChange: () -> Unit,
-    onServerVendorChange: () -> Unit
+    errorServerName: String,
+    errorDescription: String,
+    errorVendor: String,
+    onServerNameChange: (str: String) -> Unit,
+    onDescriptionChange: (str: String) -> Unit,
+    onServerVendorChange: (str: String) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -155,18 +200,18 @@ fun CardItemAddServer(
             CustomInputField(
                 label = "Edge Server Name",
                 text = serverName,
-                errorText = "",
-                onTextChanged = { onServerNameChange() })
+                errorText = errorServerName,
+                onTextChanged = { onServerNameChange(it) })
             CustomInputField(
                 label = "Description",
                 text = description,
-                errorText = "",
-                onTextChanged = { onDescriptionChange() })
+                errorText = errorDescription,
+                onTextChanged = { onDescriptionChange(it) })
             CustomInputField(
                 label = "Edge Vendor Name",
                 text = serverVendor,
-                errorText = "",
-                onTextChanged = { onServerVendorChange() })
+                errorText = errorVendor,
+                onTextChanged = { onServerVendorChange(it) })
         }
     }
 }
