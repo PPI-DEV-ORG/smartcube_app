@@ -1,8 +1,6 @@
 package com.ppidev.smartcube.ui
 
 import android.content.Intent
-import androidx.compose.foundation.layout.Box
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -21,6 +19,8 @@ import com.ppidev.smartcube.presentation.login.LoginScreen
 import com.ppidev.smartcube.presentation.login.LoginViewModel
 import com.ppidev.smartcube.presentation.notification.NotificationListScreen
 import com.ppidev.smartcube.presentation.notification.NotificationViewModel
+import com.ppidev.smartcube.presentation.notification.notification_detail.NotificationDetailScreen
+import com.ppidev.smartcube.presentation.notification.notification_detail.NotificationDetailViewModel
 import com.ppidev.smartcube.presentation.profile.ProfileScreen
 import com.ppidev.smartcube.presentation.register.RegisterScreen
 import com.ppidev.smartcube.presentation.register.RegisterViewModel
@@ -148,11 +148,14 @@ fun NavigationApp(navController: NavHostController) {
         ) {
             val arguments = it.arguments
             arguments?.getInt(NOTIFICATION_ARG)?.let { message ->
-                Box {
-                    Text(
-                        "$message"
-                    )
-                }
+                val viewModel = hiltViewModel<NotificationDetailViewModel>()
+
+                NotificationDetailScreen(
+                    state = viewModel.state,
+                    onEvent = viewModel::onEvent,
+                    notificationId = message.toUInt(),
+                    navHostController = navController
+                )
             }
         }
     }

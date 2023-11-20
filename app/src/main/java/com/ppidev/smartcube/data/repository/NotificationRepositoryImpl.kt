@@ -50,7 +50,39 @@ class NotificationRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getDetailNotification(notificationId: UInt): NotificationDto {
-        TODO("Not yet implemented")
+    override suspend fun getDetailNotification(notificationId: UInt): ResponseApp<NotificationDto?> {
+        try {
+            val response = api.getListNotificationById(notificationId)
+            if (!response.isSuccessful) {
+                val errorResponse = response.errorBody()?.string()
+                return Gson().fromJson(
+                    errorResponse,
+                    object : TypeToken<ResponseApp<NotificationDto?>>() {}.type
+                )
+            }
+
+            val responseBody = response.body()
+                ?: return ResponseApp(
+                    status = response.isSuccessful,
+                    statusCode = response.code(),
+                    message = response.message(),
+                    data = null
+                )
+
+            return ResponseApp(
+                status = responseBody.status,
+                statusCode = response.code(),
+                message = responseBody.message,
+                data = responseBody.data
+            )
+
+        } catch (e: Exception) {
+            return ResponseApp(
+                status = false,
+                statusCode = EExceptionCode.RepositoryError.code,
+                message = e.message ?: "Repository Error",
+                data = null
+            )
+        }
     }
 }

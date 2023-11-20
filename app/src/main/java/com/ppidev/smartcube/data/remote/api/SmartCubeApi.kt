@@ -24,8 +24,8 @@ interface NotificationApi {
 
     @GET("notification/{notificationId}")
     suspend fun getListNotificationById(
-        @Path("notificationId") notificationId: Int
-    ): ResponseApp<NotificationDto>
+        @Path("notificationId") notificationId: UInt
+    ): Response<ResponseApp<NotificationDto?>>
 }
 
 interface AuthApi {

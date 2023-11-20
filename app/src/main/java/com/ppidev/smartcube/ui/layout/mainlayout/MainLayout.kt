@@ -16,6 +16,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ppidev.smartcube.ui.BottomAppBar
@@ -26,8 +28,9 @@ import com.ppidev.smartcube.ui.Screen
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainLayout() {
-    val navController = rememberNavController()
+fun MainLayout(
+    navController: NavHostController = rememberNavController()
+) {
 
     val items = listOf(
         NavigationItem(
