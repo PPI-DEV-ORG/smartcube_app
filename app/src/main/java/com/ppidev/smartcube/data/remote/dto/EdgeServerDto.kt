@@ -19,4 +19,17 @@ data class CreateEdgeServerDto(
 
     @SerializedName("egde_server_access_token")
     val egdeServerAccessToken: String? = "",
+
+)
+
+@Serializable
+data class EdgeServerItemDto(
+    @SerializedName("id")
+    val id: Int,
+
+    @SerializedName("name")
+    val name: String? = "",
+
+    @SerializedName("vendor")
+    val vendor: String? = "",
 )

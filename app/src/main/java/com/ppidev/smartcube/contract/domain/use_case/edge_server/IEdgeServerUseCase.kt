@@ -3,6 +3,7 @@ package com.ppidev.smartcube.contract.domain.use_case.edge_server
 import com.ppidev.smartcube.common.Resource
 import com.ppidev.smartcube.common.ResponseApp
 import com.ppidev.smartcube.data.remote.dto.CreateEdgeServerDto
+import com.ppidev.smartcube.data.remote.dto.EdgeServerItemDto
 import kotlinx.coroutines.flow.Flow
 
 interface IAddEdgeServerUseCase {
@@ -11,4 +12,8 @@ interface IAddEdgeServerUseCase {
         vendor: String,
         description: String
     ): Flow<Resource<ResponseApp<CreateEdgeServerDto?>>>
+}
+
+interface IListEdgeServerUseCase {
+    operator fun invoke(): Flow<Resource<ResponseApp<List<EdgeServerItemDto>>>>
 }

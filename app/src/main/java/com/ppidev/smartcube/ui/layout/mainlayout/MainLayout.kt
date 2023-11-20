@@ -7,9 +7,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Storage
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -26,21 +28,12 @@ import com.ppidev.smartcube.ui.NavigationItem
 import com.ppidev.smartcube.ui.Screen
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainLayout(
     navController: NavHostController = rememberNavController()
 ) {
 
     val items = listOf(
-        NavigationItem(
-            title = "Notifications",
-            unselectedIcon = Icons.Outlined.Notifications,
-            selectedIcon = Icons.Filled.Notifications,
-            hasNews = false,
-            badgeCount = null,
-            screen = Screen.Notifications
-        ),
         NavigationItem(
             title = "Dashboard",
             unselectedIcon = Icons.Outlined.Home,
@@ -50,7 +43,23 @@ fun MainLayout(
             screen = Screen.Dashboard
         ),
         NavigationItem(
-            title = "Dashboard",
+            title = "Notifications",
+            unselectedIcon = Icons.Outlined.Notifications,
+            selectedIcon = Icons.Filled.Notifications,
+            hasNews = false,
+            badgeCount = null,
+            screen = Screen.Notifications
+        ),
+        NavigationItem(
+            title = "Servers",
+            unselectedIcon = Icons.Outlined.Storage,
+            selectedIcon = Icons.Filled.Storage,
+            hasNews = false,
+            badgeCount = null,
+            screen = Screen.ListEdgeServer
+        ),
+        NavigationItem(
+            title = "Profile",
             unselectedIcon = Icons.Outlined.Person,
             selectedIcon = Icons.Filled.Person,
             hasNews = false,
@@ -62,7 +71,8 @@ fun MainLayout(
     val routes = listOf(
         Screen.Notifications.screenRoute,
         Screen.Profile.screenRoute,
-        Screen.Dashboard.screenRoute
+        Screen.Dashboard.screenRoute,
+        Screen.ListEdgeServer.screenRoute
     )
 
     Surface(

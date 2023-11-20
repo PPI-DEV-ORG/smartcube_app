@@ -17,6 +17,8 @@ import com.ppidev.smartcube.presentation.dashboard.DashboardScreen
 import com.ppidev.smartcube.presentation.dashboard.DashboardViewModel
 import com.ppidev.smartcube.presentation.edge_server.form_add.FormAddEdgeServerScreen
 import com.ppidev.smartcube.presentation.edge_server.form_add.FormAddEdgeServerViewModel
+import com.ppidev.smartcube.presentation.edge_server.list.ListEdgeServerScreen
+import com.ppidev.smartcube.presentation.edge_server.list.ListEdgeServerViewModel
 import com.ppidev.smartcube.presentation.login.LoginScreen
 import com.ppidev.smartcube.presentation.login.LoginViewModel
 import com.ppidev.smartcube.presentation.notification.NotificationListScreen
@@ -167,6 +169,14 @@ fun NavigationApp(navController: NavHostController) {
             val viewModel = hiltViewModel<FormAddEdgeServerViewModel>()
             FormAddEdgeServerScreen(state = viewModel.state, onEvent = viewModel::onEvent)
         }
+
+        composable(
+            route = Screen.ListEdgeServer.screenRoute
+        ) {
+            val viewModel = hiltViewModel<ListEdgeServerViewModel>()
+            ListEdgeServerScreen(state = viewModel.state, event = viewModel::onEvent, navHostController = navController)
+        }
+
     }
 }
 
@@ -184,6 +194,7 @@ sealed class Screen(val screenRoute: String) {
     object DetailNotification : Screen(screenRoute = "notification")
     object Profile : Screen(screenRoute = "profile")
     object FormAddEdgeServer : Screen(screenRoute = "addEdgeServer")
+    object ListEdgeServer : Screen(screenRoute = "listEdgeServer")
 }
 
 
