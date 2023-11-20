@@ -8,6 +8,7 @@ import com.ppidev.smartcube.common.ResponseApp
 import com.ppidev.smartcube.contract.data.repository.IEdgeServerRepository
 import com.ppidev.smartcube.data.remote.api.SmartCubeApi
 import com.ppidev.smartcube.data.remote.dto.CreateEdgeServerDto
+import com.ppidev.smartcube.data.remote.dto.EdgeServerItemDto
 import javax.inject.Inject
 
 class EdgeServerRepositoryImpl @Inject constructor(
@@ -48,6 +49,42 @@ class EdgeServerRepositoryImpl @Inject constructor(
                 statusCode = EExceptionCode.RepositoryError.code,
                 message = e.message ?: "Repository Error",
                 data = null
+            )
+        }
+    }
+
+    override suspend fun listEdgeServer(): ResponseApp<List<EdgeServerItemDto>> {
+        try {
+            val response = smartCubeApi.getListEdgeServer()
+            if (!response.isSuccessful) {
+                val errorResponse = response.errorBody()?.string()
+                return Gson().fromJson(
+                    errorResponse,
+                    object : TypeToken<ResponseApp<List<EdgeServerItemDto>?>>() {}.type
+                )
+            }
+
+            val responseBody = response.body()
+                ?: return ResponseApp(
+                    status = response.isSuccessful,
+                    statusCode = response.code(),
+                    message = response.message(),
+                    data = emptyList()
+                )
+
+            return ResponseApp(
+                status = responseBody.status,
+                statusCode = response.code(),
+                message = responseBody.message,
+                data = responseBody.data
+            )
+
+        } catch (e: Exception) {
+            return ResponseApp(
+                status = false,
+                statusCode = EExceptionCode.RepositoryError.code,
+                message = e.message ?: "Repository Error",
+                data = emptyList()
             )
         }
     }

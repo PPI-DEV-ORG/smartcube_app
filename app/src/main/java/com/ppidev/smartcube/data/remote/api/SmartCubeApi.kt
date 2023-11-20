@@ -3,6 +3,7 @@ package com.ppidev.smartcube.data.remote.api
 import com.ppidev.smartcube.BuildConfig
 import com.ppidev.smartcube.common.ResponseApp
 import com.ppidev.smartcube.data.remote.dto.CreateEdgeServerDto
+import com.ppidev.smartcube.data.remote.dto.EdgeServerItemDto
 import com.ppidev.smartcube.data.remote.dto.LoginDto
 import com.ppidev.smartcube.data.remote.dto.NotificationDto
 import com.ppidev.smartcube.data.remote.dto.RegisterDto
@@ -76,6 +77,9 @@ interface EdgeServerApi {
         @Field("vendor") vendor: String,
         @Field("description") description: String
     ): Response<ResponseApp<CreateEdgeServerDto?>>
+
+    @GET("edge-server")
+    suspend fun getListEdgeServer(): Response<ResponseApp<List<EdgeServerItemDto>>>
 }
 
 
