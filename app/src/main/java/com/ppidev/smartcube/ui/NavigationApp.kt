@@ -15,6 +15,8 @@ import com.ppidev.smartcube.common.CHANGE_PASSWORD_ARG
 import com.ppidev.smartcube.common.NOTIFICATION_ARG
 import com.ppidev.smartcube.presentation.dashboard.DashboardScreen
 import com.ppidev.smartcube.presentation.dashboard.DashboardViewModel
+import com.ppidev.smartcube.presentation.edge_device.list.ListEdgeDeviceScreen
+import com.ppidev.smartcube.presentation.edge_device.list.ListEdgeDeviceViewModel
 import com.ppidev.smartcube.presentation.edge_server.form_add.FormAddEdgeServerScreen
 import com.ppidev.smartcube.presentation.edge_server.form_add.FormAddEdgeServerViewModel
 import com.ppidev.smartcube.presentation.edge_server.list.ListEdgeServerScreen
@@ -177,6 +179,15 @@ fun NavigationApp(navController: NavHostController) {
             ListEdgeServerScreen(state = viewModel.state, event = viewModel::onEvent, navHostController = navController)
         }
 
+        composable(
+            route = Screen.ListEdgeDevices.screenRoute
+        ) {
+            val viewModel = hiltViewModel<ListEdgeDeviceViewModel>()
+            ListEdgeDeviceScreen(
+                state = viewModel.state,
+                onEvent = viewModel::onEvent,
+            )
+        }
     }
 }
 
@@ -195,6 +206,7 @@ sealed class Screen(val screenRoute: String) {
     object Profile : Screen(screenRoute = "profile")
     object FormAddEdgeServer : Screen(screenRoute = "addEdgeServer")
     object ListEdgeServer : Screen(screenRoute = "listEdgeServer")
+    object ListEdgeDevices : Screen(screenRoute = "listEdgeDevices")
 }
 
 

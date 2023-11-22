@@ -70,7 +70,7 @@ fun ListEdgeServerScreen(
         ) {
             itemsIndexed(
                 items = state.listEdgeServer,
-                key = { _, d -> d.id }
+                key = { _, d -> "${d.id}_${d.name}" }
             ) { _, item ->
                 Column(
                     modifier = Modifier

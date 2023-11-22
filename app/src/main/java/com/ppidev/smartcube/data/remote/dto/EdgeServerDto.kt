@@ -25,7 +25,7 @@ data class CreateEdgeServerDto(
 @Serializable
 data class EdgeServerItemDto(
     @SerializedName("id")
-    val id: Int,
+    val id: UInt,
 
     @SerializedName("name")
     val name: String? = "",

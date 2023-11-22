@@ -4,10 +4,12 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DeviceHub
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Storage
+import androidx.compose.material.icons.outlined.DeviceHub
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Person
@@ -59,6 +61,14 @@ fun MainLayout(
             screen = Screen.ListEdgeServer
         ),
         NavigationItem(
+            title = "Devices",
+            unselectedIcon = Icons.Outlined.DeviceHub,
+            selectedIcon = Icons.Filled.DeviceHub,
+            hasNews = false,
+            badgeCount = null,
+            screen = Screen.ListEdgeDevices
+        ),
+        NavigationItem(
             title = "Profile",
             unselectedIcon = Icons.Outlined.Person,
             selectedIcon = Icons.Filled.Person,
@@ -72,7 +82,8 @@ fun MainLayout(
         Screen.Notifications.screenRoute,
         Screen.Profile.screenRoute,
         Screen.Dashboard.screenRoute,
-        Screen.ListEdgeServer.screenRoute
+        Screen.ListEdgeServer.screenRoute,
+        Screen.ListEdgeDevices.screenRoute
     )
 
     Surface(
