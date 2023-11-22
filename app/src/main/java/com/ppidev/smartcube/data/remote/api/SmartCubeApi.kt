@@ -2,7 +2,9 @@ package com.ppidev.smartcube.data.remote.api
 
 import com.ppidev.smartcube.BuildConfig
 import com.ppidev.smartcube.common.ResponseApp
+import com.ppidev.smartcube.data.remote.dto.CreateEdgeDeviceDto
 import com.ppidev.smartcube.data.remote.dto.CreateEdgeServerDto
+import com.ppidev.smartcube.data.remote.dto.EdgeDevicesInfoDto
 import com.ppidev.smartcube.data.remote.dto.EdgeServerItemDto
 import com.ppidev.smartcube.data.remote.dto.LoginDto
 import com.ppidev.smartcube.data.remote.dto.NotificationDto
@@ -18,7 +20,7 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface SmartCubeApi : NotificationApi, AuthApi, EdgeServerApi
+interface SmartCubeApi : NotificationApi, AuthApi, EdgeServerApi, EdgeDeviceApi
 
 interface NotificationApi {
     @GET("notification")
@@ -91,4 +93,26 @@ interface WeatherApi {
         @Query("lang") lang: String = "en",
         @Query("key") apiKey: String = BuildConfig.WEATHER_API_KEY
     ): Response<WeatherDto?>
+}
+
+interface EdgeDeviceApi {
+    @FormUrlEncoded
+    @POST("edge-device")
+    suspend fun createEdgeDevice(
+        @Field("edge_server_id") edgeServerId: UInt,
+        @Field("vendor_name") vendorName: String,
+        @Field("vendor_number") vendorNumber: String,
+        @Field("type") type: String,
+        @Field("source_type") sourceType: String,
+        @Field("dev_source_id") devSourceId: String,
+        @Field("rtsp_source_address") rtspSourceAddress: String,
+        @Field("assigned_model_type") assignedModelType: UInt,
+        @Field("assigned_model_index") assignedModelIndex: UInt,
+        @Field("additional_info") additionalInfo: String
+    ): Response<ResponseApp<CreateEdgeDeviceDto?>>
+
+    @GET("edge-device/{edgeServerId}")
+    suspend fun getEdgeDevices(
+        @Path("edgeServerId") edgeServerId: UInt
+    ): Response<ResponseApp<EdgeDevicesInfoDto?>>
 }

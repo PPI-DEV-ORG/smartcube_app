@@ -1,11 +1,13 @@
 package com.ppidev.smartcube.di
 
 import com.ppidev.smartcube.contract.data.repository.IAuthRepository
+import com.ppidev.smartcube.contract.data.repository.IEdgeDeviceRepository
 import com.ppidev.smartcube.contract.data.repository.IEdgeServerRepository
 import com.ppidev.smartcube.contract.data.repository.INotificationRepository
 import com.ppidev.smartcube.contract.data.repository.ITokenAppRepository
 import com.ppidev.smartcube.contract.data.repository.IWeatherRepository
 import com.ppidev.smartcube.data.repository.AuthRepositoryImpl
+import com.ppidev.smartcube.data.repository.EdgeDeviceRepositoryImpl
 import com.ppidev.smartcube.data.repository.EdgeServerRepositoryImpl
 import com.ppidev.smartcube.data.repository.NotificationRepositoryImpl
 import com.ppidev.smartcube.data.repository.TokenAppRepositoryImpl
@@ -48,4 +50,10 @@ abstract class RepositoryModule {
     abstract fun bindEdgeServerRepository(
         edgeServerRepositoryImpl: EdgeServerRepositoryImpl
     ): IEdgeServerRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindEdgeDeviceRepository(
+        edgeDeviceRepositoryImpl: EdgeDeviceRepositoryImpl
+    ): IEdgeDeviceRepository
 }
