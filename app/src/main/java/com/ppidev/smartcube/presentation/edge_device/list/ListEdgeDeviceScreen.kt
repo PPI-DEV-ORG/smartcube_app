@@ -21,12 +21,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import com.ppidev.smartcube.ui.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListEdgeDeviceScreen(
     state: ListEdgeDeviceState,
     onEvent: (event: ListEdgeDeviceEvent) -> Unit,
+    navHostController: NavHostController
 ) {
 
     LaunchedEffect(Unit) {
@@ -47,7 +50,9 @@ fun ListEdgeDeviceScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         TopAppBar(title = {
-            IconButton(onClick = {}) {
+            IconButton(onClick = {
+                navHostController.navigate(Screen.FormAddEdgeDevice.screenRoute + "/${state.serverId}")
+            }) {
                 Icon(imageVector = Icons.Filled.Add, contentDescription = "add devices")
             }
         })

@@ -1,5 +1,6 @@
 package com.ppidev.smartcube.presentation.edge_server.form_add
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -103,6 +104,8 @@ class FormAddEdgeServerViewModel @Inject constructor(
                         message = "Success add to server",
                         isSuccess = true
                     )
+
+                    Log.d("RES", it.data?.data.toString())
                 }
 
                 is Resource.Error -> {

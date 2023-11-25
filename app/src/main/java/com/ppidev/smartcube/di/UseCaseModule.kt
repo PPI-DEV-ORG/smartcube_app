@@ -5,6 +5,7 @@ import com.ppidev.smartcube.contract.domain.use_case.auth.ILoginUseCase
 import com.ppidev.smartcube.contract.domain.use_case.auth.IRegisterUseCase
 import com.ppidev.smartcube.contract.domain.use_case.auth.IVerificationUseCase
 import com.ppidev.smartcube.contract.domain.use_case.auth.IRequestLinkResetPasswordUseCase
+import com.ppidev.smartcube.contract.domain.use_case.edge_device.IAddEdgeDevicesUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IEdgeDevicesInfoUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_server.IAddEdgeServerUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_server.IListEdgeServerUseCase
@@ -16,7 +17,8 @@ import com.ppidev.smartcube.domain.use_case.auth.LoginUseCase
 import com.ppidev.smartcube.domain.use_case.auth.RegisterUseCase
 import com.ppidev.smartcube.domain.use_case.auth.VerificationUseCase
 import com.ppidev.smartcube.domain.use_case.auth.RequestLinkResetPasswordUseCase
-import com.ppidev.smartcube.domain.use_case.edge_device.EdgeDevicesInfoUseCaseUseCase
+import com.ppidev.smartcube.domain.use_case.edge_device.AddEdgeDeviceUseCase
+import com.ppidev.smartcube.domain.use_case.edge_device.EdgeDevicesInfoUseCase
 import com.ppidev.smartcube.domain.use_case.edge_server.AddEdgeServerUseCase
 import com.ppidev.smartcube.domain.use_case.edge_server.ListEdgeServerUseCase
 import com.ppidev.smartcube.domain.use_case.notification.ListNotificationUseCase
@@ -96,7 +98,12 @@ abstract class UseCaseModule {
     @Binds
     @Singleton
     abstract fun bindEdgeDeviceInfoUseCase(
-        edgeDevicesInfoUseCase: EdgeDevicesInfoUseCaseUseCase
+        edgeDevicesInfoUseCase: EdgeDevicesInfoUseCase
     ): IEdgeDevicesInfoUseCase
 
+    @Binds
+    @Singleton
+    abstract fun bindAddEdgeDeviceUseCase(
+        addEdgeDevicesUseCase: AddEdgeDeviceUseCase
+    ): IAddEdgeDevicesUseCase
 }
