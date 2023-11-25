@@ -21,10 +21,11 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner =  "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
+        compileSdkPreview = "UpsideDownCake"
     }
 
     buildTypes {
@@ -52,23 +53,28 @@ android {
     }
     packaging {
         resources {
-//            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            // excludes += "/META-INF/{AL2.0,LGPL2.1}"
             excludes += listOf("/META-INF/{AL2.0,LGPL2.1}","META-INF/INDEX.LIST", "META-INF/io.netty.versions.properties")
         }
+    }
+    testOptions {
+        unitTests.isReturnDefaultValues = true
     }
 }
 
 dependencies {
     // === default dependencies ===
-    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-    implementation("androidx.activity:activity-compose:1.7.2")
+    implementation("androidx.activity:activity-compose:1.8.1")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3:1.1.2")
     implementation("com.google.android.gms:play-services-wallet:19.2.1")
+    implementation("androidx.test:core-ktx:1.5.0")
+    implementation("androidx.test.ext:junit-ktx:1.1.5")
     // test dependencies
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -85,7 +91,7 @@ dependencies {
     // firebase
     implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
     implementation("com.google.firebase:firebase-analytics-ktx")
-    implementation("com.google.firebase:firebase-messaging-ktx:23.2.1")
+    implementation("com.google.firebase:firebase-messaging-ktx:23.3.1")
 
     // permission manager
     implementation("com.google.accompanist:accompanist-permissions:0.28.0")
@@ -100,10 +106,8 @@ dependencies {
     implementation("io.coil-kt:coil-svg:2.4.0")
 
     // navigation
-    val navVersion = "2.6.0"
-    val lifecycleVersion = "2.6.0"
-    implementation("androidx.navigation:navigation-compose:$navVersion")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:$lifecycleVersion")
+    implementation("androidx.navigation:navigation-compose:2.7.5")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
 
     // ViewModel Compose
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
@@ -113,8 +117,8 @@ dependencies {
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
 //    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
-    kapt("androidx.hilt:hilt-compiler:1.0.0")
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    kapt("androidx.hilt:hilt-compiler:1.1.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -124,19 +128,19 @@ dependencies {
 
     // MQTT
     implementation("com.hivemq:hivemq-mqtt-client:1.3.0")
+    implementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")
+    implementation ("org.eclipse.paho:org.eclipse.paho.android.service:1.1.1")
+    implementation("org.bouncycastle:bcpkix-jdk15on:1.59")
 
     implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
-    implementation("androidx.activity:activity-ktx:1.6.1")
+    implementation("androidx.activity:activity-ktx:1.8.1")
 
     // testing
     testImplementation("androidx.arch.core:core-testing:2.2.0")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     testImplementation("org.mockito:mockito-core:5.6.0")
     testImplementation("org.mockito:mockito-inline:5.2.0")
-    
-//    retrofix("net.sourceforge.streamsupport:android-retrostreams:1.7.4")
-//    retrofix("net.sourceforge.streamsupport:android-retrofuture:1.7.4")
 }
 
 kapt {

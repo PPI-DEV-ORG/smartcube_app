@@ -12,9 +12,12 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import com.ppidev.smartcube.common.APP_URL
 import com.ppidev.smartcube.common.CHANGE_PASSWORD_ARG
+import com.ppidev.smartcube.common.EDGE_SERVER_ID_ARG
 import com.ppidev.smartcube.common.NOTIFICATION_ARG
 import com.ppidev.smartcube.presentation.dashboard.DashboardScreen
 import com.ppidev.smartcube.presentation.dashboard.DashboardViewModel
+import com.ppidev.smartcube.presentation.edge_device.form_add.FormAddEdgeDeviceScreen
+import com.ppidev.smartcube.presentation.edge_device.form_add.FormAddEdgeDeviceViewModel
 import com.ppidev.smartcube.presentation.edge_device.list.ListEdgeDeviceScreen
 import com.ppidev.smartcube.presentation.edge_device.list.ListEdgeDeviceViewModel
 import com.ppidev.smartcube.presentation.edge_server.form_add.FormAddEdgeServerScreen
@@ -176,7 +179,11 @@ fun NavigationApp(navController: NavHostController) {
             route = Screen.ListEdgeServer.screenRoute
         ) {
             val viewModel = hiltViewModel<ListEdgeServerViewModel>()
-            ListEdgeServerScreen(state = viewModel.state, event = viewModel::onEvent, navHostController = navController)
+            ListEdgeServerScreen(
+                state = viewModel.state,
+                event = viewModel::onEvent,
+                navHostController = navController
+            )
         }
 
         composable(
@@ -186,7 +193,24 @@ fun NavigationApp(navController: NavHostController) {
             ListEdgeDeviceScreen(
                 state = viewModel.state,
                 onEvent = viewModel::onEvent,
+                navHostController = navController
             )
+        }
+
+        composable(
+            route = Screen.FormAddEdgeDevice.screenRoute + "/{${EDGE_SERVER_ID_ARG}}",
+            arguments = listOf(navArgument(EDGE_SERVER_ID_ARG) { type = NavType.IntType }),
+        ) {
+            val viewModel = hiltViewModel<FormAddEdgeDeviceViewModel>()
+
+            val arguments = it.arguments
+            arguments?.getInt(EDGE_SERVER_ID_ARG)?.let { edgeServerId ->
+                FormAddEdgeDeviceScreen(
+                    state = viewModel.state,
+                    onEvent = viewModel::onEvent,
+                    edgeServerId = edgeServerId.toUInt()
+                )
+            }
         }
     }
 }
@@ -207,6 +231,7 @@ sealed class Screen(val screenRoute: String) {
     object FormAddEdgeServer : Screen(screenRoute = "addEdgeServer")
     object ListEdgeServer : Screen(screenRoute = "listEdgeServer")
     object ListEdgeDevices : Screen(screenRoute = "listEdgeDevices")
+    object FormAddEdgeDevice : Screen(screenRoute = "addEdgeDevice")
 }
 
 
