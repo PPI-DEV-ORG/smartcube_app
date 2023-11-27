@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ppidev.smartcube.ui.components.form.CustomInputField
 import com.ppidev.smartcube.ui.components.form.CustomSelectInput
+import com.ppidev.smartcubeListSourceDeviceType.presentation.edge_device.form_add.FormAddEdgeDeviceState
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,9 +74,9 @@ fun FormAddEdgeDeviceScreen(
                 state.listSourceTypes.map {
                     DropdownMenuItem(
                         modifier = Modifier.fillMaxWidth(),
-                        text = { Text(it.value) },
+                        text = { Text(it.name) },
                         onClick = {
-                            onEvent(FormAddEdgeDeviceEvent.OnChangeSourceType(it.key))
+                            onEvent(FormAddEdgeDeviceEvent.OnChangeSourceType(it.name))
                             expandedSourceTypes = false
                         },
                         contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
@@ -95,9 +96,9 @@ fun FormAddEdgeDeviceScreen(
                 state.listTypes.map {
                     DropdownMenuItem(
                         modifier = Modifier.fillMaxWidth(),
-                        text = { Text(it.value) },
+                        text = { Text(it.name) },
                         onClick = {
-                            onEvent(FormAddEdgeDeviceEvent.OnChangeType(it.key))
+                            onEvent(FormAddEdgeDeviceEvent.OnChangeType(it.name))
                             expandedTypes = false
                         },
                         contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding

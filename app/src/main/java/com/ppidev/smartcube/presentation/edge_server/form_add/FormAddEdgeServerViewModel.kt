@@ -102,7 +102,9 @@ class FormAddEdgeServerViewModel @Inject constructor(
                     state = state.copy(
                         isLoading = false,
                         message = "Success add to server",
-                        isSuccess = true
+                        isSuccess = true,
+                        edgeServerId = it.data?.data?.edgeServerId,
+                        edgeServerAccessToken = it.data?.data?.egdeServerAccessToken
                     )
 
                     Log.d("RES", it.data?.data.toString())

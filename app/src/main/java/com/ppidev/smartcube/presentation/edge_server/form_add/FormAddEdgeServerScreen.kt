@@ -38,6 +38,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.ppidev.smartcube.common.EDGE_SERVER_ACCESS_TOKEN
+import com.ppidev.smartcube.common.EDGE_SERVER_ID_ARG
+import com.ppidev.smartcube.ui.Screen
 import com.ppidev.smartcube.ui.components.TagLabel
 import com.ppidev.smartcube.ui.components.form.CustomInputField
 import com.ppidev.smartcube.ui.components.modal.DialogApp
@@ -48,7 +52,8 @@ import com.ppidev.smartcube.utils.bottomBorder
 @Composable
 fun FormAddEdgeServerScreen(
     state: FormAddEdgeServerState,
-    onEvent: (event: FormAddEdgeServerEvent) -> Unit
+    onEvent: (event: FormAddEdgeServerEvent) -> Unit,
+    navHostController: NavHostController
 ) {
     Column(
         modifier = Modifier.verticalScroll(rememberScrollState())
@@ -160,7 +165,7 @@ fun FormAddEdgeServerScreen(
                 },
                 onConfirm = {
                     onEvent(FormAddEdgeServerEvent.HandleCloseDialog {
-                        Log.d("CALLback", "masuk")
+                        navHostController.navigate(Screen.DetailEdgeServer.screenRoute + "?$EDGE_SERVER_ID_ARG=${state.edgeServerId}" + "&$EDGE_SERVER_ACCESS_TOKEN=${state.edgeServerAccessToken}")
                     })
                 }
             )

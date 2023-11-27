@@ -1,6 +1,10 @@
-package com.ppidev.smartcube.presentation.edge_device.form_add
+package com.ppidev.smartcubeListSourceDeviceType.presentation.edge_device.form_add
 
 import com.ppidev.smartcube.data.remote.dto.EdgeDevicesInfoDto
+import com.ppidev.smartcube.domain.model.DeviceSourceType
+import com.ppidev.smartcube.domain.model.DeviceType
+import com.ppidev.smartcube.domain.model.ListDeviceType
+import com.ppidev.smartcube.domain.model.ListSourceDeviceType
 
 data class FormAddEdgeDeviceState(
     val isLoading: Boolean = false,
@@ -24,8 +28,8 @@ data class FormAddEdgeDeviceState(
     val lat: String = "",
     val lon: String = "",
 
-    val listSourceTypes: Map<String, String> = mapOf("usb" to "USB", "lan" to "LAN"),
-    val listTypes: Map<String, String> = mapOf("camera" to "CAMERA", "sensor" to "SENSOR"),
+    val listSourceTypes: List<DeviceSourceType> = ListSourceDeviceType,
+    val listTypes: List<DeviceType> = ListDeviceType,
 
     val listModelType: Map<Int, String> = mapOf(
         0 to "Realtime Object Detection",
