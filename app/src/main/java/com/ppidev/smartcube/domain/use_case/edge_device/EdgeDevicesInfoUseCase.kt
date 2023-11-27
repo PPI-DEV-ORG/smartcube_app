@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class EdgeDevicesInfoUseCaseUseCase @Inject constructor(
+class EdgeDevicesInfoUseCase @Inject constructor(
     private val edgeDeviceRepository: Lazy<IEdgeDeviceRepository>
 ) : IEdgeDevicesInfoUseCase {
     override suspend fun invoke(edgeServerId: UInt): Flow<Resource<ResponseApp<EdgeDevicesInfoDto?>>>  = flow {

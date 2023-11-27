@@ -82,7 +82,7 @@ class FcmService: FirebaseMessagingService(), IMessagingService<RemoteMessage> {
 
             bitmapImage?.apply {
                 setStyle(
-                    NotificationCompat.BigPictureStyle().bigPicture(this).bigLargeIcon(null)
+                    NotificationCompat.BigPictureStyle().bigPicture(this)
                 )
                 setLargeIcon(this)
             }

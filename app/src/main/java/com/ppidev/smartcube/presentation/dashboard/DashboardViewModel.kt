@@ -125,7 +125,9 @@ class DashboardViewModel @Inject constructor(
 
     private fun subscribeToMqttClient() {
         viewModelScope.launch {
-            mqttService.get().subscribeToTopic(BuildConfig.MQTT_TOPIC2)
+            mqttService.get().subscribeToTopic(BuildConfig.MQTT_TOPIC2){ topic, message ->
+                Log.d("MSG", "$topic : $message")
+            }
         }
     }
 
@@ -149,35 +151,35 @@ class DashboardViewModel @Inject constructor(
     }
 
     private fun listenReceiveMessageMqtt() {
-        mqttService.get().listenSubscribedTopic { mqttMessage ->
-            val json = String(mqttMessage.payloadAsBytes)
-            val result = gson.fromJson<Map<String, Any>>(
-                json,
-                object : TypeToken<Map<String, Any>>() {}.type
-            )
-
-            if (result.containsKey("hostDeviceStatus")) {
-                val hostDeviceStatusResponse = result["hostDeviceStatus"]
-                val hostDeviceStatus =
-                    Json.decodeFromString<DeviceStatusDto>(gson.toJson(hostDeviceStatusResponse))
-                updateServerSummary(hostDeviceStatus)
-            }
-
-            if (result.containsKey("getInstalledModels")) {
-                val installedModelsResponse = result["getInstalledModels"]
-                val listInstalledModels =
-                    Json.decodeFromString<List<MLModelDto>>(gson.toJson(installedModelsResponse))
-                updateListMLModel(listInstalledModels)
-            }
-
-            if (result.containsKey("getDeviceConfig")) {
-                val devicesConfigResponse = result["getDeviceConfig"]
-                val listDevicesConfig =
-                    Json.decodeFromString<List<DeviceConfigDto>>(gson.toJson(devicesConfigResponse))
-                updateListDeviceConfig(listDevicesConfig)
-            }
-
-        }
+//        mqttService.get().listenSubscribedTopic { mqttMessage ->
+//            Log.d("MESSAGE", mqttMessage.payload.toString())
+//            val json = String(mqttMessage.payloadAsBytes)
+//            val result = gson.fromJson<Map<String, Any>>(
+//                json,
+//                object : TypeToken<Map<String, Any>>() {}.type
+//            )
+//
+//            if (result.containsKey("hostDeviceStatus")) {
+//                val hostDeviceStatusResponse = result["hostDeviceStatus"]
+//                val hostDeviceStatus =
+//                    Json.decodeFromString<DeviceStatusDto>(gson.toJson(hostDeviceStatusResponse))
+//                updateServerSummary(hostDeviceStatus)
+//            }
+//
+//            if (result.containsKey("getInstalledModels")) {
+//                val installedModelsResponse = result["getInstalledModels"]
+//                val listInstalledModels =
+//                    Json.decodeFromString<List<MLModelDto>>(gson.toJson(installedModelsResponse))
+//                updateListMLModel(listInstalledModels)
+//            }
+//
+//            if (result.containsKey("getDeviceConfig")) {
+//                val devicesConfigResponse = result["getDeviceConfig"]
+//                val listDevicesConfig =
+//                    Json.decodeFromString<List<DeviceConfigDto>>(gson.toJson(devicesConfigResponse))
+//                updateListDeviceConfig(listDevicesConfig)
+//            }
+//        }
     }
 
     private fun unsubscribeFromTopic() {
@@ -225,7 +227,6 @@ class DashboardViewModel @Inject constructor(
             when (it) {
                 is Resource.Error -> {
                     Log.d("WEATHER_ERR", it.data.toString())
-
                 }
 
                 is Resource.Loading -> {

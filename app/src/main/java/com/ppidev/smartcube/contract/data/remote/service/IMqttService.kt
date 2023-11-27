@@ -1,13 +1,13 @@
 package com.ppidev.smartcube.contract.data.remote.service
 
-import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish
+import com.ppidev.smartcube.common.Resource
+import org.eclipse.paho.client.mqttv3.MqttClient
+import org.eclipse.paho.client.mqttv3.MqttMessage
 
 interface IMqttService {
-    fun connect(): Unit
-    fun subscribeToTopic(topic: String): Unit
-    fun publishToTopic(topic: String, message: String): Unit
+    fun connect(): MqttClient?
+    fun subscribeToTopic(topic: String, callback: (topic: String, data: MqttMessage) -> Unit): Resource<Boolean>
+    fun publishToTopic(topic: String, message: String):  Resource<Boolean>
     fun unsubscribeFromTopic(topic: String): Unit
     fun disconnect(): Unit
-
-    fun listenSubscribedTopic(callback: (data: Mqtt5Publish) -> Unit)
 }

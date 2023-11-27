@@ -5,6 +5,8 @@ data class FormAddEdgeServerState(
     val description: String = "",
     val serverVendor: String ="",
     val isSuccess: Boolean? = null,
+    val edgeServerId: UInt? = null,
+    val edgeServerAccessToken: String? = "",
     val message: String = "",
     val isLoading: Boolean = false,
     val error: ErrorFormAddEdgeServer = ErrorFormAddEdgeServer()
