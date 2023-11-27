@@ -1,6 +1,7 @@
 package com.ppidev.smartcube.presentation.edge_server.list
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -24,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.ppidev.smartcube.common.EDGE_SERVER_ID_ARG
 import com.ppidev.smartcube.ui.Screen
 
 @Composable
@@ -65,7 +67,7 @@ fun ListEdgeServerScreen(
                 .fillMaxWidth()
                 .background(Color.White)
                 .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)),
-            contentPadding = PaddingValues(16.dp),
+            contentPadding = PaddingValues(bottom = 90.dp, top =16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             itemsIndexed(
@@ -79,6 +81,9 @@ fun ListEdgeServerScreen(
                         .background(
                             Color(0xFFF6F6F6)
                         )
+                        .clickable {
+                            navHostController.navigate(Screen.DetailEdgeServer.screenRoute + "?$EDGE_SERVER_ID_ARG=${item.id}")
+                        }
                         .padding(16.dp)
                 ) {
                     Text(text = "${item.name}", fontSize = 20.sp)

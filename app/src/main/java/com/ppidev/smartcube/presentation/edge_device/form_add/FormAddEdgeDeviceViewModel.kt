@@ -14,6 +14,7 @@ import com.ppidev.smartcube.contract.domain.use_case.edge_device.IAddEdgeDevices
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IEdgeDevicesInfoUseCase
 import com.ppidev.smartcube.domain.model.MLModel
 import com.ppidev.smartcube.presentation.dashboard.model.CommandMqtt
+import com.ppidev.smartcubeListSourceDeviceType.presentation.edge_device.form_add.FormAddEdgeDeviceState
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn

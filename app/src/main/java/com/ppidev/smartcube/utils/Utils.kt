@@ -3,6 +3,7 @@ package com.ppidev.smartcube.utils
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Log
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawBehind
@@ -57,3 +58,12 @@ fun Modifier.bottomBorder(strokeWidth: Dp, color: Color) = composed(
         }
     }
 )
+
+fun getNumberFromPercentage(percentage: String): Float {
+    return try {
+        val cleanedPercentage = percentage.replace("%", "").trim()
+        cleanedPercentage.toFloat()
+    } catch (e: NumberFormatException) {
+        0f
+    }
+}

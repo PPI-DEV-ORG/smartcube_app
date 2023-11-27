@@ -5,6 +5,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CreateEdgeServerDto(
+    @SerializedName("edgeServerId")
+    val edgeServerId: UInt,
+
     @SerializedName("mqtt_user")
     val mqttUser: String? = "",
 
