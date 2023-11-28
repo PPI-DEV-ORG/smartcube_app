@@ -20,6 +20,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -30,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.ppidev.smartcube.presentation.edge_device.detail.DetailEdgeDeviceEvent
 import com.ppidev.smartcube.ui.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,7 +48,21 @@ fun ListEdgeDeviceScreen(
 
     LaunchedEffect(key1 = state.serverId) {
         if (state.serverId != null) {
-            onEvent(ListEdgeDeviceEvent.GetLstEdgeDevice(state.serverId))
+            onEvent(ListEdgeDeviceEvent.UnsubscribeFromTopicMqtt)
+            onEvent(ListEdgeDeviceEvent.GetListEdgeDevice(state.serverId))
+        }
+    }
+
+    LaunchedEffect(key1 = state.edgeDevicesInfo) {
+        if (state.edgeDevicesInfo != null) {
+            onEvent(ListEdgeDeviceEvent.ListenMqttClient)
+        }
+    }
+
+
+    DisposableEffect(Unit) {
+        onDispose {
+            onEvent(ListEdgeDeviceEvent.DisconnectMqtt)
         }
     }
 
@@ -97,9 +113,15 @@ fun ListEdgeDeviceScreen(
                 itemsIndexed(
                     items = state.edgeDevicesInfo.devices,
                     key = { _, d -> d.id }
-                ) { _, item ->
+                ) { idx, item ->
                     CardSquareDevice(name = item.vendorName, type = item.type) {
-                        navHostController.navigate("")
+                        navHostController.navigate(Screen.DetailEdgeDevice.withArgs(
+                            state.serverId.toString(),
+                            state.edgeDevicesInfo.devices[idx].id.toString(),
+                            "0",
+                            state.edgeDevicesInfo.devices[idx].vendorName,
+                            state.edgeDevicesInfo.devices[idx].type
+                        ))
                     }
                 }
             }

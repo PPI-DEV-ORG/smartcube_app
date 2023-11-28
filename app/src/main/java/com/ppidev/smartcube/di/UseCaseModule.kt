@@ -7,6 +7,8 @@ import com.ppidev.smartcube.contract.domain.use_case.auth.IVerificationUseCase
 import com.ppidev.smartcube.contract.domain.use_case.auth.IRequestLinkResetPasswordUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IAddEdgeDevicesUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IEdgeDevicesInfoUseCase
+import com.ppidev.smartcube.contract.domain.use_case.edge_device.IRestartEdgeDeviceUseCase
+import com.ppidev.smartcube.contract.domain.use_case.edge_device.IStartEdgeDeviceUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_server.IAddEdgeServerUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_server.IListEdgeServerUseCase
 import com.ppidev.smartcube.contract.domain.use_case.notification.IListNotificationUseCase
@@ -19,6 +21,8 @@ import com.ppidev.smartcube.domain.use_case.auth.VerificationUseCase
 import com.ppidev.smartcube.domain.use_case.auth.RequestLinkResetPasswordUseCase
 import com.ppidev.smartcube.domain.use_case.edge_device.AddEdgeDeviceUseCase
 import com.ppidev.smartcube.domain.use_case.edge_device.EdgeDevicesInfoUseCase
+import com.ppidev.smartcube.domain.use_case.edge_device.RestartEdgeEdgeDeviceUseCase
+import com.ppidev.smartcube.domain.use_case.edge_device.StartEdgeEdgeDeviceUseCase
 import com.ppidev.smartcube.domain.use_case.edge_server.AddEdgeServerUseCase
 import com.ppidev.smartcube.domain.use_case.edge_server.ListEdgeServerUseCase
 import com.ppidev.smartcube.domain.use_case.notification.ListNotificationUseCase
@@ -106,4 +110,16 @@ abstract class UseCaseModule {
     abstract fun bindAddEdgeDeviceUseCase(
         addEdgeDevicesUseCase: AddEdgeDeviceUseCase
     ): IAddEdgeDevicesUseCase
+
+    @Binds
+    @Singleton
+    abstract fun bindStartEdgeDeviceUseCase(
+        startEdgeDeviceUseCase: StartEdgeEdgeDeviceUseCase
+    ): IStartEdgeDeviceUseCase
+
+    @Binds
+    @Singleton
+    abstract fun bindRestartEdgeDeviceUseCase(
+        restartEdgeDeviceUseCase: RestartEdgeEdgeDeviceUseCase
+    ): IRestartEdgeDeviceUseCase
 }

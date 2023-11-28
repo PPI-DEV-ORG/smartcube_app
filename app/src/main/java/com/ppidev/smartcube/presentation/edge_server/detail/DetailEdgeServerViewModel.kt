@@ -17,6 +17,7 @@ import com.ppidev.smartcube.domain.model.DeviceConfigModel
 import com.ppidev.smartcube.presentation.dashboard.model.CommandMqtt
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -26,19 +27,13 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailEdgeServerViewModel @Inject constructor(
     private val edgeDeviceInfoUse: Lazy<IEdgeDevicesInfoUseCase>,
-    private val mqttService: Lazy<IMqttService>
+    private val mqttService: IMqttService
 ) : ViewModel() {
 
     var state by mutableStateOf(DetailEdgeServerState())
         private set
 
     private val gson = Gson()
-
-    init {
-        viewModelScope.launch {
-            mqttService.get().connect()
-        }
-    }
 
     fun onEvent(event: DetailEdgeServerEvent) {
         viewModelScope.launch {
@@ -55,9 +50,11 @@ class DetailEdgeServerViewModel @Inject constructor(
                     val mqttSubTopic = state.edgeDevicesInfo?.mqttSubTopic
 
                     if (mqttSubTopic != null) {
-                        mqttService.get()
+                        mqttService
                             .unsubscribeFromTopic(mqttSubTopic)
                     }
+
+                    mqttService.disconnect()
                 }
             }
         }
@@ -89,12 +86,14 @@ class DetailEdgeServerViewModel @Inject constructor(
     }
 
     private fun listenMqttClient() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val mqttSubTopic = state.edgeDevicesInfo?.mqttSubTopic
             val mqttPubTopic = state.edgeDevicesInfo?.mqttPubTopic
 
             if (mqttSubTopic != null && mqttPubTopic != null) {
-                mqttService.get().subscribeToTopic(mqttSubTopic) { topic, msg ->
+                mqttService.connect()
+
+                mqttService.subscribeToTopic(mqttSubTopic) { _, msg ->
                     val json = String(msg.payload)
                     val result = gson.fromJson<Map<String, Any>>(
                         json,
@@ -144,11 +143,11 @@ class DetailEdgeServerViewModel @Inject constructor(
 
     private fun publishTopic(mqttPubTopic: String) {
         viewModelScope.launch {
-            mqttService.get().publishToTopic(
+            mqttService.publishToTopic(
                 mqttPubTopic,
                 CommandMqtt.GET_DEVICES_CONFIG
             )
-            mqttService.get().publishToTopic(
+            mqttService.publishToTopic(
                 mqttPubTopic,
                 CommandMqtt.GET_SERVER_INFO
             )
