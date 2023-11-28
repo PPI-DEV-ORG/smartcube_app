@@ -3,6 +3,7 @@ package com.ppidev.smartcube.contract.data.repository
 import com.ppidev.smartcube.common.ResponseApp
 import com.ppidev.smartcube.data.remote.dto.CreateEdgeDeviceDto
 import com.ppidev.smartcube.data.remote.dto.EdgeDevicesInfoDto
+import retrofit2.Response
 
 interface IEdgeDeviceRepository {
     suspend fun getEdgeDevicesInfo(edgeServerId: UInt): ResponseApp<EdgeDevicesInfoDto?>
@@ -19,4 +20,7 @@ interface IEdgeDeviceRepository {
         assignedModelIndex: UInt,
         additionalInfo: String
     ): ResponseApp<CreateEdgeDeviceDto?>
+    suspend fun startEdgeDevice(edgeServerId: UInt, processIndex: Int): ResponseApp<out Any?>
+    suspend fun restartEdgeDevice(edgeServerId: UInt, processIndex: Int): ResponseApp<out Any?>
+    suspend fun getDetailEdgeDevice(edgeDeviceId: UInt)
 }

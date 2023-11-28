@@ -17,6 +17,7 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -115,4 +116,38 @@ interface EdgeDeviceApi {
     suspend fun getEdgeDevices(
         @Path("edgeServerId") edgeServerId: UInt
     ): Response<ResponseApp<EdgeDevicesInfoDto?>>
+
+    @GET("edge-device/{edgeDeviceId}")
+    suspend fun getEdgeDevicesById(
+        @Path("edgeDeviceId") edgeDeviceId: UInt
+    )
+
+    @FormUrlEncoded
+    @PUT("edge-device/{edgeDeviceId}")
+    suspend fun updateEdgeDevice(
+        @Field("edge_server_id") edgeServerId: UInt,
+        @Field("vendor_name") vendorName: String,
+        @Field("vendor_number") vendorNumber: String,
+        @Field("type") type: String,
+        @Field("source_type") sourceType: String,
+        @Field("dev_source_id") devSourceId: String,
+        @Field("rtsp_source_address") rtspSourceAddress: String,
+        @Field("assigned_model_type") assignedModelType: UInt,
+        @Field("assigned_model_index") assignedModelIndex: UInt,
+        @Field("additional_info") additionalInfo: String
+    )
+
+    @FormUrlEncoded
+    @POST("edge-device-restart")
+    suspend fun restartEdgeDevice(
+        @Field("edge_server_id") edgeServerId: UInt,
+        @Field("process_index") processIndex: Int
+    ): Response<ResponseApp<Any>>
+
+    @FormUrlEncoded
+    @POST("edge-device-start")
+    suspend fun startEdgeDevice(
+        @Field("edge_server_id") edgeServerId: UInt,
+        @Field("process_index") processIndex: Int
+    ): Response<ResponseApp<Any>>
 }

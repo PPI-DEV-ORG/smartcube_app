@@ -24,3 +24,17 @@ interface IAddEdgeDevicesUseCase {
         additionalInfo: String
     ): Flow<Resource<ResponseApp<CreateEdgeDeviceDto?>>>
 }
+
+interface IStartEdgeDeviceUseCase {
+    suspend fun invoke(
+        edgeServerId: UInt,
+        processIndex: Int
+    ): Flow<Resource<ResponseApp<out Any?>>>
+}
+
+interface IRestartEdgeDeviceUseCase {
+    suspend fun invoke(
+        edgeServerId: UInt,
+        processIndex: Int
+    ): Flow<Resource<ResponseApp<out Any?>>>
+}

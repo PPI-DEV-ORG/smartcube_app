@@ -12,11 +12,15 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import com.ppidev.smartcube.common.APP_URL
 import com.ppidev.smartcube.common.CHANGE_PASSWORD_ARG
+import com.ppidev.smartcube.common.DEVICE_PROCESS_ID
+import com.ppidev.smartcube.common.EDGE_DEVICE_ID_ARG
 import com.ppidev.smartcube.common.EDGE_SERVER_ACCESS_TOKEN
 import com.ppidev.smartcube.common.EDGE_SERVER_ID_ARG
 import com.ppidev.smartcube.common.NOTIFICATION_ARG
 import com.ppidev.smartcube.presentation.dashboard.DashboardScreen
 import com.ppidev.smartcube.presentation.dashboard.DashboardViewModel
+import com.ppidev.smartcube.presentation.edge_device.detail.DetailEdgeDeviceScreen
+import com.ppidev.smartcube.presentation.edge_device.detail.DetailEdgeDeviceViewModel
 import com.ppidev.smartcube.presentation.edge_device.form_add.FormAddEdgeDeviceScreen
 import com.ppidev.smartcube.presentation.edge_device.form_add.FormAddEdgeDeviceViewModel
 import com.ppidev.smartcube.presentation.edge_device.list.ListEdgeDeviceScreen
@@ -245,6 +249,37 @@ fun NavigationApp(navController: NavHostController) {
                 )
             }
         }
+
+        composable(
+            route = Screen.DetailEdgeDevice.screenRoute + "/{$EDGE_SERVER_ID_ARG}/{$EDGE_DEVICE_ID_ARG}/{$DEVICE_PROCESS_ID}/{vendor}/{type}",
+            arguments = listOf(
+                navArgument(EDGE_SERVER_ID_ARG) { type = NavType.IntType },
+                navArgument(EDGE_DEVICE_ID_ARG) { type = NavType.IntType },
+                navArgument(DEVICE_PROCESS_ID) { type = NavType.IntType },
+                navArgument("vendor") { type = NavType.StringType },
+                navArgument("type") { type = NavType.StringType }
+            )
+        ) {
+            val arguments = it.arguments
+            val edgeServerId = arguments?.getInt(EDGE_SERVER_ID_ARG) ?: return@composable
+            val edgeDeviceId = arguments.getInt(EDGE_DEVICE_ID_ARG) ?: return@composable
+            val processId = arguments.getInt(DEVICE_PROCESS_ID) ?: return@composable
+            val vendor = arguments.getString("vendor") ?: return@composable
+            val type = arguments.getString("type") ?: return@composable
+
+            val viewModel = hiltViewModel<DetailEdgeDeviceViewModel>()
+
+            DetailEdgeDeviceScreen(
+                state = viewModel.state,
+                onEvent = viewModel::onEvent,
+                navHostController = navController,
+                edgeDeviceId = edgeServerId.toUInt(),
+                edgeServerId = edgeDeviceId.toUInt(),
+                processId = processId,
+                vendor = vendor,
+                type = type
+            )
+        }
     }
 }
 
@@ -266,6 +301,16 @@ sealed class Screen(val screenRoute: String) {
     object ListEdgeDevices : Screen(screenRoute = "listEdgeDevices")
     object FormAddEdgeDevice : Screen(screenRoute = "addEdgeDevice")
     object DetailEdgeServer : Screen(screenRoute = "detailEdgeServer")
+    object DetailEdgeDevice : Screen(screenRoute = "detailEdgeDevice")
+
+    fun withArgs(vararg args: String): String {
+        return buildString {
+            append(screenRoute)
+            args.forEach { arg ->
+                append("/$arg")
+            }
+        }
+    }
 }
 
 
