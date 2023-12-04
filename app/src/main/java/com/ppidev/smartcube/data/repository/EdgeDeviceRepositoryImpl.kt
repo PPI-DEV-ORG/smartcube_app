@@ -9,6 +9,7 @@ import com.ppidev.smartcube.data.remote.api.SmartCubeApi
 import com.ppidev.smartcube.data.remote.dto.CreateEdgeDeviceDto
 import com.ppidev.smartcube.data.remote.dto.CreateEdgeServerDto
 import com.ppidev.smartcube.data.remote.dto.EdgeDevicesInfoDto
+import retrofit2.HttpException
 import javax.inject.Inject
 
 class EdgeDeviceRepositoryImpl @Inject constructor(
@@ -64,23 +65,23 @@ class EdgeDeviceRepositoryImpl @Inject constructor(
     ): ResponseApp<CreateEdgeDeviceDto?> {
         try {
             val response = smartCubeApi.createEdgeDevice(
-                edgeServerId,
-                vendorName,
-                vendorNumber,
-                type,
-                sourceType,
-                devSourceId,
-                rtspSourceAddress,
-                assignedModelType,
-                assignedModelIndex,
-                additionalInfo
+                edgeServerId = edgeServerId,
+                vendorName = vendorName,
+                vendorNumber = vendorNumber,
+                type = type,
+                sourceType = sourceType,
+                devSourceId = devSourceId,
+                rtspSourceAddress = rtspSourceAddress,
+                additionalInfo = additionalInfo,
+                assignedModelType = assignedModelType,
+                assignedModelIndex = assignedModelIndex
             )
 
             if (!response.isSuccessful) {
                 val errorResponse = response.errorBody()?.string()
                 return Gson().fromJson(
                     errorResponse,
-                    object : TypeToken<ResponseApp<CreateEdgeServerDto?>>() {}.type
+                    object : TypeToken<ResponseApp<CreateEdgeDeviceDto?>>() {}.type
                 )
             }
 
@@ -97,6 +98,13 @@ class EdgeDeviceRepositoryImpl @Inject constructor(
                 statusCode = response.code(),
                 message = responseBody.message,
                 data = responseBody.data
+            )
+        } catch (e: HttpException) {
+            return ResponseApp(
+                status = false,
+                statusCode = EExceptionCode.RepositoryError.code,
+                message = e.localizedMessage ?: "Repository Error",
+                data = null
             )
         } catch (e: Exception) {
             return ResponseApp(
@@ -189,5 +197,65 @@ class EdgeDeviceRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getDetailEdgeDevice(edgeDeviceId: UInt) {
+    }
+
+    override suspend fun updateEdgeDevice(
+        edgeDeviceId: UInt,
+        edgeServerId: UInt,
+        vendorName: String,
+        vendorNumber: String,
+        type: String,
+        sourceType: String,
+        devSourceId: String,
+        rtspSourceAddress: String,
+        assignedModelType: UInt,
+        assignedModelIndex: UInt,
+        additionalInfo: String
+    ): ResponseApp<String?> {
+        try {
+            val response = smartCubeApi.updateEdgeDevice(
+                edgeDeviceId,
+                edgeServerId,
+                vendorName,
+                vendorNumber,
+                type,
+                sourceType,
+                devSourceId,
+                rtspSourceAddress,
+                assignedModelType,
+                assignedModelIndex,
+                additionalInfo
+            )
+
+            if (!response.isSuccessful) {
+                val errorResponse = response.errorBody()?.string()
+                return Gson().fromJson(
+                    errorResponse,
+                    object : TypeToken<ResponseApp<String?>>() {}.type
+                )
+            }
+
+            val responseBody = response.body()
+                ?: return ResponseApp(
+                    status = response.isSuccessful,
+                    statusCode = response.code(),
+                    message = response.message(),
+                    data = null
+                )
+
+            return ResponseApp(
+                status = responseBody.status,
+                statusCode = response.code(),
+                message = responseBody.message,
+                data = "Success"
+            )
+        } catch (e: Exception) {
+            return ResponseApp(
+                status = false,
+                statusCode = EExceptionCode.RepositoryError.code,
+                message = e.message ?: "Repository Error",
+                data = null
+            )
+        }
     }
 }

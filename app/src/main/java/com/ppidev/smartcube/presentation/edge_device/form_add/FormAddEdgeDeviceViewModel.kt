@@ -136,7 +136,7 @@ class FormAddEdgeDeviceViewModel @Inject constructor(
             ).onEach {
                 when (it) {
                     is Resource.Error -> {
-                        Log.d("ADD_ERR", it.message.toString())
+                        Log.d("ADD_ERR", "code ${it.statusCode} : " + it.message.toString())
                     }
                     is Resource.Loading -> {}
                     is Resource.Success -> {

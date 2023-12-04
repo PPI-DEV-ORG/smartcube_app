@@ -25,6 +25,8 @@ import com.ppidev.smartcube.presentation.edge_device.form_add.FormAddEdgeDeviceS
 import com.ppidev.smartcube.presentation.edge_device.form_add.FormAddEdgeDeviceViewModel
 import com.ppidev.smartcube.presentation.edge_device.list.ListEdgeDeviceScreen
 import com.ppidev.smartcube.presentation.edge_device.list.ListEdgeDeviceViewModel
+import com.ppidev.smartcube.presentation.edge_device.update.UpdateEdgeDeviceScreen
+import com.ppidev.smartcube.presentation.edge_device.update.UpdateEdgeDeviceViewModel
 import com.ppidev.smartcube.presentation.edge_server.detail.DetailEdgeServerScreen
 import com.ppidev.smartcube.presentation.edge_server.detail.DetailEdgeServerViewModel
 import com.ppidev.smartcube.presentation.edge_server.form_add.FormAddEdgeServerScreen
@@ -273,11 +275,36 @@ fun NavigationApp(navController: NavHostController) {
                 state = viewModel.state,
                 onEvent = viewModel::onEvent,
                 navHostController = navController,
-                edgeDeviceId = edgeServerId.toUInt(),
-                edgeServerId = edgeDeviceId.toUInt(),
+                edgeDeviceId = edgeDeviceId.toUInt(),
+                edgeServerId = edgeServerId.toUInt(),
                 processId = processId,
                 vendor = vendor,
                 type = type
+            )
+        }
+
+        composable(
+            route = Screen.UpdateEdgeDevice.screenRoute + "/{${EDGE_SERVER_ID_ARG}}/{${EDGE_DEVICE_ID_ARG}}",
+            arguments = listOf(
+                navArgument(EDGE_SERVER_ID_ARG) { type = NavType.IntType },
+                navArgument(EDGE_DEVICE_ID_ARG) { type = NavType.IntType },
+            )
+        ) {
+            val arguments = it.arguments
+            val edgeServerId = arguments?.getInt(EDGE_SERVER_ID_ARG)
+            val edgeDeviceId = arguments?.getInt(EDGE_DEVICE_ID_ARG)
+
+            if (edgeServerId == null || edgeDeviceId == null) {
+                return@composable
+            }
+
+            val viewModel = hiltViewModel<UpdateEdgeDeviceViewModel>()
+
+            UpdateEdgeDeviceScreen(
+                state = viewModel.state,
+                onEvent = viewModel::onEvent,
+                edgeServerId = edgeServerId.toUInt(),
+                edgeDeviceId = edgeDeviceId.toUInt()
             )
         }
     }
@@ -302,6 +329,7 @@ sealed class Screen(val screenRoute: String) {
     object FormAddEdgeDevice : Screen(screenRoute = "addEdgeDevice")
     object DetailEdgeServer : Screen(screenRoute = "detailEdgeServer")
     object DetailEdgeDevice : Screen(screenRoute = "detailEdgeDevice")
+    object UpdateEdgeDevice : Screen(screenRoute = "updateEdgeDevice")
 
     fun withArgs(vararg args: String): String {
         return buildString {
