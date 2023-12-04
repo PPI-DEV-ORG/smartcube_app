@@ -12,19 +12,19 @@ data class CreateEdgeDeviceDto(
     val vendorName: String,
 
     @SerializedName("vendor_number")
-    val vendorNumber: String,
+    val vendorNumber: String? = "",
 
     @SerializedName("type")
-    val type: String,
+    val type: String? = "",
 
     @SerializedName("source_type")
-    val sourceType: String,
+    val sourceType: String? ="",
 
     @SerializedName("dev_source_id")
-    val devSourceId: String,
+    val devSourceId: String? = "",
 
     @SerializedName("rtsp_source_address")
-    val rtspSourceAddress: String,
+    val rtspSourceAddress: String? ="",
 
     @SerializedName("assigned_model_type")
     val assignedModelType: UInt,
@@ -33,7 +33,7 @@ data class CreateEdgeDeviceDto(
     val assignedModelIndex: UInt,
 
     @SerializedName("additional_info")
-    val additionalInfo: UInt,
+    val additionalInfo: String? = "",
 )
 
 

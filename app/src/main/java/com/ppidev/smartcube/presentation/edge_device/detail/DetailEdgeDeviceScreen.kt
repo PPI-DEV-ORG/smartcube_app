@@ -1,5 +1,6 @@
 package com.ppidev.smartcube.presentation.edge_device.detail
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,6 +20,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import com.ppidev.smartcube.ui.Screen
 import com.ppidev.smartcube.ui.components.modal.DialogApp
 
 @Composable
@@ -67,12 +69,10 @@ fun DetailEdgeDeviceScreen(
                 }
 
                 IconButton(onClick = {
-                    navHostController.navigate("")
+                    navHostController.navigate(Screen.UpdateEdgeDevice.withArgs("$edgeServerId", "$edgeDeviceId"))
                 }) {
                     Icon(imageVector = Icons.Filled.Edit, contentDescription = "edit")
                 }
-
-
 
                 if (state.isDialogMsgOpen) {
                     DialogApp(

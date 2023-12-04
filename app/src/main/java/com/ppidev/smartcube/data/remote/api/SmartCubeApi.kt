@@ -107,10 +107,11 @@ interface EdgeDeviceApi {
         @Field("source_type") sourceType: String,
         @Field("dev_source_id") devSourceId: String,
         @Field("rtsp_source_address") rtspSourceAddress: String,
+        @Field("additional_info") additionalInfo: String,
         @Field("assigned_model_type") assignedModelType: UInt,
-        @Field("assigned_model_index") assignedModelIndex: UInt,
-        @Field("additional_info") additionalInfo: String
+        @Field("assigned_model_index") assignedModelIndex: UInt
     ): Response<ResponseApp<CreateEdgeDeviceDto?>>
+
 
     @GET("edge-device/{edgeServerId}")
     suspend fun getEdgeDevices(
@@ -125,6 +126,7 @@ interface EdgeDeviceApi {
     @FormUrlEncoded
     @PUT("edge-device/{edgeDeviceId}")
     suspend fun updateEdgeDevice(
+        @Path("edgeDeviceId") edgeDeviceId: UInt,
         @Field("edge_server_id") edgeServerId: UInt,
         @Field("vendor_name") vendorName: String,
         @Field("vendor_number") vendorNumber: String,
@@ -135,7 +137,7 @@ interface EdgeDeviceApi {
         @Field("assigned_model_type") assignedModelType: UInt,
         @Field("assigned_model_index") assignedModelIndex: UInt,
         @Field("additional_info") additionalInfo: String
-    )
+    ): Response<ResponseApp<Any>>
 
     @FormUrlEncoded
     @POST("edge-device-restart")

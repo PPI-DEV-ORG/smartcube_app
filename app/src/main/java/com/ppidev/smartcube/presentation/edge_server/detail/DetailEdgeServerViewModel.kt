@@ -142,6 +142,7 @@ class DetailEdgeServerViewModel @Inject constructor(
     }
 
     private fun publishTopic(mqttPubTopic: String) {
+        Log.d("PUBLISH", mqttPubTopic)
         viewModelScope.launch {
             mqttService.publishToTopic(
                 mqttPubTopic,

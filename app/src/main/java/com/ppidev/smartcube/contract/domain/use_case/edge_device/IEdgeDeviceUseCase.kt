@@ -38,3 +38,19 @@ interface IRestartEdgeDeviceUseCase {
         processIndex: Int
     ): Flow<Resource<ResponseApp<out Any?>>>
 }
+
+interface IUpdateEdgeDeviceUseCase {
+    suspend fun invoke(
+        edgeDeviceId: UInt,
+        edgeServerId: UInt,
+        vendorName: String,
+        vendorNumber: String,
+        type: String,
+        sourceType: String,
+        devSourceId: String,
+        rtspSourceAddress: String,
+        assignedModelType: UInt,
+        assignedModelIndex: UInt,
+        additionalInfo: String
+    ): Flow<Resource<ResponseApp<String?>>>
+}
