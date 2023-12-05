@@ -1,6 +1,6 @@
 package com.ppidev.smartcube.domain.model
 
-data class DeviceStatusModel(
+data class ServerStatusModel(
     val cpuTemp: String,
     val memoryFree: String,
     val storageFree: String,

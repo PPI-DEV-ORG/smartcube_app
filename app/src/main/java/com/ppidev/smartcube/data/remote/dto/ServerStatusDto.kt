@@ -1,11 +1,11 @@
 package com.ppidev.smartcube.data.remote.dto
 
-import com.ppidev.smartcube.domain.model.DeviceStatusModel
+import com.ppidev.smartcube.domain.model.ServerStatusModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class DeviceStatusDto(
+data class ServerStatusDto(
     @SerialName("cpu_temp")
     val cpuTemp: String,
 
@@ -49,8 +49,8 @@ data class Storage(
     val diskUsage: String
 )
 
-fun DeviceStatusDto.toDeviceStatusModel(): DeviceStatusModel {
-    return DeviceStatusModel(
+fun ServerStatusDto.toDeviceStatusModel(): ServerStatusModel {
+    return ServerStatusModel(
         cpuTemp = cpuTemp,
         memoryFree = memoryFree,
         storageFree = storage.freeSpace,

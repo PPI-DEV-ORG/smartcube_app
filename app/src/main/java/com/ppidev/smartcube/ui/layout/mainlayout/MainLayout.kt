@@ -61,14 +61,6 @@ fun MainLayout(
             screen = Screen.ListEdgeServer
         ),
         NavigationItem(
-            title = "Devices",
-            unselectedIcon = Icons.Outlined.DeviceHub,
-            selectedIcon = Icons.Filled.DeviceHub,
-            hasNews = false,
-            badgeCount = null,
-            screen = Screen.ListEdgeDevices
-        ),
-        NavigationItem(
             title = "Profile",
             unselectedIcon = Icons.Outlined.Person,
             selectedIcon = Icons.Filled.Person,

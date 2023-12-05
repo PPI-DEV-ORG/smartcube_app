@@ -1,6 +1,4 @@
-package com.ppidev.smartcube.presentation.dashboard.model
-
-import kotlinx.serialization.Serializable
+package com.ppidev.smartcube.utils
 
 object CommandMqtt {
     const val GET_SERVER_INFO = "/hostDeviceStatus"

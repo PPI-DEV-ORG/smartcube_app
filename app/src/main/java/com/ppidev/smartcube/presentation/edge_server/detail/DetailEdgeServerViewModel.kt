@@ -12,9 +12,8 @@ import com.ppidev.smartcube.common.Resource
 import com.ppidev.smartcube.contract.data.remote.service.IMqttService
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IEdgeDevicesInfoUseCase
 import com.ppidev.smartcube.data.remote.dto.DeviceConfigDto
-import com.ppidev.smartcube.data.remote.dto.DeviceStatusDto
-import com.ppidev.smartcube.domain.model.DeviceConfigModel
-import com.ppidev.smartcube.presentation.dashboard.model.CommandMqtt
+import com.ppidev.smartcube.data.remote.dto.ServerStatusDto
+import com.ppidev.smartcube.utils.CommandMqtt
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -105,7 +104,7 @@ class DetailEdgeServerViewModel @Inject constructor(
 
                     when (command) {
                         CommandMqtt.GET_SERVER_INFO -> {
-                            val dataDecoded = Json.decodeFromString<DeviceStatusDto>(
+                            val dataDecoded = Json.decodeFromString<ServerStatusDto>(
                                 gson.toJson(data)
                             )
                             updateServerInfo(dataDecoded)
@@ -125,7 +124,7 @@ class DetailEdgeServerViewModel @Inject constructor(
         }
     }
 
-    private fun updateServerInfo(serverInfo: DeviceStatusDto) {
+    private fun updateServerInfo(serverInfo: ServerStatusDto) {
         viewModelScope.launch {
             state = state.copy(
                 serverInfo = serverInfo

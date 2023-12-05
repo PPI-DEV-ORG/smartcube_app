@@ -140,7 +140,7 @@ fun NavigationApp(navController: NavHostController) {
             val viewModel = hiltViewModel<DashboardViewModel>()
             val state = viewModel.state
             DashboardScreen(
-                state = state, onEvent = viewModel::onEvent
+                state = state, onEvent = viewModel::onEvent, navHostController = navController
             )
         }
 
@@ -194,17 +194,6 @@ fun NavigationApp(navController: NavHostController) {
             ListEdgeServerScreen(
                 state = viewModel.state,
                 event = viewModel::onEvent,
-                navHostController = navController
-            )
-        }
-
-        composable(
-            route = Screen.ListEdgeDevices.screenRoute
-        ) {
-            val viewModel = hiltViewModel<ListEdgeDeviceViewModel>()
-            ListEdgeDeviceScreen(
-                state = viewModel.state,
-                onEvent = viewModel::onEvent,
                 navHostController = navController
             )
         }

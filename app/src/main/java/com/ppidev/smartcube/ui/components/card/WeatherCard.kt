@@ -1,4 +1,4 @@
-package com.ppidev.smartcube.ui.components
+package com.ppidev.smartcube.ui.components.card
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
