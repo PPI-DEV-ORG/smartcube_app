@@ -1,102 +1,64 @@
 package com.ppidev.smartcube.presentation.dashboard
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import android.annotation.SuppressLint
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Circle
-import androidx.compose.material3.BottomSheetDefaults
-import androidx.compose.material3.BottomSheetScaffold
-import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Text
-import androidx.compose.material3.rememberBottomSheetScaffoldState
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.ppidev.smartcube.ui.components.HeaderSection
-import com.ppidev.smartcube.ui.components.WeatherCardV2
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.navigation.NavHostController
+import com.ppidev.smartcube.ui.Screen
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("RememberReturnType")
 @Composable
 fun DashboardScreen(
     state: DashboardState,
-    onEvent: (DashboardEvent) -> Unit
+    onEvent: (DashboardEvent) -> Unit,
+    navHostController: NavHostController
 ) {
     val intervalSync = 10000L
-    val scope = rememberCoroutineScope()
-    val bottomSheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
+    val coroutineScope = rememberCoroutineScope()
+    val scrollState = rememberScrollState()
+    var selectedTabIndex by remember { mutableIntStateOf(0) }
 
-//    val context = LocalContext.current
+    val nestedScrollConnection = remember {
+        object : NestedScrollConnection {
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
 
-//    val notificationManager = MyNotificationManager(context)
-//    fun showNotification() {
-//        notificationManager.showNotification(channel = ENotificationChannel.TEST_CHANNEL) {
-//            setTitle("TEST TITLE")
-//            setBody("test desc")
-//
-//            setSmallIcon(R.drawable.ic_stat_notification)
-//
-//            val intent = Intent(
-//                Intent.ACTION_VIEW,
-//                "$NOTIFICATION_URL/$NOTIFICATION_ARG=${123}".toUri(),
-//                context,
-//                MainActivity::class.java
-//            )
-//
-//            val flag =
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-//                    PendingIntent.FLAG_IMMUTABLE
-//                else
-//                    0
-//
-//            setIntent(
-//                intent
-//            )
-//            setPendingIntent(
-//                TaskStackBuilder.create(context).run {
-//                    addNextIntentWithParentStack(intent)
-//                    getPendingIntent(1, flag)
-//                }
-//            )
-//        }
-//    }
+                val delta = -available.y
+                coroutineScope.launch {
+                    if (scrollState.isScrollInProgress.not()) {
+                        scrollState.scrollBy(delta)
+                    }
+                }
+                return Offset.Zero
+            }
+        }
+    }
 
     LaunchedEffect(Unit) {
-        onEvent(DashboardEvent.SubscribeToMqttService)
-        onEvent(DashboardEvent.GetListModelInstalled)
-        onEvent(DashboardEvent.GetDeviceConfig)
-        onEvent(DashboardEvent.GetListNotification)
+        onEvent(DashboardEvent.GetListEdgeServer)
         onEvent(DashboardEvent.GetCurrentWeather)
+    }
+
+    LaunchedEffect(key1 = state.edgeServerId) {
+        if (state.edgeServerId != null) {
+            onEvent(DashboardEvent.GetDevicesConfig(state.edgeServerId))
+        }
     }
 
     DisposableEffect(Unit) {
@@ -105,217 +67,35 @@ fun DashboardScreen(
         }
     }
 
-    LazyColumn(
-        modifier = Modifier
-            .padding(bottom = 80.dp)
-            .padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+    Column(
+        modifier = Modifier.fillMaxSize().nestedScroll(nestedScrollConnection)
     ) {
-
-        item {
-            UserSection(modifier = Modifier.padding(bottom = 18.dp))
-        }
-
-//        item {
-//            WeatherCardV2(
-//                tempC = "${state.weather?.current?.tempC}° C",
-//                feelsLike = "${state.weather?.current?.feelslikeC}° C",
-//                location = "${state.weather?.location?.name}",
-//                condition = "${state.weather?.current?.condition?.text}"
-//            )
-//        }
-
-        item {
-            HeaderSection(title = "Latest notifications", isShowMoreExist = false)
-        }
-
-        item {
-            LatestNotificationSection(
-                isLoading = state.isLoadingNotification,
-                listNotification = state.notifications,
-                modifier = Modifier
-                    .padding(bottom = 24.dp)
-            )
-        }
-
-        item {
-            HeaderSection(
-                title = "Server summary",
-                isShowMoreExist = true,
-                textShowMore = "Change Server",
-                onClickShowMore = {
-                    onEvent(DashboardEvent.OpenBottomSheet)
-                })
-        }
-
-        item {
-            ServerSummarySection(
-                resourceState = state.serverSummary,
-                modifier = Modifier.padding(bottom = 24.dp)
-            )
-        }
-
-        item {
-            HeaderSection(title = "List models", isShowMoreExist = true, onClickShowMore = {})
-        }
-
-        itemsIndexed(state.listModelsML) { _, d ->
-            CardModelItem(modelName = d.name, version = d.version)
-        }
-
-        item {
-            HeaderSection(title = "List cameras", isShowMoreExist = true, onClickShowMore = {})
-        }
-
-        itemsIndexed(state.listDevicesConfig) { _, d ->
-            CardCameraItem(type = d.type, deviceLocation = d.additionalInfo.deviceLocation)
-        }
-    }
-
-    if (state.openBottomSheet) {
-        ModalBottomSheet(
-            sheetState = bottomSheetState,
-            dragHandle = {
-                Column(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        BottomSheetDefaults.DragHandle()
-                    }
-
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                    ) {
-                        Text(
-                            text = "Select Edge Server",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                        Spacer(modifier = Modifier.height(10.dp))
-                    }
-                    Divider()
-                }
+        DashboardContentView(
+            username = state.username,
+            email = state.email,
+            selectedTabIndex = selectedTabIndex,
+            listEdgeServer = state.listServer,
+            listEdgeDevices = state.listDevices,
+            isLoadingProfile = false,
+            isLoadingListDevices = state.loading.isLoadingListDevices,
+            isLoadingListServer = state.loading.isLoadingListServer,
+            onTabChange = { index, _ ->
+                selectedTabIndex = index
+                onEvent(DashboardEvent.SetEdgeServerId(state.listServerId[index]))
             },
-            onDismissRequest = { onEvent(DashboardEvent.CloseBottomSheet) }) {
-            BottomSheetContent(
-                indexSelected = state.serverSelected,
-                onSelectServer = {
-                    onEvent(DashboardEvent.OnSelectServer(it))
-                },
-                onHideButtonClick = {
-                    scope.launch { bottomSheetState.hide() }.invokeOnCompletion {
-                        if (!bottomSheetState.isVisible) {
-                            onEvent(DashboardEvent.CloseBottomSheet)
-                        }
-                    }
-                }
-            )
-        }
-    }
-
-    LaunchedEffect(state.serverSummary) {
-        while (true) {
-
-            delay(intervalSync)
-
-            onEvent(DashboardEvent.GetServerSummary)
-
-        }
-    }
-}
-
-
-@Composable
-fun BottomSheetContent(
-    onSelectServer: (index: Int) -> Unit,
-    onHideButtonClick: () -> Unit,
-    indexSelected: Int = 0,
-) {
-    LazyColumn(
-        contentPadding = PaddingValues(16.dp)
-    ) {
-        items(5) {
-            ListItem(
-                modifier = Modifier
-                    .padding(bottom = 8.dp)
-                    .padding(horizontal = 16.dp)
-                    .clip(
-                        RoundedCornerShape(8.dp)
-                    )
-                    .clickable {
-                        onSelectServer(it)
-                    },
-                colors = ListItemDefaults.colors(
-                    containerColor = if (indexSelected == it) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.background,
-                    headlineColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    leadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    overlineColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    supportingColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    trailingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                ),
-                headlineContent = { Text(text = "Server $it") },
-                trailingContent = {
-                    Icon(
-                        imageVector = Icons.Filled.Circle,
-                        contentDescription = null,
-                        tint = if (indexSelected == it) Color.Green else Color.Red
-                    )
-                }
-            )
-        }
-
-        item {
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                onClick = onHideButtonClick
-            ) {
-                Text(text = "Close")
+            navigateToDetailDevice = {
+                navHostController.navigate("")
+            },
+            navigateCreateNewServer = {
+                navHostController.navigate(Screen.FormAddEdgeServer.screenRoute)
             }
+        )
+    }
+
+    LaunchedEffect(state.serverInfoMQTT) {
+        while (true) {
+            delay(intervalSync)
+            onEvent(DashboardEvent.GetServerInfo)
         }
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewBottomSheetContent() {
-    BottomSheetContent(
-        onSelectServer = {},
-        onHideButtonClick = {}
-    )
-}
-
-//@Preview(showBackground = true)
-//@Composable
-//fun DashboardScreenPreview() {
-//    SmartcubeAppTheme {
-//        DashboardScreen(
-//            state = DashboardState(
-//                notifications = emptyList(),
-//            ),
-//            onEvent = {
-////                when (it) {
-////                    DashboardEvent.GetServerSummary -> Log.d(
-////                        "DASHBOARD_EVENT",
-////                        "get server summary"
-////                    )
-////
-////                    DashboardEvent.SubscribeToMqttService -> Log.d(
-////                        "DASHBOARD_EVENT",
-////                        "subscribe to topic"
-////                    )
-////
-////                    DashboardEvent.UnsubscribeToMqttService -> Log.d(
-////                        "DASHBOARD_EVENT",
-////                        "unsubscribe to topic"
-////                    )
-////                }
-//            }
-//        )
-//    }
-//}

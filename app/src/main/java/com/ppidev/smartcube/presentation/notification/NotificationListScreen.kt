@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ppidev.smartcube.ui.Screen
-import com.ppidev.smartcube.ui.components.CardItemNotification
+import com.ppidev.smartcube.ui.components.card.CardItemNotification
 import com.ppidev.smartcube.ui.components.shimmerEffect
 
 

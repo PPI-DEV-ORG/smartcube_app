@@ -1,19 +1,29 @@
 package com.ppidev.smartcube.presentation.dashboard
 
-import com.ppidev.smartcube.data.remote.dto.WeatherDto
-import com.ppidev.smartcube.domain.model.DeviceConfigModel
-import com.ppidev.smartcube.domain.model.NotificationModel
-import com.ppidev.smartcube.domain.model.DeviceStatusModel
-import com.ppidev.smartcube.domain.model.MLModel
+import com.ppidev.smartcube.data.remote.dto.EdgeDevice
+import com.ppidev.smartcube.domain.model.ServerStatusModel
 
 data class DashboardState(
-    val isLoadingNotification: Boolean = false,
-    val isLoadingServerSummary: Boolean = false,
-    val serverSummary: DeviceStatusModel = DeviceStatusModel("0", "0", "0", "0",  "0"),
-    val notifications: List<NotificationModel> = emptyList(),
-    val listModelsML: List<MLModel> = emptyList(),
-    val listDevicesConfig: List<DeviceConfigModel> = emptyList(),
-    val weather: WeatherDto? = null,
-    val openBottomSheet: Boolean = false,
-    val serverSelected: Int = 0
-)
+    val edgeServerId: UInt? = null,
+    val username: String = "",
+    val email: String = "",
+    val serverInfoMQTT: ServerStatusModel = ServerStatusModel("0", "0", "0", "0", "0"),
+    val listServer: List<String> = emptyList(),
+    val listServerId: List<UInt> = emptyList(),
+    val listDevices: List<EdgeDevice> = emptyList(),
+    val mqttPublishTopic: String? = null,
+    val mqttSubscribeTopic: String? = null,
+    val error: Error = Error(),
+    val loading: Loading = Loading()
+) {
+    data class Error(
+        val message: String = "",
+        val listServerError: String = "",
+        val listDevicesError: String = ""
+    )
+
+    data class Loading(
+        val isLoadingListServer: Boolean = false,
+        val isLoadingListDevices: Boolean = false
+    )
+}

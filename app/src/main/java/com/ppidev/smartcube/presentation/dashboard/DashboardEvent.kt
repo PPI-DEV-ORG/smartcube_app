@@ -1,21 +1,10 @@
 package com.ppidev.smartcube.presentation.dashboard
 
 sealed class DashboardEvent {
-    object SubscribeToMqttService : DashboardEvent()
-
-    object GetListNotification : DashboardEvent()
-    object GetServerSummary : DashboardEvent()
-    object GetListModelInstalled : DashboardEvent()
-
-    object GetDeviceConfig : DashboardEvent()
-
+    object GetServerInfo: DashboardEvent()
     object UnsubscribeToMqttService : DashboardEvent()
-
     object GetCurrentWeather : DashboardEvent()
-
-    object OpenBottomSheet : DashboardEvent()
-
-    object CloseBottomSheet : DashboardEvent()
-
-    data class OnSelectServer(val index: Int, val callback: (() -> Unit)? = null) : DashboardEvent()
+    data class GetDevicesConfig(val serverId: UInt) : DashboardEvent()
+    object GetListEdgeServer : DashboardEvent()
+    data class SetEdgeServerId(val id: UInt) : DashboardEvent()
 }
