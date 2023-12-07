@@ -31,7 +31,7 @@ data class EdgeServerItemDto(
     val id: UInt,
 
     @SerializedName("name")
-    val name: String? = "",
+    val name: String = "",
 
     @SerializedName("vendor")
     val vendor: String? = "",

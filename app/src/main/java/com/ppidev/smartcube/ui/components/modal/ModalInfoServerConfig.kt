@@ -1,19 +1,26 @@
 package com.ppidev.smartcube.ui.components.modal
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context.CLIPBOARD_SERVICE
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowColumn
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -26,7 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -37,6 +44,7 @@ import com.ppidev.smartcube.R
 import com.ppidev.smartcube.ui.components.RoundedIcon
 
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ModalInfoServerConfig(
     modifier: Modifier = Modifier,
@@ -45,10 +53,13 @@ fun ModalInfoServerConfig(
     edgeServerToken: String,
     onClose: () -> Unit
 ) {
+    val context = LocalContext.current
+    val clipboardManager =
+        context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
     Dialog(
         onDismissRequest = { },
     ) {
-        Box(
+        Column(
             modifier = modifier
                 .shadow(
                     elevation = 4.dp,
@@ -56,18 +67,32 @@ fun ModalInfoServerConfig(
                     ambientColor = Color(0x40535353)
                 )
                 .width(358.dp)
-                .height(638.dp)
                 .background(color = Color.White, shape = RoundedCornerShape(size = 8.dp))
         ) {
-            Column(
-                modifier = Modifier.padding(24.dp)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
+                    modifier = Modifier.padding(start = 8.dp),
                     text = "Success added new server",
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Medium
                 )
-                Spacer(modifier = Modifier.size(28.dp))
+                IconButton(onClick = {
+                    onClose()
+                }) {
+                    Icon(imageVector = Icons.Outlined.Close, contentDescription = "close")
+                }
+            }
+            FlowColumn(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 24.dp)
+            ) {
                 Text(
                     text = "Please config your server script at environment file before close this modal popup",
                     style = MaterialTheme.typography.bodyMedium
@@ -96,7 +121,10 @@ fun ModalInfoServerConfig(
                             color = Color.Gray
                         )
                     }
-                    IconButton(onClick = { }) {
+                    IconButton(onClick = {
+                        clipboardManager.setPrimaryClip(ClipData.newPlainText("text", publishTopic))
+                        Toast.makeText(context, "Copied to Clipboard", Toast.LENGTH_SHORT).show()
+                    }) {
                         Icon(
                             imageVector = Icons.Filled.ContentCopy,
                             contentDescription = "copy",
@@ -127,7 +155,15 @@ fun ModalInfoServerConfig(
                             color = Color.Gray
                         )
                     }
-                    IconButton(onClick = { }) {
+                    IconButton(onClick = {
+                        clipboardManager.setPrimaryClip(
+                            ClipData.newPlainText(
+                                "text",
+                                subscribeTopic
+                            )
+                        )
+                        Toast.makeText(context, "Copied to Clipboard", Toast.LENGTH_SHORT).show()
+                    }) {
                         Icon(
                             imageVector = Icons.Filled.ContentCopy,
                             contentDescription = "copy",
@@ -143,8 +179,21 @@ fun ModalInfoServerConfig(
                 Spacer(modifier = Modifier.size(8.dp))
 
                 Row {
-                    Text(text = edgeServerToken, modifier = Modifier.weight(1f), color = Color.Gray)
-                    IconButton(onClick = { }) {
+                    Text(
+                        text = edgeServerToken,
+                        modifier = Modifier.weight(1f),
+                        color = Color.Gray,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    IconButton(onClick = {
+                        clipboardManager.setPrimaryClip(
+                            ClipData.newPlainText(
+                                "text",
+                                edgeServerToken
+                            )
+                        )
+                        Toast.makeText(context, "Copied to Clipboard", Toast.LENGTH_SHORT).show()
+                    }) {
                         Icon(
                             imageVector = Icons.Filled.ContentCopy,
                             contentDescription = "copy",
@@ -154,25 +203,27 @@ fun ModalInfoServerConfig(
                 }
 
                 Spacer(modifier = Modifier.size(32.dp))
+            }
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Button(modifier = Modifier
-                        .width(113.dp)
-                        .height(32.dp),
-                        shape = RoundedCornerShape(4.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.secondary,
-                            contentColor = MaterialTheme.colorScheme.onSecondary
-                        ),
-                        onClick = {
-                            onClose()
-                        }
-                    ) {
-                        Text(text = "Close", style = MaterialTheme.typography.bodyMedium)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.End)
+                    .padding(horizontal = 8.dp, vertical = 2.dp),
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                Button(modifier = Modifier
+                    .width(113.dp),
+                    shape = RoundedCornerShape(4.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        contentColor = MaterialTheme.colorScheme.onSecondary
+                    ),
+                    onClick = {
+                        onClose()
                     }
+                ) {
+                    Text(text = "Close", style = MaterialTheme.typography.bodyMedium)
                 }
             }
         }

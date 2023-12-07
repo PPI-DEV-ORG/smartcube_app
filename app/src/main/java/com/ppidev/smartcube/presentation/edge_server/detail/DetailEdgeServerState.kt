@@ -8,5 +8,6 @@ data class DetailEdgeServerState(
     val isLoading: Boolean = false,
     val edgeDevicesInfo: EdgeDevicesInfoDto? = null,
     val serverInfo: ServerStatusDto? = null,
-    val devices: List<DeviceConfigDto> = emptyList()
+    val devices: List<DeviceConfigDto> = emptyList(),
+    val isDialogOpen: Boolean = false
 )

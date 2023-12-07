@@ -109,22 +109,12 @@ class DashboardViewModel @Inject constructor(
                 is Resource.Success -> {
                     Log.d("LIST_SERVER", "success, ${it.data?.message}")
                     val res = it.data?.data
-                    var servers: List<String> = emptyList()
-                    var serverIds: List<UInt> = emptyList()
-
-                    if (res != null) {
-                        servers = res.map { item ->
-                            item.name
-                        } as List<String>
-
-                        serverIds = res.map { item ->
-                            item.id
-                        }
-                    }
+                    val servers: List<String> = res?.map { server -> server.name } ?: emptyList()
+                    val serverIds: List<UInt> = res?.map { server -> server.id } ?: emptyList()
 
                     state = state.copy(
                         listServer = servers,
-                        edgeServerId = res?.get(0)?.id,
+                        edgeServerId = res?.firstOrNull()?.id,
                         listServerId = serverIds,
                         loading = DashboardState.Loading(
                             isLoadingListServer = false

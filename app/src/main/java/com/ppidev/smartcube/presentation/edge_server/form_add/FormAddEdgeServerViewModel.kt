@@ -1,6 +1,5 @@
 package com.ppidev.smartcube.presentation.edge_server.form_add
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -76,9 +75,8 @@ class FormAddEdgeServerViewModel @Inject constructor(
         }
 
         val errorState = FormAddEdgeServerState.ErrorFormAddEdgeServer(
-            serverName = if (state.serverName.isEmpty()) "Cannot be empty" else "",
-            description = if (state.description.isEmpty()) "Cannot be empty" else "",
-            serverVendor = if (state.serverVendor.isEmpty()) "Cannot be empty" else ""
+            serverName = if (state.serverName.isEmpty()) "Cannot empty" else "",
+            serverVendor = if (state.serverVendor.isEmpty()) "Cannot empty" else ""
         )
 
         if (errorState.hasErrors()) {
@@ -99,15 +97,19 @@ class FormAddEdgeServerViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
-                    state = state.copy(
-                        isLoading = false,
-                        message = "Success add to server",
-                        isSuccess = true,
-                        edgeServerId = it.data?.data?.edgeServerId,
-                        edgeServerAccessToken = it.data?.data?.egdeServerAccessToken
-                    )
+                    val responseData = it.data?.data
 
-                    Log.d("RES", it.data?.data.toString())
+                    if (responseData != null) {
+                        state = state.copy(
+                            isLoading = false,
+                            message = "Success add to server",
+                            isSuccess = true,
+                            edgeServerId = responseData.edgeServerId,
+                            edgeServerAccessToken = responseData.egdeServerAccessToken,
+                            mqttPublishTopic = responseData.mqttPubTopic,
+                            mqttSubscribeTopic = responseData.mqttSubTopic
+                        )
+                    }
                 }
 
                 is Resource.Error -> {
