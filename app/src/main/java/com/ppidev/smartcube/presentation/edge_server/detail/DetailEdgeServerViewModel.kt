@@ -52,8 +52,12 @@ class DetailEdgeServerViewModel @Inject constructor(
                         mqttService
                             .unsubscribeFromTopic(mqttSubTopic)
                     }
+                }
 
-                    mqttService.disconnect()
+                is DetailEdgeServerEvent.SetDialogStatus -> {
+                    state = state.copy(
+                        isDialogOpen = event.status
+                    )
                 }
             }
         }
@@ -90,8 +94,6 @@ class DetailEdgeServerViewModel @Inject constructor(
             val mqttPubTopic = state.edgeDevicesInfo?.mqttPubTopic
 
             if (mqttSubTopic != null && mqttPubTopic != null) {
-                mqttService.connect()
-
                 mqttService.subscribeToTopic(mqttSubTopic) { _, msg ->
                     val json = String(msg.payload)
                     val result = gson.fromJson<Map<String, Any>>(

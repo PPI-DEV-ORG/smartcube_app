@@ -67,7 +67,7 @@ fun ListEdgeServerScreen(
                 .fillMaxWidth()
                 .background(Color.White)
                 .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)),
-            contentPadding = PaddingValues(bottom = 90.dp, top =16.dp),
+            contentPadding = PaddingValues(bottom = 120.dp, top =16.dp, start = 16.dp, end = 16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             itemsIndexed(
@@ -86,7 +86,7 @@ fun ListEdgeServerScreen(
                         }
                         .padding(16.dp)
                 ) {
-                    Text(text = "${item.name}", fontSize = 20.sp)
+                    Text(text = item.name, fontSize = 20.sp)
                     Text(text = "${item.vendor}", fontSize = 12.sp, color = Color.Gray)
                 }
             }

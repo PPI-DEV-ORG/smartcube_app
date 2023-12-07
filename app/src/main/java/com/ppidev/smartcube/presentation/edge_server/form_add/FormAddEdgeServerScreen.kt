@@ -1,6 +1,5 @@
 package com.ppidev.smartcube.presentation.edge_server.form_add
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -9,13 +8,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Warning
@@ -27,15 +24,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -45,7 +40,7 @@ import com.ppidev.smartcube.ui.Screen
 import com.ppidev.smartcube.ui.components.TagLabel
 import com.ppidev.smartcube.ui.components.form.CustomInputField
 import com.ppidev.smartcube.ui.components.modal.DialogApp
-import com.ppidev.smartcube.ui.theme.LightGreen
+import com.ppidev.smartcube.ui.theme.Typography
 import com.ppidev.smartcube.utils.bottomBorder
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -126,7 +121,9 @@ fun FormAddEdgeServerScreen(
             horizontalArrangement = Arrangement.SpaceEvenly,
         ) {
             Button(
-                onClick = { },
+                onClick = {
+                    navHostController.popBackStack()
+                },
                 shape = RoundedCornerShape(8),
                 modifier = Modifier.weight(1f),
                 elevation = null,
@@ -165,7 +162,7 @@ fun FormAddEdgeServerScreen(
                 },
                 onConfirm = {
                     onEvent(FormAddEdgeServerEvent.HandleCloseDialog {
-                        navHostController.navigate(Screen.DetailEdgeServer.screenRoute + "?$EDGE_SERVER_ID_ARG=${state.edgeServerId}" + "&$EDGE_SERVER_ACCESS_TOKEN=${state.edgeServerAccessToken}")
+                        if (it) navHostController.navigate(Screen.DetailEdgeServer.screenRoute + "?$EDGE_SERVER_ID_ARG=${state.edgeServerId}" + "&$EDGE_SERVER_ACCESS_TOKEN=${state.edgeServerAccessToken}") else null
                     })
                 }
             )
@@ -173,14 +170,8 @@ fun FormAddEdgeServerScreen(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun FormAddEdgeServerScreenPreview() {
-//    FormAddEdgeServerScreen()
-}
-
-@Composable
-fun CardItemAddServer(
+private fun CardItemAddServer(
     titleTag: String,
     serverName: String,
     description: String,
@@ -204,19 +195,49 @@ fun CardItemAddServer(
         ) {
             CustomInputField(
                 label = "Edge Server Name",
+                customLabel = {
+                    Text(
+                        text = buildAnnotatedString {
+                            val labelSpan =
+                                Typography.bodyMedium.toSpanStyle()
+                            val labelRequired =
+                                Typography.bodyMedium.copy(
+                                    color = Color.Red,
+                                    fontWeight = FontWeight.Medium
+                                ).toSpanStyle()
+                            append(AnnotatedString("Edge Server Name", spanStyle = labelSpan))
+                            append(AnnotatedString(text = " *", spanStyle = labelRequired))
+                        },
+                    )
+                },
                 text = serverName,
                 errorText = errorServerName,
                 onTextChanged = { onServerNameChange(it) })
+            CustomInputField(
+                customLabel = {
+                    Text(
+                        text = buildAnnotatedString {
+                            val labelSpan =
+                                Typography.bodyMedium.toSpanStyle()
+                            val labelRequired =
+                                Typography.bodyMedium.copy(
+                                    color = Color.Red,
+                                    fontWeight = FontWeight.Medium
+                                ).toSpanStyle()
+                            append(AnnotatedString("Vendor Name", spanStyle = labelSpan))
+                            append(AnnotatedString(text = " *", spanStyle = labelRequired))
+                        },
+                    )
+                },
+                text = serverVendor,
+                errorText = errorVendor,
+                onTextChanged = { onServerVendorChange(it) })
             CustomInputField(
                 label = "Description",
                 text = description,
                 errorText = errorDescription,
                 onTextChanged = { onDescriptionChange(it) })
-            CustomInputField(
-                label = "Edge Vendor Name",
-                text = serverVendor,
-                errorText = errorVendor,
-                onTextChanged = { onServerVendorChange(it) })
+
         }
     }
 }
