@@ -17,8 +17,7 @@ interface IAddEdgeDevicesUseCase {
         vendorNumber: String,
         type: String,
         sourceType: String,
-        devSourceId: String,
-        rtspSourceAddress: String,
+        sourceAddress: String,
         assignedModelType: UInt,
         assignedModelIndex: UInt,
         additionalInfo: String
@@ -47,8 +46,7 @@ interface IUpdateEdgeDeviceUseCase {
         vendorNumber: String,
         type: String,
         sourceType: String,
-        devSourceId: String,
-        rtspSourceAddress: String,
+        sourceAddress: String,
         assignedModelType: UInt,
         assignedModelIndex: UInt,
         additionalInfo: String

@@ -57,8 +57,7 @@ class EdgeDeviceRepositoryImpl @Inject constructor(
         vendorNumber: String,
         type: String,
         sourceType: String,
-        devSourceId: String,
-        rtspSourceAddress: String,
+        sourceAddress: String,
         assignedModelType: UInt,
         assignedModelIndex: UInt,
         additionalInfo: String
@@ -70,8 +69,7 @@ class EdgeDeviceRepositoryImpl @Inject constructor(
                 vendorNumber = vendorNumber,
                 type = type,
                 sourceType = sourceType,
-                devSourceId = devSourceId,
-                rtspSourceAddress = rtspSourceAddress,
+                sourceAddress = sourceAddress,
                 additionalInfo = additionalInfo,
                 assignedModelType = assignedModelType,
                 assignedModelIndex = assignedModelIndex
@@ -206,8 +204,7 @@ class EdgeDeviceRepositoryImpl @Inject constructor(
         vendorNumber: String,
         type: String,
         sourceType: String,
-        devSourceId: String,
-        rtspSourceAddress: String,
+        sourceAddress: String,
         assignedModelType: UInt,
         assignedModelIndex: UInt,
         additionalInfo: String
@@ -220,8 +217,7 @@ class EdgeDeviceRepositoryImpl @Inject constructor(
                 vendorNumber,
                 type,
                 sourceType,
-                devSourceId,
-                rtspSourceAddress,
+                sourceAddress,
                 assignedModelType,
                 assignedModelIndex,
                 additionalInfo

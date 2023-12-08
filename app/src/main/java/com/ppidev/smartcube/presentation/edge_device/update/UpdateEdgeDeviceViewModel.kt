@@ -51,23 +51,15 @@ class UpdateEdgeDeviceViewModel @Inject constructor(
                     )
                 }
 
-                is UpdateEdgeDeviceEvent.OnChangeDevSourceId -> {
+                is UpdateEdgeDeviceEvent.OnChangeSourceAddress -> {
                     state = state.copy(
-                        devSourceId = event.str
-                    )
-                }
-
-                is UpdateEdgeDeviceEvent.OnChangeRtspSourceAddress -> {
-                    state = state.copy(
-                        rtspSourceAddress = event.str
+                        sourceAddress = event.str
                     )
                 }
 
                 is UpdateEdgeDeviceEvent.OnChangeSourceType -> {
                     state = state.copy(
                         sourceType = event.str,
-                        rtspSourceAddress = "",
-                        devSourceId = ""
                     )
                 }
 
@@ -118,8 +110,7 @@ class UpdateEdgeDeviceViewModel @Inject constructor(
                 vendorNumber = state.vendorNumber,
                 type = state.type,
                 sourceType = state.sourceType,
-                devSourceId = state.devSourceId,
-                rtspSourceAddress = state.rtspSourceAddress,
+                sourceAddress = state.sourceAddress,
                 assignedModelType = assignedModelType,
                 assignedModelIndex = assignedModelIndex,
                 additionalInfo = state.additionalInfo

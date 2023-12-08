@@ -20,8 +20,7 @@ class UpdateEdgeDeviceUseCase @Inject constructor(
         vendorNumber: String,
         type: String,
         sourceType: String,
-        devSourceId: String,
-        rtspSourceAddress: String,
+        sourceAddress: String,
         assignedModelType: UInt,
         assignedModelIndex: UInt,
         additionalInfo: String
@@ -35,8 +34,7 @@ class UpdateEdgeDeviceUseCase @Inject constructor(
                 vendorNumber,
                 type,
                 sourceType,
-                devSourceId,
-                rtspSourceAddress,
+                sourceAddress,
                 assignedModelType,
                 assignedModelIndex,
                 additionalInfo
@@ -51,8 +49,7 @@ class UpdateEdgeDeviceUseCase @Inject constructor(
         vendorNumber: String,
         type: String,
         sourceType: String,
-        devSourceId: String,
-        rtspSourceAddress: String,
+        sourceAddress: String,
         assignedModelType: UInt,
         assignedModelIndex: UInt,
         additionalInfo: String
@@ -65,8 +62,7 @@ class UpdateEdgeDeviceUseCase @Inject constructor(
                 vendorNumber,
                 type,
                 sourceType,
-                devSourceId,
-                rtspSourceAddress,
+                sourceAddress,
                 assignedModelType,
                 assignedModelIndex,
                 additionalInfo

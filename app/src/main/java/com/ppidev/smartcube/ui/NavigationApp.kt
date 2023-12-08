@@ -209,7 +209,8 @@ fun NavigationApp(navController: NavHostController) {
                 FormAddEdgeDeviceScreen(
                     state = viewModel.state,
                     onEvent = viewModel::onEvent,
-                    edgeServerId = edgeServerId.toUInt()
+                    edgeServerId = edgeServerId.toUInt(),
+                    navHostController = navController
                 )
             }
         }

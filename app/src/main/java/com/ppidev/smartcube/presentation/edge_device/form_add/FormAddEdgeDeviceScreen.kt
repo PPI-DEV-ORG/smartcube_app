@@ -1,25 +1,24 @@
 package com.ppidev.smartcube.presentation.edge_device.form_add
 
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
-import androidx.compose.material3.DropdownMenuItem
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ppidev.smartcube.ui.components.form.CustomInputField
-import com.ppidev.smartcube.ui.components.form.CustomSelectInput
-import com.ppidev.smartcubeListSourceDeviceType.presentation.edge_device.form_add.FormAddEdgeDeviceState
+import androidx.navigation.NavHostController
+import com.ppidev.smartcube.ui.Screen
+import com.ppidev.smartcube.ui.components.modal.DialogApp
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -27,13 +26,9 @@ import com.ppidev.smartcubeListSourceDeviceType.presentation.edge_device.form_ad
 fun FormAddEdgeDeviceScreen(
     state: FormAddEdgeDeviceState,
     onEvent: (event: FormAddEdgeDeviceEvent) -> Unit,
-    edgeServerId: UInt
+    edgeServerId: UInt,
+    navHostController: NavHostController
 ) {
-    var expandedSourceTypes by remember { mutableStateOf(false) }
-    var expandedTypes by remember { mutableStateOf(false) }
-    var expandedAssignedModelType by remember { mutableStateOf(false) }
-    var expandedAssignedModelIndex by remember { mutableStateOf(false) }
-
     LaunchedEffect(Unit) {
         onEvent(FormAddEdgeDeviceEvent.GetEdgeDevicesInfo(edgeServerId))
     }
@@ -42,158 +37,124 @@ fun FormAddEdgeDeviceScreen(
         onEvent(FormAddEdgeDeviceEvent.GetInstalledModels)
     }
 
-    LazyColumn {
-        item {
-            CustomInputField(
-                text = state.vendorName,
-                label = "Vendor Name",
-                errorText = "",
-                onTextChanged = {
-                    onEvent(FormAddEdgeDeviceEvent.OnChangeVendorName(it))
-                })
-        }
-
-        item {
-            CustomInputField(
-                text = state.vendorNumber,
-                label = "Vendor Serial Number",
-                errorText = "",
-                onTextChanged = {
-                    onEvent(FormAddEdgeDeviceEvent.OnChangeVendorNumber(it))
-                })
-        }
-
-        item {
-            CustomSelectInput(
-                expanded = expandedSourceTypes,
-                label = "Source Type",
-                value = state.sourceType,
-                onExpandedChange = { expandedSourceTypes = !expandedSourceTypes },
-                onDismissRequest = { expandedSourceTypes = false },
+    Column {
+        TopAppBar(title = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                state.listSourceTypes.map {
-                    DropdownMenuItem(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = { Text(it.name) },
-                        onClick = {
-                            onEvent(FormAddEdgeDeviceEvent.OnChangeSourceType(it.name))
-                            expandedSourceTypes = false
+                IconButton(onClick = {
+                    if (state.step > 1) {
+                        onEvent(FormAddEdgeDeviceEvent.SetStepValue(state.step - 1))
+                    } else {
+                        navHostController.popBackStack()
+                    }
+                }) {
+                    Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "back")
+                }
+                Text(text = "Add Device")
+            }
+        })
+
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 18.dp)
+        ) {
+            when (state.step) {
+                1 -> {
+                    Step1(
+                        onDeviceTypeChange = {
+                            onEvent(FormAddEdgeDeviceEvent.OnChangeType(it))
+                            onEvent(FormAddEdgeDeviceEvent.SetStepValue(2))
+                        }
+                    )
+                }
+
+                2 -> {
+                    Step2(
+                        vendorName = state.vendorName,
+                        serialNumberName = state.vendorNumber,
+                        errorVendor = state.error.vendorName,
+                        errorSerialNumber = state.error.vendorNumber,
+                        onVendorChange = {
+                            onEvent(FormAddEdgeDeviceEvent.OnChangeVendorName(it))
                         },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                        onSerialNumberChange = {
+                            onEvent(FormAddEdgeDeviceEvent.OnChangeVendorNumber(it))
+                        },
+                        onClickNext = {
+                            onEvent(FormAddEdgeDeviceEvent.SetStepValue(3))
+                        }
+                    )
+                }
+
+                3 -> {
+                    Step3(
+                        deviceType = state.type,
+                        sourceType = state.sourceType,
+                        sourceAddress = state.sourceAddress,
+                        modelTypeName = state.assignedModelTypeValue,
+                        modelIndexName = state.assignedModelIndexValue,
+                        listSourceTypes = state.listSourceTypes,
+                        listModelType = state.listModelType,
+                        listModel = state.listModel,
+                        errorSourceType = state.error.sourceType,
+                        errorModelIndex = state.error.assignedModelIndex,
+                        errorModelType = state.error.assignedModelType,
+                        errorSourceAddress = state.error.sourceAddress,
+                        onSourceTypeChange = {
+                            onEvent(FormAddEdgeDeviceEvent.OnChangeSourceType(it))
+                        },
+                        onSourceAddressChange = {
+                            onEvent(
+                                FormAddEdgeDeviceEvent.OnChangeSourceAddress(
+                                    it
+                                )
+                            )
+                        },
+                        onModelTypeSelected = { key, value ->
+                            onEvent(
+                                FormAddEdgeDeviceEvent.OnChangeAssignedModelType(
+                                    key, value
+                                )
+                            )
+                        },
+                        onModelIndexSelected = { key, value ->
+                            onEvent(
+                                FormAddEdgeDeviceEvent.OnChangeAssignedModelIndex(
+                                    key, value
+                                )
+                            )
+                        },
+                        onSave = {
+                            onEvent(
+                                FormAddEdgeDeviceEvent.HandleAddEdgeDevice
+                            )
+                        }
                     )
                 }
             }
         }
+    }
 
-        item {
-            CustomSelectInput(
-                expanded = expandedTypes,
-                label = "Device Type",
-                value = state.type,
-                onExpandedChange = { expandedTypes = !expandedTypes },
-                onDismissRequest = { expandedTypes = false },
-            ) {
-                state.listTypes.map {
-                    DropdownMenuItem(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = { Text(it.name) },
-                        onClick = {
-                            onEvent(FormAddEdgeDeviceEvent.OnChangeType(it.name))
-                            expandedTypes = false
-                        },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                    )
-                }
+    if (state.isSuccess != null) {
+        DialogApp(
+            message = if (state.isSuccess) "Success" else "Error",
+            contentMessage = state.message,
+            isSuccess = state.isSuccess,
+            onDismiss = {}) {
+            if(state.isSuccess) {
+                onEvent(FormAddEdgeDeviceEvent.CloseDialog)
+                navHostController.popBackStack()
+            } else {
+                onEvent(FormAddEdgeDeviceEvent.CloseDialog)
             }
         }
+    }
 
-        item {
-            // if source type is USB
-            if (state.sourceType == "usb") {
-                CustomInputField(
-                    text = state.devSourceId,
-                    label = "Source USB Id (ex : /dev/video/0)",
-                    errorText = "",
-                    onTextChanged = {
-                        onEvent(FormAddEdgeDeviceEvent.OnChangeDevSourceId(it))
-                    })
-            }
-        }
-
-        item {
-            // if source type is RTSP
-            if (state.sourceType =="lan") {
-                CustomInputField(
-                    text = state.rtspSourceAddress,
-                    label = "RTSP Url",
-                    errorText = "",
-                    onTextChanged = {
-                        onEvent(FormAddEdgeDeviceEvent.OnChangeRtspSourceAddress(it))
-                    })
-            }
-        }
-
-        item {
-            CustomSelectInput(
-                expanded = expandedAssignedModelType,
-                label = "Model Type",
-                value = state.assignedModelTypeValue,
-                onExpandedChange = { expandedAssignedModelType = !expandedAssignedModelType },
-                onDismissRequest = { expandedAssignedModelType = false },
-            ) {
-                state.listModelType.map {
-                    DropdownMenuItem(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = { Text(it.value) },
-                        onClick = {
-                            onEvent(FormAddEdgeDeviceEvent.OnChangeAssignedModelType(it.key.toUInt(),  it.value))
-                            expandedAssignedModelType = false
-                        },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                    )
-                }
-            }
-        }
-
-        item {
-            CustomSelectInput(
-                expanded = expandedAssignedModelIndex,
-                label = "Model Name",
-                value = state.assignedModelIndexValue,
-                onExpandedChange = { expandedAssignedModelIndex = !expandedAssignedModelIndex },
-                onDismissRequest = { expandedAssignedModelIndex = false },
-            ) {
-                state.listModel.map {
-                    DropdownMenuItem(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = { Text(it.value) },
-                        onClick = {
-                            onEvent(FormAddEdgeDeviceEvent.OnChangeAssignedModelIndex(it.key.toUInt(), it.value))
-                            expandedAssignedModelIndex = false
-                        },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                    )
-                }
-            }
-        }
-
-        item {
-            CustomInputField(
-                text = state.additionalInfo,
-                label = "Additional Info",
-                errorText = "",
-                onTextChanged = {
-                    onEvent(FormAddEdgeDeviceEvent.OnChangeAdditionalInfo(it))
-                })
-        }
-
-        item {
-            Spacer(modifier = Modifier.size(22.dp))
-            Button(onClick = {
-                onEvent(FormAddEdgeDeviceEvent.HandleAddEdgeDevice)
-            }) {
-                Text(text = "Add Devices")
-            }
+    BackHandler {
+        if (state.step > 1) {
+            onEvent(FormAddEdgeDeviceEvent.SetStepValue(state.step - 1))
+        } else {
+            navHostController.popBackStack()
         }
     }
 }

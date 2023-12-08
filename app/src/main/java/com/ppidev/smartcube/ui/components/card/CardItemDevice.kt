@@ -3,6 +3,7 @@ package com.ppidev.smartcube.ui.components.card
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,7 +40,8 @@ fun CardItemDevice(
     modifier: Modifier = Modifier,
     deviceType: String,
     vendorName: String,
-    status: Boolean
+    status: Boolean,
+    onClick: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -51,6 +53,9 @@ fun CardItemDevice(
             .fillMaxWidth()
             .height(172.dp)
             .background(color = Color(0xFFFEFEFE), shape = RoundedCornerShape(size = 8.dp))
+            .clickable {
+                onClick()
+            }
             .padding(10.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
@@ -126,6 +131,7 @@ private fun CardItemDevicePreview() {
     CardItemDevice(
         deviceType = "camera",
         vendorName = "IMOU",
-        status = false
+        status = false,
+        onClick = {}
     )
 }

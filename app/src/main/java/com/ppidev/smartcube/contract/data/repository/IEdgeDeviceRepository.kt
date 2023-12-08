@@ -13,8 +13,7 @@ interface IEdgeDeviceRepository {
         vendorNumber: String,
         type: String,
         sourceType: String,
-        devSourceId: String,
-        rtspSourceAddress: String,
+        sourceAddress: String,
         assignedModelType: UInt,
         assignedModelIndex: UInt,
         additionalInfo: String
@@ -30,8 +29,7 @@ interface IEdgeDeviceRepository {
         vendorNumber: String,
         type: String,
         sourceType: String,
-        devSourceId: String,
-        rtspSourceAddress: String,
+        sourceAddress: String,
         assignedModelType: UInt,
         assignedModelIndex: UInt,
         additionalInfo: String
