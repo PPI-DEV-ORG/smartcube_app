@@ -1,13 +1,22 @@
 package com.ppidev.smartcube.domain.model
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.painter.Painter
+
 data class DeviceType(
     val id: Int,
-    val name: String
+    val name: String,
+    val icon: Painter? = null
 )
 
 enum class TypeEdgeDevice(val typeName: String) {
     CAMERA("camera"),
     SENSOR("sensor")
+}
+
+enum class TypeDeviceSource(val typeName: String) {
+    USB("usb"),
+    IP("ip")
 }
 
 data class DeviceSourceType(
@@ -21,6 +30,6 @@ val ListDeviceType = listOf<DeviceType>(
 )
 
 val ListSourceDeviceType = listOf<DeviceSourceType>(
-    DeviceSourceType(id = 0, name = "usb"),
-    DeviceSourceType(id = 0, name = "lan")
+    DeviceSourceType(id = 0, name = TypeDeviceSource.USB.typeName),
+    DeviceSourceType(id = 0, name = TypeDeviceSource.IP.typeName)
 )

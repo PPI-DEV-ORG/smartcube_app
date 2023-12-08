@@ -39,6 +39,7 @@ import com.ppidev.smartcube.common.EDGE_SERVER_ID_ARG
 import com.ppidev.smartcube.ui.Screen
 import com.ppidev.smartcube.ui.components.TagLabel
 import com.ppidev.smartcube.ui.components.form.CustomInputField
+import com.ppidev.smartcube.ui.components.form.InputLabel
 import com.ppidev.smartcube.ui.components.modal.DialogApp
 import com.ppidev.smartcube.ui.theme.Typography
 import com.ppidev.smartcube.utils.bottomBorder
@@ -196,38 +197,14 @@ private fun CardItemAddServer(
             CustomInputField(
                 label = "Edge Server Name",
                 customLabel = {
-                    Text(
-                        text = buildAnnotatedString {
-                            val labelSpan =
-                                Typography.bodyMedium.toSpanStyle()
-                            val labelRequired =
-                                Typography.bodyMedium.copy(
-                                    color = Color.Red,
-                                    fontWeight = FontWeight.Medium
-                                ).toSpanStyle()
-                            append(AnnotatedString("Edge Server Name", spanStyle = labelSpan))
-                            append(AnnotatedString(text = " *", spanStyle = labelRequired))
-                        },
-                    )
+                    InputLabel(label = "Edge Server Name", isRequired = true)
                 },
                 text = serverName,
                 errorText = errorServerName,
                 onTextChanged = { onServerNameChange(it) })
             CustomInputField(
                 customLabel = {
-                    Text(
-                        text = buildAnnotatedString {
-                            val labelSpan =
-                                Typography.bodyMedium.toSpanStyle()
-                            val labelRequired =
-                                Typography.bodyMedium.copy(
-                                    color = Color.Red,
-                                    fontWeight = FontWeight.Medium
-                                ).toSpanStyle()
-                            append(AnnotatedString("Vendor Name", spanStyle = labelSpan))
-                            append(AnnotatedString(text = " *", spanStyle = labelRequired))
-                        },
-                    )
+                    InputLabel(label = "Vendor Name", isRequired = true)
                 },
                 text = serverVendor,
                 errorText = errorVendor,
@@ -237,7 +214,6 @@ private fun CardItemAddServer(
                 text = description,
                 errorText = errorDescription,
                 onTextChanged = { onDescriptionChange(it) })
-
         }
     }
 }

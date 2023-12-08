@@ -68,7 +68,9 @@ fun DashboardScreen(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize().nestedScroll(nestedScrollConnection)
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(nestedScrollConnection)
     ) {
         DashboardContentView(
             username = state.username,
@@ -84,10 +86,15 @@ fun DashboardScreen(
                 onEvent(DashboardEvent.SetEdgeServerId(state.listServerId[index]))
             },
             navigateToDetailDevice = {
-                navHostController.navigate("")
             },
             navigateCreateNewServer = {
                 navHostController.navigate(Screen.FormAddEdgeServer.screenRoute)
+            },
+            navigateCreateNewDevice = {
+                val serverId = state.edgeServerId
+                if (serverId != null) {
+                    navHostController.navigate(Screen.FormAddEdgeDevice.withArgs("${state.edgeServerId}"))
+                }
             }
         )
     }

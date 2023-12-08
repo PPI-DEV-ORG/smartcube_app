@@ -13,8 +13,7 @@ data class UpdateEdgeDeviceState(
     val vendorNumber: String = "",
     val type: String = "",
     val sourceType: String = "",
-    val devSourceId: String = "",
-    val rtspSourceAddress: String = "",
+    val sourceAddress: String = "",
 
     val assignedModelType: UInt? = null,
     val assignedModelTypeValue: String = "",

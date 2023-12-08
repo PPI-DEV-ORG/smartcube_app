@@ -9,6 +9,7 @@ import com.ppidev.smartcube.common.Resource
 import com.ppidev.smartcube.contract.domain.use_case.edge_server.IAddEdgeServerUseCase
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -22,7 +23,7 @@ class FormAddEdgeServerViewModel @Inject constructor(
     var state by mutableStateOf(FormAddEdgeServerState())
 
     fun onEvent(event: FormAddEdgeServerEvent) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             when (event) {
                 FormAddEdgeServerEvent.HandleAddEdgeServer -> {
                     handleAddEdgeServer()

@@ -58,6 +58,7 @@ fun DashboardContentView(
     isLoadingListDevices: Boolean,
     isLoadingProfile: Boolean,
     navigateCreateNewServer: () -> Unit,
+    navigateCreateNewDevice: () -> Unit,
     navigateToDetailDevice: (deviceId: UInt) -> Unit
 ) {
     Column(
@@ -129,7 +130,7 @@ fun DashboardContentView(
                         contentDescription = null
                     )
                     Text(
-                        modifier= Modifier.width(200.dp),
+                        modifier = Modifier.width(200.dp),
                         text = "Start To Create Your First Server", style = TextStyle(
                             fontSize = 24.sp,
                             lineHeight = 32.sp,
@@ -147,7 +148,10 @@ fun DashboardContentView(
                         .width(230.dp)
                         .height(44.dp),
                         shape = RoundedCornerShape(4.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0x80F3F3F3), contentColor = Color.Gray),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0x80F3F3F3),
+                            contentColor = Color.Gray
+                        ),
                         onClick = {
                             navigateCreateNewServer()
                         }) {
@@ -162,27 +166,6 @@ fun DashboardContentView(
                     upTime = upTime,
                     ramUsage = ramUsage
                 )
-
-                if (listEdgeServer.count() == 1) {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
-                        contentPadding = PaddingValues(
-                            bottom = 16.dp
-                        ),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        itemsIndexed(
-                            items = listEdgeDevices,
-                            key = { _, item -> item.id }) { _, item ->
-                            CardItemDevice(
-                                deviceType = item.type,
-                                vendorName = item.vendorName,
-                                status = true
-                            )
-                        }
-                    }
-                }
 
                 if (listEdgeServer.count() > 1) {
                     AppScrollableTabLayout(
@@ -218,13 +201,17 @@ fun DashboardContentView(
                             CardItemDevice(
                                 deviceType = item.type,
                                 vendorName = item.vendorName,
-                                status = true
+                                status = true,
+                                onClick = {
+                                }
                             )
                         }
 
                         item {
                             CardAddDevice(
-                                onClick = {}
+                                onClick = {
+                                    navigateCreateNewDevice()
+                                }
                             )
                         }
                     }
@@ -248,6 +235,7 @@ private fun DashboardContentViewPreview() {
         isLoadingListDevices = false,
         isLoadingProfile = false,
         navigateCreateNewServer = {},
-        navigateToDetailDevice =  {}
+        navigateToDetailDevice = {},
+        navigateCreateNewDevice = {}
     )
 }

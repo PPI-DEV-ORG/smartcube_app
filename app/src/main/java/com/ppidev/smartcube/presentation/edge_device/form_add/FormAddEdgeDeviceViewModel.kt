@@ -13,9 +13,9 @@ import com.ppidev.smartcube.contract.data.remote.service.IMqttService
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IAddEdgeDevicesUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IEdgeDevicesInfoUseCase
 import com.ppidev.smartcube.utils.CommandMqtt
-import com.ppidev.smartcubeListSourceDeviceType.presentation.edge_device.form_add.FormAddEdgeDeviceState
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -32,14 +32,8 @@ class FormAddEdgeDeviceViewModel @Inject constructor(
 
     private val gson = Gson()
 
-    init {
-        viewModelScope.launch {
-            mqttService.get().connect()
-        }
-    }
-
     fun onEvent(event: FormAddEdgeDeviceEvent) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             when (event) {
                 FormAddEdgeDeviceEvent.HandleAddEdgeDevice -> {
                     handleAddEdgeDevice()
@@ -62,18 +56,6 @@ class FormAddEdgeDeviceViewModel @Inject constructor(
                     state = state.copy(
                         assignedModelType = event.num,
                         assignedModelTypeValue = event.value
-                    )
-                }
-
-                is FormAddEdgeDeviceEvent.OnChangeDevSourceId -> {
-                    state = state.copy(
-                        devSourceId = event.str
-                    )
-                }
-
-                is FormAddEdgeDeviceEvent.OnChangeRtspSourceAddress -> {
-                    state = state.copy(
-                        rtspSourceAddress = event.str
                     )
                 }
 
@@ -111,6 +93,38 @@ class FormAddEdgeDeviceViewModel @Inject constructor(
                 is FormAddEdgeDeviceEvent.GetInstalledModels -> {
                     getListModels()
                 }
+
+                is FormAddEdgeDeviceEvent.SetStepValue -> {
+                    if (event.step in 1..3) {
+                        val errorState = when (event.step) {
+                            1 -> FormAddEdgeDeviceState.FormAddEdgeDeviceError()
+                            3 -> FormAddEdgeDeviceState.FormAddEdgeDeviceError(
+                                vendorName = if (state.vendorName.isEmpty()) "Cannot be empty" else "",
+                                vendorNumber = if (state.vendorNumber.isEmpty()) "Cannot be empty" else ""
+                            )
+
+                            else -> FormAddEdgeDeviceState.FormAddEdgeDeviceError()
+                        }
+
+                        state = if (errorState.hasError()) {
+                            state.copy(error = errorState)
+                        } else {
+                            state.copy(step = event.step)
+                        }
+                    }
+                }
+
+                is FormAddEdgeDeviceEvent.OnChangeSourceAddress -> {
+                    state = state.copy(
+                        sourceAddress = event.str
+                    )
+                }
+
+                FormAddEdgeDeviceEvent.CloseDialog -> {
+                    state = state.copy(
+                        isSuccess = null
+                    )
+                }
             }
         }
     }
@@ -119,6 +133,20 @@ class FormAddEdgeDeviceViewModel @Inject constructor(
         val edgeServerId = state.edgeServerId
         val assignedModelType = state.assignedModelType
         val assignedModelIndex = state.assignedModelIndex
+
+        val errorState = FormAddEdgeDeviceState.FormAddEdgeDeviceError(
+            sourceAddress = if (state.sourceAddress.isEmpty()) "Cannot be empty" else "",
+            assignedModelIndex = if (assignedModelIndex == null) "Cannot be empty" else "",
+            assignedModelType = if (assignedModelType == null) "Cannot be empty" else ""
+        )
+
+        if (errorState.hasError()) {
+            state = state.copy(
+                error = errorState
+            )
+            return
+        }
+
         if (edgeServerId != null && assignedModelIndex != null && assignedModelType != null) {
             addEdgeDevicesUseCase.get().invoke(
                 edgeServerId = edgeServerId,
@@ -126,19 +154,34 @@ class FormAddEdgeDeviceViewModel @Inject constructor(
                 vendorNumber = state.vendorNumber,
                 type = state.type,
                 sourceType = state.sourceType,
-                devSourceId = state.devSourceId,
-                rtspSourceAddress = state.rtspSourceAddress,
+                sourceAddress = state.sourceAddress,
                 assignedModelType = assignedModelType,
                 assignedModelIndex = assignedModelIndex,
                 additionalInfo = state.additionalInfo
             ).onEach {
                 when (it) {
                     is Resource.Error -> {
-                        Log.d("ADD_ERR", "code ${it.statusCode} : " + it.message.toString())
+                        Log.d("ERR", it.message.toString())
+                        state = state.copy(
+                            isLoading = false,
+                            isSuccess = false,
+                            message = it.message ?: "Error"
+                        )
                     }
-                    is Resource.Loading -> {}
+
+                    is Resource.Loading -> {
+                        state = state.copy(
+                            isLoading = true
+                        )
+                    }
+
                     is Resource.Success -> {
                         Log.d("ADD", it.data?.data.toString())
+                        state = state.copy(
+                            isLoading = false,
+                            isSuccess = true,
+                            message = it.data?.message ?: "Success added new device"
+                        )
                     }
                 }
             }.launchIn(viewModelScope)
@@ -157,10 +200,11 @@ class FormAddEdgeDeviceViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
-                    Log.d("DEVICE", it.data?.data.toString())
-                    if (it.data?.data != null) {
+                    val response = it.data?.data
+
+                    if (response != null) {
                         state = state.copy(
-                            edgeDevicesInfo = it.data.data
+                            edgeDevicesInfo = response
                         )
                     }
                 }
@@ -174,7 +218,7 @@ class FormAddEdgeDeviceViewModel @Inject constructor(
             val mqttPubTopic = state.edgeDevicesInfo?.mqttPubTopic
 
             if (mqttSubTopic?.isNotEmpty() == true && mqttPubTopic?.isNotEmpty() == true) {
-                mqttService.get().subscribeToTopic(mqttSubTopic) {topic, msg ->
+                mqttService.get().subscribeToTopic(mqttSubTopic) { topic, msg ->
                     val json = String(msg.payload)
                     val result = gson.fromJson<Map<String, Any>>(
                         json,
@@ -183,7 +227,7 @@ class FormAddEdgeDeviceViewModel @Inject constructor(
 
                     val installedModelsResponse = result["data"]
 
-                    Log.d("MQTT RES from $topic : ",  "$msg")
+                    Log.d("MQTT RES from $topic : ", "$msg")
                 }
 
                 mqttService.get().publishToTopic(

@@ -17,7 +17,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ppidev.smartcube.presentation.edge_device.form_add.FormAddEdgeDeviceEvent
 import com.ppidev.smartcube.ui.components.form.CustomInputField
 import com.ppidev.smartcube.ui.components.form.CustomSelectInput
 
@@ -70,19 +69,20 @@ fun UpdateEdgeDeviceScreen(
                 value = state.sourceType,
                 onExpandedChange = { expandedSourceTypes = !expandedSourceTypes },
                 onDismissRequest = { expandedSourceTypes = false },
-            ) {
-                state.listSourceTypes.map {
-                    DropdownMenuItem(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = { Text(it.name) },
-                        onClick = {
-                            onEvent(UpdateEdgeDeviceEvent.OnChangeSourceType(it.name))
-                            expandedSourceTypes = false
-                        },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                    )
+                listMenu = {
+                    state.listSourceTypes.map {
+                        DropdownMenuItem(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = { Text(it.name) },
+                            onClick = {
+                                onEvent(UpdateEdgeDeviceEvent.OnChangeSourceType(it.name))
+                                expandedSourceTypes = false
+                            },
+                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                        )
+                    }
                 }
-            }
+            )
         }
 
         item {
@@ -92,46 +92,33 @@ fun UpdateEdgeDeviceScreen(
                 value = state.type,
                 onExpandedChange = { expandedTypes = !expandedTypes },
                 onDismissRequest = { expandedTypes = false },
-            ) {
-                state.listTypes.map {
-                    DropdownMenuItem(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = { Text(it.name) },
-                        onClick = {
-                            onEvent(UpdateEdgeDeviceEvent.OnChangeType(it.name))
-                            expandedTypes = false
-                        },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                    )
+                listMenu = {
+                    state.listTypes.map {
+                        DropdownMenuItem(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = { Text(it.name) },
+                            onClick = {
+                                onEvent(UpdateEdgeDeviceEvent.OnChangeType(it.name))
+                                expandedTypes = false
+                            },
+                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                        )
+                    }
                 }
-            }
+            )
         }
 
         item {
             // if source type is USB
-            if (state.sourceType == "usb") {
-                CustomInputField(
-                    text = state.devSourceId,
-                    label = "Source USB Id (ex : /dev/video0)",
-                    errorText = "",
-                    onTextChanged = {
-                        onEvent(UpdateEdgeDeviceEvent.OnChangeDevSourceId(it))
-                    })
-            }
+            CustomInputField(
+                text = state.sourceAddress,
+                label = "Source USB Id (ex : /dev/video0)",
+                errorText = "",
+                onTextChanged = {
+                    onEvent(UpdateEdgeDeviceEvent.OnChangeSourceAddress(it))
+                })
         }
 
-        item {
-            // if source type is RTSP
-            if (state.sourceType =="lan") {
-                CustomInputField(
-                    text = state.rtspSourceAddress,
-                    label = "RTSP Url",
-                    errorText = "",
-                    onTextChanged = {
-                        onEvent(UpdateEdgeDeviceEvent.OnChangeRtspSourceAddress(it))
-                    })
-            }
-        }
 
         item {
             CustomSelectInput(
@@ -140,19 +127,25 @@ fun UpdateEdgeDeviceScreen(
                 value = state.assignedModelTypeValue,
                 onExpandedChange = { expandedAssignedModelType = !expandedAssignedModelType },
                 onDismissRequest = { expandedAssignedModelType = false },
-            ) {
-                state.listModelType.map {
-                    DropdownMenuItem(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = { Text(it.value) },
-                        onClick = {
-                            onEvent(UpdateEdgeDeviceEvent.OnChangeAssignedModelType(it.key.toUInt(),  it.value))
-                            expandedAssignedModelType = false
-                        },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                    )
+                listMenu = {
+                    state.listModelType.map {
+                        DropdownMenuItem(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = { Text(it.value) },
+                            onClick = {
+                                onEvent(
+                                    UpdateEdgeDeviceEvent.OnChangeAssignedModelType(
+                                        it.key.toUInt(),
+                                        it.value
+                                    )
+                                )
+                                expandedAssignedModelType = false
+                            },
+                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                        )
+                    }
                 }
-            }
+            )
         }
 
         item {
@@ -162,19 +155,25 @@ fun UpdateEdgeDeviceScreen(
                 value = state.assignedModelIndexValue,
                 onExpandedChange = { expandedAssignedModelIndex = !expandedAssignedModelIndex },
                 onDismissRequest = { expandedAssignedModelIndex = false },
-            ) {
-                state.listModel.map {
-                    DropdownMenuItem(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = { Text(it.value) },
-                        onClick = {
-                            onEvent(UpdateEdgeDeviceEvent.OnChangeAssignedModelIndex(it.key.toUInt(), it.value))
-                            expandedAssignedModelIndex = false
-                        },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                    )
+                listMenu = {
+                    state.listModel.map {
+                        DropdownMenuItem(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = { Text(it.value) },
+                            onClick = {
+                                onEvent(
+                                    UpdateEdgeDeviceEvent.OnChangeAssignedModelIndex(
+                                        it.key.toUInt(),
+                                        it.value
+                                    )
+                                )
+                                expandedAssignedModelIndex = false
+                            },
+                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                        )
+                    }
                 }
-            }
+            )
         }
 
         item {

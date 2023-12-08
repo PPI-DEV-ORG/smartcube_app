@@ -105,8 +105,7 @@ interface EdgeDeviceApi {
         @Field("vendor_number") vendorNumber: String,
         @Field("type") type: String,
         @Field("source_type") sourceType: String,
-        @Field("dev_source_id") devSourceId: String,
-        @Field("rtsp_source_address") rtspSourceAddress: String,
+        @Field("source_address") sourceAddress: String,
         @Field("additional_info") additionalInfo: String,
         @Field("assigned_model_type") assignedModelType: UInt,
         @Field("assigned_model_index") assignedModelIndex: UInt
@@ -132,8 +131,7 @@ interface EdgeDeviceApi {
         @Field("vendor_number") vendorNumber: String,
         @Field("type") type: String,
         @Field("source_type") sourceType: String,
-        @Field("dev_source_id") devSourceId: String,
-        @Field("rtsp_source_address") rtspSourceAddress: String,
+        @Field("source_address") devSourceId: String,
         @Field("assigned_model_type") assignedModelType: UInt,
         @Field("assigned_model_index") assignedModelIndex: UInt,
         @Field("additional_info") additionalInfo: String
