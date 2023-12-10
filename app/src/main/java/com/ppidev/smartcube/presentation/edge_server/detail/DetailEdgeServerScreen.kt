@@ -21,7 +21,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Circle
-import androidx.compose.material.icons.filled.DeviceHub
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Storage
 import androidx.compose.material.icons.outlined.Videocam
@@ -56,6 +55,7 @@ import com.ppidev.smartcube.ui.components.card.CardServerInfo
 import com.ppidev.smartcube.ui.components.modal.ModalInfoServerConfig
 import com.ppidev.smartcube.ui.theme.Typography
 import com.ppidev.smartcube.utils.getNumberFromPercentage
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -110,9 +110,9 @@ fun DetailEdgeServerScreen(
                 totalRam = state.serverInfo?.memoryTotal ?: "-",
                 upTime = state.serverInfo?.upTime ?: "-"
             )
-                
+
             Spacer(modifier = Modifier.size(14.dp))
-              
+
             CardStorageIndicator(
                 storageProgressIndicator = getNumberFromPercentage(
                     state.serverInfo?.storage?.diskUsage ?: "0%"
@@ -161,7 +161,10 @@ fun DetailEdgeServerScreen(
                             description = state.edgeDevicesInfo?.description ?: ""
                         )
                         Spacer(modifier = Modifier.size(24.dp))
-                        Text(text = "Devices Connected", style = MaterialTheme.typography.bodyMedium)
+                        Text(
+                            text = "Devices Connected",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
                         Spacer(modifier = Modifier.size(8.dp))
                         state.devices.map { item ->
                             CardCamera(
@@ -177,7 +180,6 @@ fun DetailEdgeServerScreen(
         }
     }
 
-
     if (state.isDialogOpen) {
         ModalInfoServerConfig(
             publishTopic = state.edgeDevicesInfo?.mqttPubTopic ?: "-",
@@ -187,6 +189,13 @@ fun DetailEdgeServerScreen(
                 onEvent(DetailEdgeServerEvent.SetDialogStatus(false))
             }
         )
+    }
+
+    LaunchedEffect(state.serverInfo) {
+        while (true) {
+            delay(1000L)
+            onEvent(DetailEdgeServerEvent.ListenMqtt)
+        }
     }
 
     DisposableEffect(Unit) {

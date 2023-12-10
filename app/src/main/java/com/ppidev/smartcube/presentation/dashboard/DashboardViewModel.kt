@@ -1,6 +1,5 @@
 package com.ppidev.smartcube.presentation.dashboard
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -11,7 +10,6 @@ import com.ppidev.smartcube.contract.data.remote.service.IMqttService
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IEdgeDevicesInfoUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_server.IListEdgeServerUseCase
 import com.ppidev.smartcube.contract.domain.use_case.weather.IViewCurrentWeather
-import com.ppidev.smartcube.data.remote.dto.EdgeDevice
 import com.ppidev.smartcube.data.remote.dto.ServerStatusDto
 import com.ppidev.smartcube.domain.model.ServerStatusModel
 import com.ppidev.smartcube.utils.CommandMqtt
@@ -36,15 +34,19 @@ class DashboardViewModel @Inject constructor(
         private set
 
     init {
-        listenReceiveMessageMqtt()
+        viewModelScope.launch(Dispatchers.IO) {
+            if(!mqttService.get().checkIfMqttIsConnected()) {
+                mqttService.get().connect()
+            }
+        }
     }
 
     fun onEvent(event: DashboardEvent) {
         viewModelScope.launch {
             when (event) {
-                DashboardEvent.GetServerInfo -> getServerInfo()
                 DashboardEvent.UnsubscribeToMqttService -> unsubscribeFromTopic()
                 DashboardEvent.GetCurrentWeather -> getCurrentWeather()
+                is DashboardEvent.GetServerInfoMqtt -> getServerInfo(event.topic)
 
                 is DashboardEvent.GetDevicesConfig -> {
                     getEdgeDevicesInfo(event.serverId)
@@ -56,27 +58,27 @@ class DashboardViewModel @Inject constructor(
                         edgeServerId = event.id
                     )
                 }
+
+                is DashboardEvent.SubscribeTopicMqtt -> {
+                    subscribeToTopic(event.topic)
+                }
             }
         }
     }
 
-    private fun listenReceiveMessageMqtt() {
+    private fun subscribeToTopic(topic: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            mqttService.get().connect()
-            val mqttPublishTopic = state.mqttPublishTopic
-            val mqttSubscribeTopic = state.mqttSubscribeTopic
+            if (!mqttService.get().checkIfMqttIsConnected()) {
+                mqttService.get().connect()
+            }
 
-
-            if (mqttPublishTopic != null && mqttSubscribeTopic != null) {
-                mqttService.get().subscribeToTopic(mqttSubscribeTopic) { _, msg ->
-                    val (command, data) = extractCommandAndDataMqtt(msg)
-
-                    when (command) {
-                        CommandMqtt.GET_SERVER_INFO -> {
-                            val dataDecoded = convertJsonToDto<ServerStatusDto>(data)
-                            dataDecoded?.let {
-                                updateServerInfoMqtt(serverInfo = it)
-                            }
+            mqttService.get().subscribeToTopic(topic) { _, msg ->
+                val (command, data) = extractCommandAndDataMqtt(msg)
+                when (command) {
+                    CommandMqtt.GET_SERVER_INFO -> {
+                        val dataDecoded = convertJsonToDto<ServerStatusDto>(data)
+                        if (dataDecoded != null) {
+                            updateServerInfoMqtt(serverInfo = dataDecoded)
                         }
                     }
                 }
@@ -107,11 +109,9 @@ class DashboardViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
-                    Log.d("LIST_SERVER", "success, ${it.data?.message}")
                     val res = it.data?.data
                     val servers: List<String> = res?.map { server -> server.name } ?: emptyList()
                     val serverIds: List<UInt> = res?.map { server -> server.id } ?: emptyList()
-
                     state = state.copy(
                         listServer = servers,
                         edgeServerId = res?.firstOrNull()?.id,
@@ -146,14 +146,9 @@ class DashboardViewModel @Inject constructor(
 
                 is Resource.Success -> {
                     val res = it.data?.data
-                    var listDevices: List<EdgeDevice> = emptyList()
-
-                    if (res != null) {
-                        listDevices = res.devices
-                    }
 
                     state = state.copy(
-                        listDevices = listDevices,
+                        listDevices = res?.devices ?: emptyList(),
                         mqttPublishTopic = res?.mqttPubTopic,
                         mqttSubscribeTopic = res?.mqttSubTopic,
                         loading = DashboardState.Loading(
@@ -181,12 +176,10 @@ class DashboardViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    private fun getServerInfo() {
+    private fun getServerInfo(topic: String) {
         viewModelScope.launch {
-            val mqttPublishTopic = state.mqttPublishTopic ?: return@launch
-
             mqttService.get()
-                .publishToTopic(mqttPublishTopic, CommandMqtt.GET_SERVER_INFO)
+                .publishToTopic(topic, CommandMqtt.GET_SERVER_INFO)
         }
     }
 
@@ -194,7 +187,6 @@ class DashboardViewModel @Inject constructor(
     private fun unsubscribeFromTopic() {
         viewModelScope.launch {
             val mqttSubscribeTopic = state.mqttSubscribeTopic ?: return@launch
-
             mqttService.get().unsubscribeFromTopic(mqttSubscribeTopic)
         }
     }

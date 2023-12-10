@@ -14,6 +14,8 @@ import com.ppidev.smartcube.contract.domain.use_case.edge_device.IEdgeDevicesInf
 import com.ppidev.smartcube.data.remote.dto.DeviceConfigDto
 import com.ppidev.smartcube.data.remote.dto.ServerStatusDto
 import com.ppidev.smartcube.utils.CommandMqtt
+import com.ppidev.smartcube.utils.convertJsonToDto
+import com.ppidev.smartcube.utils.extractCommandAndDataMqtt
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +34,6 @@ class DetailEdgeServerViewModel @Inject constructor(
     var state by mutableStateOf(DetailEdgeServerState())
         private set
 
-    private val gson = Gson()
 
     fun onEvent(event: DetailEdgeServerEvent) {
         viewModelScope.launch {
@@ -95,28 +96,21 @@ class DetailEdgeServerViewModel @Inject constructor(
 
             if (mqttSubTopic != null && mqttPubTopic != null) {
                 mqttService.subscribeToTopic(mqttSubTopic) { _, msg ->
-                    val json = String(msg.payload)
-                    val result = gson.fromJson<Map<String, Any>>(
-                        json,
-                        object : TypeToken<Map<String, Any>>() {}.type
-                    )
-                    val command = Json.decodeFromString<String>(gson.toJson(result["command"]))
-                    val data = result["data"]
-                    Log.d("DATA", data.toString())
+                    val (command, data) = extractCommandAndDataMqtt(msg)
 
                     when (command) {
                         CommandMqtt.GET_SERVER_INFO -> {
-                            val dataDecoded = Json.decodeFromString<ServerStatusDto>(
-                                gson.toJson(data)
-                            )
-                            updateServerInfo(dataDecoded)
+                            val dataDecoded = convertJsonToDto<ServerStatusDto>(data)
+                            if (dataDecoded != null) {
+                                updateServerInfo(dataDecoded)
+                            }
                         }
 
                         CommandMqtt.GET_DEVICES_CONFIG -> {
-                            val dataDecoded = Json.decodeFromString<List<DeviceConfigDto>>(
-                                gson.toJson(data)
-                            )
-                            updateListDevices(dataDecoded)
+                            val dataDecoded = convertJsonToDto<List<DeviceConfigDto>>(data)
+                            if (dataDecoded != null) {
+                                updateListDevices(dataDecoded)
+                            }
                         }
                     }
                 }

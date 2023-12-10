@@ -142,11 +142,7 @@ class MqttService @Inject constructor(@ApplicationContext private val context: C
         }
     }
 
-    fun checkIfMqttIsConnected(): Boolean {
-        if (mqttClient.isConnected) {
-            return true
-        }
-
-        return false
+    override fun checkIfMqttIsConnected(): Boolean {
+        return mqttClient.isConnected
     }
 }
