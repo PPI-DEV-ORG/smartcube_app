@@ -27,9 +27,10 @@ interface NotificationApi {
     @GET("notification")
     suspend fun getListNotifications(): Response<ResponseApp<List<NotificationDto>?>>
 
-    @GET("notification/{notificationId}")
+    @GET("notification/{notificationId}/edge-server/{edgeServerId}")
     suspend fun getListNotificationById(
-        @Path("notificationId") notificationId: UInt
+        @Path("notificationId") notificationId: UInt,
+        @Path("edgeServerId") edgeServerId: UInt
     ): Response<ResponseApp<NotificationDto?>>
 }
 

@@ -16,17 +16,16 @@ import javax.inject.Inject
 class ViewNotificationUseCase @Inject constructor(
     private val notificationRepository: Lazy<INotificationRepository>
 ) : IViewNotificationUseCase {
-    override fun invoke(notificationId: UInt): Flow<Resource<ResponseApp<NotificationModel?>>> =
+    override fun invoke(notificationId: UInt, edgeServerId: UInt): Flow<Resource<ResponseApp<NotificationModel?>>> =
         flow {
             emit(Resource.Loading())
-            emit(getDetailNotification(notificationId))
+            emit(getDetailNotification(notificationId, edgeServerId))
         }
 
-    private suspend fun getDetailNotification(notificationId: UInt): Resource<ResponseApp<NotificationModel?>> {
+    private suspend fun getDetailNotification(notificationId: UInt, edgeServerId: UInt): Resource<ResponseApp<NotificationModel?>> {
         return try {
             val notificationResponse =
-                notificationRepository.get().getDetailNotification(notificationId = notificationId)
-            Log.d("NOTIF", notificationResponse.toString())
+                notificationRepository.get().getDetailNotification(notificationId = notificationId, edgeServerId = edgeServerId)
             if (!notificationResponse.status) {
                 return Resource.Error<ResponseApp<NotificationModel?>>(
                     notificationResponse.statusCode, notificationResponse.message

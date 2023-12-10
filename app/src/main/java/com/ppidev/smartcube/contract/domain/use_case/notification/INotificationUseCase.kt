@@ -10,5 +10,5 @@ interface IListNotificationUseCase {
 }
 
 interface IViewNotificationUseCase {
-    operator fun invoke(notificationId: UInt): Flow<Resource<ResponseApp<NotificationModel?>>>
+    operator fun invoke(notificationId: UInt, edgeServerId: UInt): Flow<Resource<ResponseApp<NotificationModel?>>>
 }

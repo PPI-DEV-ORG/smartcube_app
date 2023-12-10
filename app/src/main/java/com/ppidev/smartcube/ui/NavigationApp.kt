@@ -23,8 +23,6 @@ import com.ppidev.smartcube.presentation.edge_device.detail.DetailEdgeDeviceScre
 import com.ppidev.smartcube.presentation.edge_device.detail.DetailEdgeDeviceViewModel
 import com.ppidev.smartcube.presentation.edge_device.form_add.FormAddEdgeDeviceScreen
 import com.ppidev.smartcube.presentation.edge_device.form_add.FormAddEdgeDeviceViewModel
-import com.ppidev.smartcube.presentation.edge_device.list.ListEdgeDeviceScreen
-import com.ppidev.smartcube.presentation.edge_device.list.ListEdgeDeviceViewModel
 import com.ppidev.smartcube.presentation.edge_device.update.UpdateEdgeDeviceScreen
 import com.ppidev.smartcube.presentation.edge_device.update.UpdateEdgeDeviceViewModel
 import com.ppidev.smartcube.presentation.edge_server.detail.DetailEdgeServerScreen
@@ -37,8 +35,8 @@ import com.ppidev.smartcube.presentation.login.LoginScreen
 import com.ppidev.smartcube.presentation.login.LoginViewModel
 import com.ppidev.smartcube.presentation.notification.NotificationListScreen
 import com.ppidev.smartcube.presentation.notification.NotificationViewModel
-import com.ppidev.smartcube.presentation.notification.notification_detail.NotificationDetailScreen
-import com.ppidev.smartcube.presentation.notification.notification_detail.NotificationDetailViewModel
+import com.ppidev.smartcube.presentation.notification.detail.NotificationDetailScreen
+import com.ppidev.smartcube.presentation.notification.detail.NotificationDetailViewModel
 import com.ppidev.smartcube.presentation.profile.ProfileScreen
 import com.ppidev.smartcube.presentation.register.RegisterScreen
 import com.ppidev.smartcube.presentation.register.RegisterViewModel

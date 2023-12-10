@@ -6,5 +6,5 @@ import retrofit2.Response
 
 interface INotificationRepository {
     suspend fun getAllNotifications(): ResponseApp<List<NotificationDto>?>
-    suspend fun getDetailNotification(notificationId: UInt): ResponseApp<NotificationDto?>
+    suspend fun getDetailNotification(notificationId: UInt, edgeServerId: UInt): ResponseApp<NotificationDto?>
 }

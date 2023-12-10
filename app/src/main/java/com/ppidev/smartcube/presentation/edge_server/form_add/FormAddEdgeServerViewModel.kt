@@ -23,7 +23,7 @@ class FormAddEdgeServerViewModel @Inject constructor(
     var state by mutableStateOf(FormAddEdgeServerState())
 
     fun onEvent(event: FormAddEdgeServerEvent) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             when (event) {
                 FormAddEdgeServerEvent.HandleAddEdgeServer -> {
                     handleAddEdgeServer()

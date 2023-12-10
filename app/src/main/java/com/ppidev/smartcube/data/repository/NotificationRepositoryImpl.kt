@@ -50,9 +50,9 @@ class NotificationRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getDetailNotification(notificationId: UInt): ResponseApp<NotificationDto?> {
+    override suspend fun getDetailNotification(notificationId: UInt, edgeServerId: UInt): ResponseApp<NotificationDto?> {
         try {
-            val response = api.getListNotificationById(notificationId)
+            val response = api.getListNotificationById(notificationId, edgeServerId)
             if (!response.isSuccessful) {
                 val errorResponse = response.errorBody()?.string()
                 return Gson().fromJson(
