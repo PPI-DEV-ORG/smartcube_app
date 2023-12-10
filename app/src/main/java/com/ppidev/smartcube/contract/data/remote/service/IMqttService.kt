@@ -10,4 +10,6 @@ interface IMqttService {
     fun publishToTopic(topic: String, message: String):  Resource<Boolean>
     fun unsubscribeFromTopic(topic: String): Unit
     fun disconnect(): Unit
+
+    fun checkIfMqttIsConnected(): Boolean
 }

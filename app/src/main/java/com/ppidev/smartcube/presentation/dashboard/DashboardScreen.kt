@@ -1,6 +1,7 @@
 package com.ppidev.smartcube.presentation.dashboard
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -61,6 +62,12 @@ fun DashboardScreen(
         }
     }
 
+    LaunchedEffect(key1 = state.mqttSubscribeTopic) {
+        if (state.mqttSubscribeTopic != null) {
+            onEvent(DashboardEvent.SubscribeTopicMqtt(state.mqttSubscribeTopic))
+        }
+    }
+
     DisposableEffect(Unit) {
         onDispose {
             onEvent(DashboardEvent.UnsubscribeToMqttService)
@@ -83,6 +90,7 @@ fun DashboardScreen(
             isLoadingListServer = state.loading.isLoadingListServer,
             onTabChange = { index, _ ->
                 selectedTabIndex = index
+                onEvent(DashboardEvent.UnsubscribeToMqttService)
                 onEvent(DashboardEvent.SetEdgeServerId(state.listServerId[index]))
             },
             navigateToDetailDevice = {
@@ -99,10 +107,13 @@ fun DashboardScreen(
         )
     }
 
-    LaunchedEffect(state.serverInfoMQTT) {
+    LaunchedEffect(state.mqttPublishTopic) {
         while (true) {
             delay(intervalSync)
-            onEvent(DashboardEvent.GetServerInfo)
+
+            if (state.mqttPublishTopic != null) {
+                onEvent(DashboardEvent.GetServerInfoMqtt(state.mqttPublishTopic))
+            }
         }
     }
 }
