@@ -1,4 +1,4 @@
-package com.ppidev.smartcube.presentation.notification.notification_detail
+package com.ppidev.smartcube.presentation.notification.detail
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,7 +34,7 @@ fun NotificationDetailScreen(
 
     Column {
         TopAppBar(title = {
-            Text(text = state.notificationModel.title)
+            Text(text = state.notificationModel?.title ?: "")
         })
 
         Column(
@@ -46,17 +46,17 @@ fun NotificationDetailScreen(
             }
 
             AsyncImage(
-                model = state.notificationModel.imageUrl,
+                model = state.notificationModel?.imageUrl ?: "",
                 contentDescription = "object detected"
             )
 
             Spacer(modifier = Modifier.size(22.dp))
 
-            Text(text = state.notificationModel.title, fontWeight = FontWeight.SemiBold)
+            Text(text = state.notificationModel?.title ?: "", fontWeight = FontWeight.SemiBold)
 
             Spacer(modifier = Modifier.size(14.dp))
 
-            Text(text = state.notificationModel.description)
+            Text(text = state.notificationModel?.description ?: "")
 
             Spacer(modifier = Modifier.size(14.dp))
 

@@ -82,6 +82,10 @@ fun DashboardScreen(
         DashboardContentView(
             username = state.username,
             email = state.email,
+            avgCpuTemp = state.serverInfoMQTT?.cpuTemp ?: "-",
+            upTime = state.serverInfoMQTT?.upTime ?: "-",
+            totalRam = state.serverInfoMQTT?.memoryFree ?: "-",
+            fanSpeed = state.serverInfoMQTT?.fanSpeed ?: "-",
             selectedTabIndex = selectedTabIndex,
             listEdgeServer = state.listServer,
             listEdgeDevices = state.listDevices,

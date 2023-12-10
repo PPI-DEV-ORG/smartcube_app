@@ -1,5 +1,6 @@
 package com.ppidev.smartcube.ui.components.card
 
+import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -38,6 +39,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ppidev.smartcube.ui.theme.Purple40
 import com.ppidev.smartcube.ui.theme.Typography
+import com.ppidev.smartcube.utils.convertMillisecondsToHoursAndMinutes
+import com.ppidev.smartcube.utils.extractNumberFromString
 
 @Composable
 fun CardServerInfo(
@@ -48,6 +51,12 @@ fun CardServerInfo(
     upTime: String,
     ramUsage: Int = 0
 ) {
+    val splitNumberUpTime = extractNumberFromString(upTime)
+    var upTimeFormat = "-"
+    if (splitNumberUpTime != null) {
+        upTimeFormat =  convertMillisecondsToHoursAndMinutes(splitNumberUpTime)
+    }
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -81,7 +90,7 @@ fun CardServerInfo(
                 Spacer(modifier = Modifier.size(8.dp))
                 Text(text = "Fan Speed: $fanSpeed", style = MaterialTheme.typography.bodySmall)
                 Spacer(modifier = Modifier.size(8.dp))
-                Text(text = "Up time: $upTime", style = MaterialTheme.typography.bodySmall)
+                Text(text = "Up time: $upTimeFormat", style = MaterialTheme.typography.bodySmall)
             }
 
             AnimatedCircularProgressIndicator(

@@ -7,7 +7,7 @@ data class DashboardState(
     val edgeServerId: UInt? = null,
     val username: String = "",
     val email: String = "",
-    val serverInfoMQTT: ServerStatusModel = ServerStatusModel("0", "0", "0", "0", "0"),
+    val serverInfoMQTT: ServerStatusModel? = null,
     val listServer: List<String> = emptyList(),
     val listServerId: List<UInt> = emptyList(),
     val listDevices: List<EdgeDevice> = emptyList(),

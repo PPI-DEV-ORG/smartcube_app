@@ -1,46 +1,67 @@
 package com.ppidev.smartcube.data.remote.dto
 
+import com.google.gson.annotations.SerializedName
 import com.ppidev.smartcube.domain.model.NotificationModel
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class NotificationDto(
-    @SerialName("image")
+    @SerializedName("image")
     val image: String? = null,
 
-    @SerialName("is_viewed")
+    @SerializedName("is_viewed")
     val isViewed: Boolean,
 
-    @SerialName("updated_at")
-    val updatedAt: String? = null,
-
-    @SerialName("user_id")
+    @SerializedName("user_id")
     val userId: Int,
 
-    @SerialName("description")
+    @SerializedName("description")
     val description: String,
 
-    @SerialName("created_at")
-    val createdAt: String,
-
-    @SerialName("id")
+    @SerializedName("id")
     val id: Int,
 
-    @SerialName("title")
+    @SerializedName("title")
     val title: String,
 
-    @SerialName("deleted_at")
-    val deletedAt: String? = null
+    @SerializedName("edge_server_id")
+    val edgeServerId: UInt,
+
+    @SerializedName("device_id")
+    val deviceId: UInt,
+
+    @SerializedName("device_type")
+    val deviceType: String,
+
+    @SerializedName("object_label")
+    val objectLabel: String? = null,
+
+    @SerializedName("risk_level")
+    val riskLevel: String? = null,
+
+    @SerializedName("updated_at")
+    val updatedAt: String? = null,
+
+    @SerializedName("created_at")
+    val createdAt: String,
+
+    @SerializedName("deleted_at")
+    val deletedAt: String? = null,
 )
 
 
 fun NotificationDto.toNotificationModel(): NotificationModel {
     return NotificationModel(
+        id = id,
         title = title,
         imageUrl = image.toString(),
         isViewed = isViewed,
-        id = id,
-        description = description
+        description = description,
+        createdAt = createdAt,
+        deviceType = deviceType,
+        objectLabel = objectLabel,
+        riskLevel = riskLevel,
+        edgeDeviceId = deviceId,
+        edgeServerId = edgeServerId
     )
 }

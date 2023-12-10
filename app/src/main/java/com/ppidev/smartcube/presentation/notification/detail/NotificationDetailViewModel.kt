@@ -1,4 +1,4 @@
-package com.ppidev.smartcube.presentation.notification.notification_detail
+package com.ppidev.smartcube.presentation.notification.detail
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,28 +28,8 @@ class NotificationDetailViewModel @Inject constructor(
         }
     }
 
-    private fun getDetailNotification(notificationId: UInt) {
-        viewNotificationUseCase.get().invoke(notificationId).onEach {
-            when(it) {
-                is Resource.Loading -> {}
-                is Resource.Success -> {
-                    state = state.copy(
-                        notificationModel = it.data?.data ?: NotificationModel(
-                            1,
-                            "",
-                            false,
-                            "",
-                            "",
-                        )
-                    )
-                }
-                is Resource.Error -> {
-                    state = state.copy(
-                        error = it.message.toString()
-                    )
-                }
-            }
-        }.launchIn(viewModelScope)
+    private fun getDetailNotification(notificationId: UInt, ) {
+
     }
 
 }

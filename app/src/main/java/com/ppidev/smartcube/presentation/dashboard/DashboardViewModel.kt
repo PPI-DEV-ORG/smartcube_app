@@ -1,5 +1,6 @@
 package com.ppidev.smartcube.presentation.dashboard
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -34,7 +35,7 @@ class DashboardViewModel @Inject constructor(
         private set
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             if(!mqttService.get().checkIfMqttIsConnected()) {
                 mqttService.get().connect()
             }
@@ -71,12 +72,14 @@ class DashboardViewModel @Inject constructor(
             if (!mqttService.get().checkIfMqttIsConnected()) {
                 mqttService.get().connect()
             }
-
+            Log.d("MQTT", "subscribed : $topic")
             mqttService.get().subscribeToTopic(topic) { _, msg ->
                 val (command, data) = extractCommandAndDataMqtt(msg)
+                Log.d("MQTT", "command : $command")
                 when (command) {
                     CommandMqtt.GET_SERVER_INFO -> {
                         val dataDecoded = convertJsonToDto<ServerStatusDto>(data)
+                        Log.d("MQTT", dataDecoded.toString())
                         if (dataDecoded != null) {
                             updateServerInfoMqtt(serverInfo = dataDecoded)
                         }
@@ -178,6 +181,8 @@ class DashboardViewModel @Inject constructor(
 
     private fun getServerInfo(topic: String) {
         viewModelScope.launch {
+
+            Log.d("MQTT", "publish : $topic")
             mqttService.get()
                 .publishToTopic(topic, CommandMqtt.GET_SERVER_INFO)
         }
