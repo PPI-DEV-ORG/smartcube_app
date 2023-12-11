@@ -3,7 +3,6 @@ package com.ppidev.smartcube.domain.ext_service
 import android.app.PendingIntent
 import android.app.TaskStackBuilder
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -14,9 +13,12 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.ppidev.smartcube.R
 import com.ppidev.smartcube.common.APP_URL
+import com.ppidev.smartcube.common.EExceptionCode
 import com.ppidev.smartcube.common.NOTIFICATION_ARG
+import com.ppidev.smartcube.common.ResponseApp
 import com.ppidev.smartcube.contract.data.remote.service.IMessagingService
 import com.ppidev.smartcube.contract.data.repository.ITokenAppRepository
+import com.ppidev.smartcube.contract.data.repository.IUserRepository
 import com.ppidev.smartcube.data.local.entity.ENotificationChannel
 import com.ppidev.smartcube.data.remote.dto.FcmMessage
 import com.ppidev.smartcube.presentation.MainActivity
@@ -29,15 +31,17 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class FcmService: FirebaseMessagingService(), IMessagingService<RemoteMessage> {
+class FcmService : FirebaseMessagingService(), IMessagingService<RemoteMessage> {
     @Inject
     lateinit var tokenAppRepositoryImpl: ITokenAppRepository
+
+    @Inject
+    lateinit var userRepository: IUserRepository
 
     private lateinit var notificationManager: MyNotificationManager
 
     override fun onCreate() {
         super.onCreate()
-        Log.d("FCM", "onCreate")
         notificationManager = MyNotificationManager(applicationContext)
         setupMessagingService()
     }
@@ -49,13 +53,12 @@ class FcmService: FirebaseMessagingService(), IMessagingService<RemoteMessage> {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-
-        // save token fcm to local datastore
+        // save token fcm to local datastore and api
         CoroutineScope(Dispatchers.IO).launch {
             saveFcmTokenToLocal(token)
+            storeFcmTokenToAPI(token)
         }
         Log.d("FCM", "token $token")
-        storeFcmTokenToAPI(token)
     }
 
     override fun handleOnMessageReceived(messages: RemoteMessage) {
@@ -67,7 +70,14 @@ class FcmService: FirebaseMessagingService(), IMessagingService<RemoteMessage> {
             val notificationId = this["notificationId"].toString()
 
             // show notification
-            showNotification(FcmMessage(notificationTitle, notificationBody, imageUrl, notificationId))
+            showNotification(
+                FcmMessage(
+                    notificationTitle,
+                    notificationBody,
+                    imageUrl,
+                    notificationId
+                )
+            )
         }
     }
 
@@ -119,13 +129,21 @@ class FcmService: FirebaseMessagingService(), IMessagingService<RemoteMessage> {
             if (!task.isSuccessful) {
                 return@OnCompleteListener
             }
-            Log.d("FCM", "FCM initialized")
         })
     }
 
-    private fun storeFcmTokenToAPI(token: String) {
-        // save token to backend [NOT IMPLEMENT]
-        return
+    private suspend fun storeFcmTokenToAPI(token: String): ResponseApp<Any?> {
+        return try {
+            val response = userRepository.updateFcmToken(token)
+            response
+        } catch (e: Exception) {
+            ResponseApp(
+                status = false,
+                statusCode = EExceptionCode.UseCaseError.code,
+                message = e.message ?: "Service error",
+                data = null
+            )
+        }
     }
 
     private suspend fun saveFcmTokenToLocal(token: String) {
