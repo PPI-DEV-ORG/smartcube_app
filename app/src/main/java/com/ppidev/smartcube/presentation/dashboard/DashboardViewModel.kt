@@ -63,6 +63,12 @@ class DashboardViewModel @Inject constructor(
                 is DashboardEvent.SubscribeTopicMqtt -> {
                     subscribeToTopic(event.topic)
                 }
+
+                DashboardEvent.SetToEmptyServerInfo -> {
+                    state = state.copy(
+                        serverInfoMQTT = null
+                    )
+                }
             }
         }
     }

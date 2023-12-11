@@ -23,7 +23,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Storage
-import androidx.compose.material.icons.outlined.Videocam
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -50,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ppidev.smartcube.R
+import com.ppidev.smartcube.domain.model.TypeEdgeDevice
 import com.ppidev.smartcube.ui.components.CustomTab
 import com.ppidev.smartcube.ui.components.card.CardServerInfo
 import com.ppidev.smartcube.ui.components.modal.ModalInfoServerConfig
@@ -77,7 +77,9 @@ fun DetailEdgeServerScreen(
     }
 
     LaunchedEffect(state.edgeDevicesInfo) {
-        onEvent(DetailEdgeServerEvent.ListenMqtt)
+        if (state.edgeDevicesInfo != null) {
+            onEvent(DetailEdgeServerEvent.SubscribeToTopicMqtt(state.edgeDevicesInfo.mqttSubTopic))
+        }
     }
 
     val pagerState = rememberPagerState(
@@ -167,10 +169,10 @@ fun DetailEdgeServerScreen(
                         )
                         Spacer(modifier = Modifier.size(8.dp))
                         state.devices.map { item ->
-                            CardCamera(
+                            CardDevice(
                                 type = item.sourceType,
                                 name = item.type,
-                                status = false
+                                status = true
                             )
                         }
                     }
@@ -191,22 +193,26 @@ fun DetailEdgeServerScreen(
         )
     }
 
-    LaunchedEffect(state.serverInfo) {
+    LaunchedEffect(state.edgeDevicesInfo) {
         while (true) {
             delay(1000L)
-            onEvent(DetailEdgeServerEvent.ListenMqtt)
+            if (state.edgeDevicesInfo != null) {
+                onEvent(DetailEdgeServerEvent.GetServerInfoMqtt(state.edgeDevicesInfo.mqttPubTopic))
+            }
         }
     }
 
     DisposableEffect(Unit) {
         onDispose {
-            onEvent(DetailEdgeServerEvent.UnListenMqtt)
+            if (state.edgeDevicesInfo != null) {
+                onEvent(DetailEdgeServerEvent.UnSubscribeFromMqttTopic(state.edgeDevicesInfo.mqttSubTopic))
+            }
         }
     }
 }
 
 @Composable
-private fun CardCamera(type: String, name: String, status: Boolean) {
+private fun CardDevice(type: String, name: String, status: Boolean) {
     Row(
         modifier = Modifier
             .border(
@@ -228,11 +234,20 @@ private fun CardCamera(type: String, name: String, status: Boolean) {
             modifier = Modifier.weight(1f),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = Icons.Outlined.Videocam,
-                contentDescription = "description",
-                modifier = Modifier.size(44.dp)
-            )
+            if (type == TypeEdgeDevice.CAMERA.typeName) {
+                Icon(
+                    painterResource(id = R.drawable.ic_camera),
+                    contentDescription = null,
+                    modifier = Modifier.size(44.dp)
+                )
+            } else {
+                Icon(
+                    painterResource(id = R.drawable.ic_sensor),
+                    contentDescription = null,
+                    modifier = Modifier.size(44.dp)
+                )
+            }
+
             Spacer(modifier = Modifier.size(8.dp))
             Text(text = name, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }

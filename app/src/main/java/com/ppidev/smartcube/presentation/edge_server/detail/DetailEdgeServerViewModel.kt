@@ -1,28 +1,22 @@
 package com.ppidev.smartcube.presentation.edge_server.detail
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.ppidev.smartcube.common.Resource
 import com.ppidev.smartcube.contract.data.remote.service.IMqttService
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IEdgeDevicesInfoUseCase
-import com.ppidev.smartcube.data.remote.dto.DeviceConfigDto
 import com.ppidev.smartcube.data.remote.dto.ServerStatusDto
 import com.ppidev.smartcube.utils.CommandMqtt
 import com.ppidev.smartcube.utils.convertJsonToDto
 import com.ppidev.smartcube.utils.extractCommandAndDataMqtt
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,7 +28,6 @@ class DetailEdgeServerViewModel @Inject constructor(
     var state by mutableStateOf(DetailEdgeServerState())
         private set
 
-
     fun onEvent(event: DetailEdgeServerEvent) {
         viewModelScope.launch {
             when (event) {
@@ -42,23 +35,23 @@ class DetailEdgeServerViewModel @Inject constructor(
                     getEdgeDevicesInfo(event.edgeServerId)
                 }
 
-                DetailEdgeServerEvent.ListenMqtt -> {
-                    listenMqttClient()
-                }
-
-                DetailEdgeServerEvent.UnListenMqtt -> {
-                    val mqttSubTopic = state.edgeDevicesInfo?.mqttSubTopic
-
-                    if (mqttSubTopic != null) {
-                        mqttService
-                            .unsubscribeFromTopic(mqttSubTopic)
-                    }
+                is DetailEdgeServerEvent.UnSubscribeFromMqttTopic -> {
+                    mqttService
+                        .unsubscribeFromTopic(event.topic)
                 }
 
                 is DetailEdgeServerEvent.SetDialogStatus -> {
                     state = state.copy(
                         isDialogOpen = event.status
                     )
+                }
+
+                is DetailEdgeServerEvent.GetServerInfoMqtt -> {
+                    getServerInfoMqtt(event.topic)
+                }
+
+                is DetailEdgeServerEvent.SubscribeToTopicMqtt -> {
+                    subscribeToTopic(event.topic)
                 }
             }
         }
@@ -82,41 +75,41 @@ class DetailEdgeServerViewModel @Inject constructor(
                 is Resource.Success -> {
                     state = state.copy(
                         isLoading = false,
-                        edgeDevicesInfo = it.data?.data
+                        edgeDevicesInfo = it.data?.data,
+                        devices = it.data?.data?.devices ?: emptyList()
                     )
                 }
             }
         }.launchIn(viewModelScope)
     }
 
-    private fun listenMqttClient() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val mqttSubTopic = state.edgeDevicesInfo?.mqttSubTopic
-            val mqttPubTopic = state.edgeDevicesInfo?.mqttPubTopic
+    private fun subscribeToTopic(topic: String) {
+        viewModelScope.launch {
+            if (!mqttService.checkIfMqttIsConnected()) {
+                mqttService.connect()
+            }
 
-            if (mqttSubTopic != null && mqttPubTopic != null) {
-                mqttService.subscribeToTopic(mqttSubTopic) { _, msg ->
-                    val (command, data) = extractCommandAndDataMqtt(msg)
+            mqttService.subscribeToTopic(topic) { _, msg ->
+                val (command, data) = extractCommandAndDataMqtt(msg)
 
-                    when (command) {
-                        CommandMqtt.GET_SERVER_INFO -> {
-                            val dataDecoded = convertJsonToDto<ServerStatusDto>(data)
-                            if (dataDecoded != null) {
-                                updateServerInfo(dataDecoded)
-                            }
-                        }
-
-                        CommandMqtt.GET_DEVICES_CONFIG -> {
-                            val dataDecoded = convertJsonToDto<List<DeviceConfigDto>>(data)
-                            if (dataDecoded != null) {
-                                updateListDevices(dataDecoded)
-                            }
+                when (command) {
+                    CommandMqtt.GET_SERVER_INFO -> {
+                        val dataDecoded = convertJsonToDto<ServerStatusDto>(data)
+                        if (dataDecoded != null) {
+                            updateServerInfo(dataDecoded)
                         }
                     }
                 }
-
-                publishTopic(mqttPubTopic)
             }
+        }
+    }
+
+    private fun getServerInfoMqtt(topic: String) {
+        viewModelScope.launch {
+            mqttService.publishToTopic(
+                topic,
+                CommandMqtt.GET_SERVER_INFO
+            )
         }
     }
 
@@ -124,28 +117,6 @@ class DetailEdgeServerViewModel @Inject constructor(
         viewModelScope.launch {
             state = state.copy(
                 serverInfo = serverInfo
-            )
-        }
-    }
-
-    private fun updateListDevices(devices: List<DeviceConfigDto>) {
-        viewModelScope.launch {
-            state = state.copy(
-                devices = devices
-            )
-        }
-    }
-
-    private fun publishTopic(mqttPubTopic: String) {
-        Log.d("PUBLISH", mqttPubTopic)
-        viewModelScope.launch {
-            mqttService.publishToTopic(
-                mqttPubTopic,
-                CommandMqtt.GET_DEVICES_CONFIG
-            )
-            mqttService.publishToTopic(
-                mqttPubTopic,
-                CommandMqtt.GET_SERVER_INFO
             )
         }
     }
