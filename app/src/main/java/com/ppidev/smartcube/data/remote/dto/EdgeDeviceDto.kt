@@ -100,13 +100,13 @@ data class EdgeDevicesInfoDto(
     val mqttUser: String? = "",
 
     @SerializedName("mqtt_password")
-    val mqttPassword: String? = "",
+    val mqttPassword: String,
 
     @SerializedName("mqtt_pub_topic")
-    val mqttPubTopic: String? = "",
+    val mqttPubTopic: String,
 
     @SerializedName("mqtt_sub_topic")
-    val mqttSubTopic: String? = "",
+    val mqttSubTopic: String,
 
     @SerializedName("devices")
     val devices: List<EdgeDevice> = emptyList(),
