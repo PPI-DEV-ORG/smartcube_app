@@ -7,18 +7,14 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.ppidev.smartcube.common.Resource
 import com.ppidev.smartcube.contract.data.remote.service.IMqttService
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IAddEdgeDevicesUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IEdgeDevicesInfoUseCase
 import com.ppidev.smartcube.data.remote.dto.MLModelDto
 import com.ppidev.smartcube.utils.CommandMqtt
-<<<<<<< Updated upstream
-=======
 import com.ppidev.smartcube.utils.convertJsonToDto
 import com.ppidev.smartcube.utils.extractCommandAndDataMqtt
->>>>>>> Stashed changes
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -97,7 +93,7 @@ class FormAddEdgeDeviceViewModel @Inject constructor(
                 }
 
                 is FormAddEdgeDeviceEvent.GetInstalledModels -> {
-                    getListModels()
+                    getListModels(event.topic)
                 }
 
                 is FormAddEdgeDeviceEvent.SetStepValue -> {
@@ -131,8 +127,6 @@ class FormAddEdgeDeviceViewModel @Inject constructor(
                         isSuccess = null
                     )
                 }
-<<<<<<< Updated upstream
-=======
 
                 is FormAddEdgeDeviceEvent.SubscribeToMqttTopic -> {
                     subscribeMqttTopic(event.topic)
@@ -141,7 +135,6 @@ class FormAddEdgeDeviceViewModel @Inject constructor(
                 is FormAddEdgeDeviceEvent.UnsubscribeFromMqttTopic -> {
                     unsubscribeMqttTopic(event.topic)
                 }
->>>>>>> Stashed changes
             }
         }
     }
@@ -229,24 +222,6 @@ class FormAddEdgeDeviceViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-<<<<<<< Updated upstream
-    private fun getListModels() {
-        viewModelScope.launch {
-            val mqttSubTopic = state.edgeDevicesInfo?.mqttSubTopic
-            val mqttPubTopic = state.edgeDevicesInfo?.mqttPubTopic
-
-            if (mqttSubTopic?.isNotEmpty() == true && mqttPubTopic?.isNotEmpty() == true) {
-                mqttService.get().subscribeToTopic(mqttSubTopic) { topic, msg ->
-                    val json = String(msg.payload)
-                    val result = gson.fromJson<Map<String, Any>>(
-                        json,
-                        object : TypeToken<Map<String, Any>>() {}.type
-                    )
-
-                    val installedModelsResponse = result["data"]
-
-                    Log.d("MQTT RES from $topic : ", "$msg")
-=======
     private fun subscribeMqttTopic(topic: String) {
         viewModelScope.launch(Dispatchers.IO) {
             if (!mqttService.get().checkIfMqttIsConnected()) {
@@ -270,16 +245,12 @@ class FormAddEdgeDeviceViewModel @Inject constructor(
                             )
                         }
                     }
->>>>>>> Stashed changes
                 }
 
-<<<<<<< Updated upstream
-                mqttService.get().publishToTopic(
-                    mqttPubTopic,
-                    CommandMqtt.GET_INSTALLED_MODEL
-                )
             }
-=======
+        }
+    }
+
     private fun unsubscribeMqttTopic(topic: String) {
         if (mqttService.get().checkIfMqttIsConnected()) {
             Log.d("MQTT", "unsubscribe : $topic")
@@ -289,13 +260,11 @@ class FormAddEdgeDeviceViewModel @Inject constructor(
 
     private fun getListModels(topic: String) {
         viewModelScope.launch {
-
             Log.d("MQTT", "publish $topic")
             mqttService.get().publishToTopic(
                 topic,
                 CommandMqtt.GET_INSTALLED_MODEL
             )
->>>>>>> Stashed changes
         }
     }
 }

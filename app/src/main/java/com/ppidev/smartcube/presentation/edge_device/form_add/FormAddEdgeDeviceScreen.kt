@@ -34,7 +34,10 @@ fun FormAddEdgeDeviceScreen(
     }
 
     LaunchedEffect(key1 = state.edgeDevicesInfo) {
-        onEvent(FormAddEdgeDeviceEvent.GetInstalledModels)
+        if (state.edgeDevicesInfo != null) {
+            onEvent(FormAddEdgeDeviceEvent.SubscribeToMqttTopic(state.edgeDevicesInfo.mqttSubTopic))
+            onEvent(FormAddEdgeDeviceEvent.GetInstalledModels(state.edgeDevicesInfo.mqttPubTopic))
+        }
     }
 
     Column {
