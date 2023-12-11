@@ -1,15 +1,18 @@
 package com.ppidev.smartcube.presentation.register
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ppidev.smartcube.common.Resource
+import com.ppidev.smartcube.contract.data.repository.ITokenAppRepository
 import com.ppidev.smartcube.contract.domain.use_case.auth.IRegisterUseCase
 import com.ppidev.smartcube.utils.validateEmail
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -17,7 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val registerUseCase: Lazy<IRegisterUseCase>
+    private val registerUseCase: Lazy<IRegisterUseCase>,
+    private val tokenAppRepositoryImpl: ITokenAppRepository
 ) : ViewModel() {
     var state by mutableStateOf(
         RegisterState(
@@ -64,7 +68,7 @@ class RegisterViewModel @Inject constructor(
                 event.callback()
             }
 
-           is RegisterEvent.HandleCloseDialog -> {
+            is RegisterEvent.HandleCloseDialog -> {
                 state = state.copy(
                     isShowDialog = false
                 )
@@ -75,39 +79,49 @@ class RegisterViewModel @Inject constructor(
     }
 
     private fun handleRegister() {
-        registerUseCase.get().invoke(
-            username = state.username,
-            email = state.email,
-            password = state.password,
-            confirmPassword = state.confirmPassword
-        ).onEach {
-            when (it) {
-                is Resource.Loading -> {
-                    setLoadingStatus(true)
-                }
+        viewModelScope.launch {
+            val fcmToken = tokenAppRepositoryImpl.getFcmToken().first()
 
-                is Resource.Success -> {
-                    setLoadingStatus(false)
-
-                    state = state.copy(
-                        isShowDialog = true,
-                        username = "",
-                        password = "",
-                        confirmPassword = ""
-                    )
-                }
-
-                is Resource.Error -> {
-                    setLoadingStatus(false)
-
-                    state = state.copy(
-                        error = RegisterState.RegisterError(
-                            message = it.message.toString()
-                        )
-                    )
-                }
+            if (fcmToken.isEmpty()) {
+                return@launch
             }
-        }.launchIn(viewModelScope)
+
+            registerUseCase.get().invoke(
+                username = state.username,
+                email = state.email,
+                password = state.password,
+                confirmPassword = state.confirmPassword,
+                fcmRegistrationToken = fcmToken
+            ).onEach {
+                when (it) {
+                    is Resource.Loading -> {
+                        setLoadingStatus(true)
+                    }
+
+                    is Resource.Success -> {
+                        setLoadingStatus(false)
+
+                        state = state.copy(
+                            isShowDialog = true,
+                            username = "",
+                            password = "",
+                            confirmPassword = ""
+                        )
+                    }
+
+                    is Resource.Error -> {
+                        setLoadingStatus(false)
+
+                        state = state.copy(
+                            error = RegisterState.RegisterError(
+                                message = it.message.toString()
+                            )
+                        )
+                    }
+                }
+            }.launchIn(viewModelScope)
+        }
+
     }
 
     private fun onUsernameChange(str: String) {

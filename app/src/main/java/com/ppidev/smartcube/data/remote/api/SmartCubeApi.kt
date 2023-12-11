@@ -48,7 +48,8 @@ interface AuthApi {
         @Field("username") username: String,
         @Field("email") email: String,
         @Field("password") password: String,
-        @Field("cPassword") confirmPassword: String
+        @Field("cPassword") confirmPassword: String,
+        @Field("fcmRegistrationToken") fcmRegistrationToken: String
     ): Response<ResponseApp<RegisterDto?>>
 
     @FormUrlEncoded

@@ -18,24 +18,27 @@ class RegisterUseCase @Inject constructor(
         username: String,
         email: String,
         password: String,
-        confirmPassword: String
+        confirmPassword: String,
+        fcmRegistrationToken: String
     ): Flow<Resource<ResponseApp<RegisterDto?>>> = flow {
         emit(Resource.Loading())
-        emit(register(username, email, password, confirmPassword))
+        emit(register(username, email, password, confirmPassword, fcmRegistrationToken))
     }
 
     private suspend fun register(
         username: String,
         email: String,
         password: String,
-        confirmPassword: String
+        confirmPassword: String,
+        fcmRegistrationToken: String
     ): Resource<ResponseApp<RegisterDto?>> {
         try {
             val registerResponse = authRepository.get().register(
                 email = email,
                 username = username,
                 password = password,
-                confirmPassword = confirmPassword
+                confirmPassword = confirmPassword,
+                fcmRegistrationToken = fcmRegistrationToken
             )
 
             if (!registerResponse.status) {

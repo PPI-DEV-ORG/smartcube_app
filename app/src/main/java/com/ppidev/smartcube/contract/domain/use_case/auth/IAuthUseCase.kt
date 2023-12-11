@@ -12,11 +12,20 @@ interface ILoginUseCase {
 }
 
 interface IRegisterUseCase {
-    operator fun invoke(username: String, email: String, password: String, confirmPassword: String): Flow<Resource<ResponseApp<RegisterDto?>>>
+    operator fun invoke(
+        username: String,
+        email: String,
+        password: String,
+        confirmPassword: String,
+        fcmRegistrationToken: String
+    ): Flow<Resource<ResponseApp<RegisterDto?>>>
 }
 
-interface IVerificationUseCase{
-    operator fun invoke(email: String, verificationCode : String ): Flow<Resource<ResponseApp<VerificationDto?>>>
+interface IVerificationUseCase {
+    operator fun invoke(
+        email: String,
+        verificationCode: String
+    ): Flow<Resource<ResponseApp<VerificationDto?>>>
 }
 
 
@@ -25,5 +34,9 @@ interface IRequestLinkResetPasswordUseCase {
 }
 
 interface IChangePasswordUseCase {
-    operator fun invoke(resetToken: String, newPassword: String, newConfirmationPassword: String): Flow<Resource<ResponseApp<Boolean?>>>
+    operator fun invoke(
+        resetToken: String,
+        newPassword: String,
+        newConfirmationPassword: String
+    ): Flow<Resource<ResponseApp<Boolean?>>>
 }
