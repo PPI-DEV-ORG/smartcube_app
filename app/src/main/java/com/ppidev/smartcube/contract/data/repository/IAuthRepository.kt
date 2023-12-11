@@ -16,7 +16,8 @@ interface IAuthRepository {
         username: String,
         email: String,
         password: String,
-        confirmPassword: String
+        confirmPassword: String,
+        fcmRegistrationToken: String
     ): ResponseApp<RegisterDto?>
 
 

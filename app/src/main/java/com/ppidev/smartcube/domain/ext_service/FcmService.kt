@@ -37,6 +37,7 @@ class FcmService: FirebaseMessagingService(), IMessagingService<RemoteMessage> {
 
     override fun onCreate() {
         super.onCreate()
+        Log.d("FCM", "onCreate")
         notificationManager = MyNotificationManager(applicationContext)
         setupMessagingService()
     }
@@ -53,7 +54,7 @@ class FcmService: FirebaseMessagingService(), IMessagingService<RemoteMessage> {
         CoroutineScope(Dispatchers.IO).launch {
             saveFcmTokenToLocal(token)
         }
-
+        Log.d("FCM", "token $token")
         storeFcmTokenToAPI(token)
     }
 
@@ -118,6 +119,7 @@ class FcmService: FirebaseMessagingService(), IMessagingService<RemoteMessage> {
             if (!task.isSuccessful) {
                 return@OnCompleteListener
             }
+            Log.d("FCM", "FCM initialized")
         })
     }
 

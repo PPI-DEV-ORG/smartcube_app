@@ -61,10 +61,11 @@ class AuthRepositoryImpl @Inject constructor(
         username: String,
         email: String,
         password: String,
-        confirmPassword: String
+        confirmPassword: String,
+        fcmRegistrationToken: String
     ): ResponseApp<RegisterDto?> {
         try {
-            val response = api.register(username, email, password, confirmPassword)
+            val response = api.register(username, email, password, confirmPassword, fcmRegistrationToken)
 
             if (!response.isSuccessful) {
                 val errorResponse = response.errorBody()?.string()
