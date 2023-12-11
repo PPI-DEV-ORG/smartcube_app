@@ -53,7 +53,6 @@ class DetailEdgeDeviceViewModel @Inject constructor(
             return
         }
 
-
         startEdgeDeviceUseCase.get().invoke(edgeDeviceId, processId).onEach {
             when (it) {
                 is Resource.Error -> {

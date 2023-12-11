@@ -120,6 +120,7 @@ interface EdgeDeviceApi {
 
     @GET("edge-device/{edgeDeviceId}")
     suspend fun getEdgeDevicesById(
+        @Path("edgeServerId") edgeServerId: UInt,
         @Path("edgeDeviceId") edgeDeviceId: UInt
     )
 

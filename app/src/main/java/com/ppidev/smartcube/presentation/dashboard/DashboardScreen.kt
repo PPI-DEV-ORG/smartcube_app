@@ -1,7 +1,6 @@
 package com.ppidev.smartcube.presentation.dashboard
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -98,7 +97,16 @@ fun DashboardScreen(
                 onEvent(DashboardEvent.SetToEmptyServerInfo)
                 onEvent(DashboardEvent.SetEdgeServerId(state.listServerId[index]))
             },
-            navigateToDetailDevice = {
+            navigateToDetailDevice = { index, device ->
+                navHostController.navigate(
+                    Screen.DetailEdgeDevice.withArgs(
+                        state.edgeServerId.toString(),
+                        device.id.toString(),
+                        index.toString(),
+                        device.vendorName,
+                        device.type
+                    )
+                )
             },
             navigateCreateNewServer = {
                 navHostController.navigate(Screen.FormAddEdgeServer.screenRoute)
@@ -113,10 +121,9 @@ fun DashboardScreen(
     }
 
     LaunchedEffect(state.mqttPublishTopic) {
-        while (true) {
-            delay(intervalSync)
-
-            if (state.mqttPublishTopic != null) {
+        if (state.mqttPublishTopic != null) {
+            while (true) {
+                delay(intervalSync)
                 onEvent(DashboardEvent.GetServerInfoMqtt(state.mqttPublishTopic))
             }
         }
