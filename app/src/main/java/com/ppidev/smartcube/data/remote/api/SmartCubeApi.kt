@@ -16,12 +16,13 @@ import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface SmartCubeApi : NotificationApi, AuthApi, EdgeServerApi, EdgeDeviceApi
+interface SmartCubeApi : NotificationApi, AuthApi, EdgeServerApi, EdgeDeviceApi, UserApi
 
 interface NotificationApi {
     @GET("notification")
@@ -72,6 +73,14 @@ interface AuthApi {
         @Field("password") password: String,
         @Field("cPassword") confirmationPassword: String
     ): Response<ResponseApp<Boolean?>>
+}
+
+interface UserApi {
+    @FormUrlEncoded
+    @PATCH("user-profile/fcm")
+    suspend fun updateFcmToken(
+        @Field("fcm_registration_token") fcmRegistrationToken: String,
+    ): Response<ResponseApp<Any>>
 }
 
 interface EdgeServerApi {
