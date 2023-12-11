@@ -10,6 +10,10 @@ interface IEdgeDevicesInfoUseCase {
     suspend fun invoke(edgeServerId: UInt): Flow<Resource<ResponseApp<EdgeDevicesInfoDto?>>>
 }
 
+interface IViewEdgeDeviceUseCase {
+    suspend fun invoke(edgeServerId: UInt, edgeDeviceId: UInt)
+}
+
 interface IAddEdgeDevicesUseCase {
     suspend fun invoke(
         edgeServerId: UInt,

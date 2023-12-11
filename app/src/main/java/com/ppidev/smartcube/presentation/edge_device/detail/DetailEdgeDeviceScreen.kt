@@ -1,27 +1,44 @@
 package com.ppidev.smartcube.presentation.edge_device.detail
 
-import android.util.Log
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.PlayCircle
+import androidx.compose.material.icons.filled.RestartAlt
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.ppidev.smartcube.ui.Screen
+import com.ppidev.smartcube.R
+import com.ppidev.smartcube.domain.model.NotificationModel
+import com.ppidev.smartcube.ui.components.card.CardNotification
 import com.ppidev.smartcube.ui.components.modal.DialogApp
+import com.ppidev.smartcube.utils.dateFormat
 
 @Composable
 fun DetailEdgeDeviceScreen(
@@ -34,7 +51,6 @@ fun DetailEdgeDeviceScreen(
     vendor: String,
     type: String
 ) {
-
     LaunchedEffect(Unit) {
         onEvent(DetailEdgeDeviceEvent.SetDeviceInfo(edgeServerId, processId))
     }
@@ -48,45 +64,167 @@ fun DetailEdgeDeviceScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth()
+            Image(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(210.dp),
+                contentScale = ContentScale.Crop,
+                painter = painterResource(id = R.drawable.avatar),
+                contentDescription = null
+            )
+
+            Spacer(modifier = Modifier.size(16.dp))
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
             ) {
-                Column {
-                    Text(text = vendor)
-                    Text(text = type)
-
-                    Button(onClick = {
-                        onEvent(DetailEdgeDeviceEvent.StartEdgeDevice)
-                    }) {
-                        Text(text = "Start")
-                    }
-
-                    Button(onClick = {
+                CardDetailDevice(
+                    type = type,
+                    vendorName = vendor,
+                    serialNumber = "",
+                    handleRestartDevice = {
                         onEvent(DetailEdgeDeviceEvent.RestartEdgeDevice)
-                    }) {
-                        Text(text = "Restart")
-                    }
-                }
+                    },
+                    handleStartDevice = {
+                        onEvent(DetailEdgeDeviceEvent.StartEdgeDevice)
+                    })
 
-                IconButton(onClick = {
-                    navHostController.navigate(Screen.UpdateEdgeDevice.withArgs("$edgeServerId", "$edgeDeviceId"))
-                }) {
-                    Icon(imageVector = Icons.Filled.Edit, contentDescription = "edit")
-                }
+                Spacer(modifier = Modifier.size(32.dp))
 
-                if (state.isDialogMsgOpen) {
-                    DialogApp(
-                        message = if (state.isSuccess) "Success" else "Failed",
-                        contentMessage = state.messageDialog,
-                        isSuccess = state.isSuccess,
-                        onDismiss = { onEvent(DetailEdgeDeviceEvent.HandleCloseDialogMsg) },
-                        onConfirm = { onEvent(DetailEdgeDeviceEvent.HandleCloseDialogMsg) })
+                ListNotificationDetailDevice(
+                    listNotification = emptyList(),
+                    notificationActiveId = 0.toUInt()
+                ) {
+
                 }
             }
+        }
+
+        if (state.isDialogMsgOpen) {
+            DialogApp(
+                message = if (state.isSuccess) "Success" else "Failed",
+                contentMessage = state.messageDialog,
+                isSuccess = state.isSuccess,
+                onDismiss = { onEvent(DetailEdgeDeviceEvent.HandleCloseDialogMsg) },
+                onConfirm = { onEvent(DetailEdgeDeviceEvent.HandleCloseDialogMsg) })
         }
 
         if (state.isLoading) {
             CircularProgressIndicator()
         }
+    }
+}
+
+
+@Composable
+private fun ListNotificationDetailDevice(
+    listNotification: List<NotificationModel>,
+    notificationActiveId: UInt,
+    onClick: () -> Unit
+) {
+    if (listNotification.isEmpty()) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Image(modifier = Modifier.size(160.dp) ,painter = painterResource(id = R.drawable.thumb_empty), contentDescription = null)
+            Spacer(modifier = Modifier.size(8.dp))
+            Text(text = "Empty Notification")
+        }
+    } else {
+        LazyRow {
+            itemsIndexed(listNotification, key = { _, d -> d.id }) { _, item ->
+                CardNotification(
+                    title = item.title,
+                    date = dateFormat(item.createdAt) ?: "-",
+                    type = item.deviceType,
+                    imgUrl = item.imageUrl,
+                    server = "",
+                    device = "",
+                    isFocus = notificationActiveId == item.id.toUInt(),
+                    onClick = {
+                        onClick()
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun CardDetailDevice(
+    modifier: Modifier = Modifier,
+    type: String,
+    vendorName: String,
+    serialNumber: String,
+    handleRestartDevice: () -> Unit,
+    handleStartDevice: () -> Unit
+) {
+    Column(
+        modifier = modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Text(text = vendorName, style = MaterialTheme.typography.titleMedium)
+                Text(
+                    text = serialNumber,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.size(12.dp))
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Button(onClick = {
+                handleStartDevice()
+            }, shape = RoundedCornerShape(4.dp)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Icon(imageVector = Icons.Filled.PlayCircle, contentDescription = "start device")
+                    Spacer(modifier = Modifier.size(4.dp))
+                    Text(text = "Start")
+                }
+            }
+
+            Spacer(modifier = Modifier.size(12.dp))
+
+            Button(onClick = {
+                handleRestartDevice()
+            }, shape = RoundedCornerShape(4.dp)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Icon(imageVector = Icons.Filled.RestartAlt, contentDescription = "start device")
+                    Spacer(modifier = Modifier.size(4.dp))
+                    Text(text = "Restart")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun CardDetailDevicePreview() {
+    CardDetailDevice(
+        type = "",
+        vendorName = "",
+        serialNumber = "",
+        handleRestartDevice = { }) {
+
     }
 }

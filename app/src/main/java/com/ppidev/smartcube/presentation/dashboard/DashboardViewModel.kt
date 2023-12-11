@@ -69,6 +69,10 @@ class DashboardViewModel @Inject constructor(
                         serverInfoMQTT = null
                     )
                 }
+
+                is DashboardEvent.GetProcessDeviceId -> {
+                    getProcessDeviceId(event.topic)
+                }
             }
         }
     }
@@ -89,6 +93,11 @@ class DashboardViewModel @Inject constructor(
                         if (dataDecoded != null) {
                             updateServerInfoMqtt(serverInfo = dataDecoded)
                         }
+                    }
+
+                    CommandMqtt.GET_PROCESS_DEVICE_INDEX -> {
+                        Log.d("MQTT", data.toString())
+
                     }
                 }
             }
@@ -191,6 +200,14 @@ class DashboardViewModel @Inject constructor(
             Log.d("MQTT", "publish : $topic")
             mqttService.get()
                 .publishToTopic(topic, CommandMqtt.GET_SERVER_INFO)
+        }
+    }
+
+    private fun getProcessDeviceId(topic: String) {
+        viewModelScope.launch {
+            Log.d("MQTT", "publish $topic")
+
+            mqttService.get().publishToTopic(topic, CommandMqtt.GET_PROCESS_DEVICE_INDEX)
         }
     }
 

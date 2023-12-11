@@ -194,7 +194,7 @@ class EdgeDeviceRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getDetailEdgeDevice(edgeDeviceId: UInt) {
+    override suspend fun getDetailEdgeDevice(edgeServerId: UInt, edgeDeviceId: UInt) {
     }
 
     override suspend fun updateEdgeDevice(

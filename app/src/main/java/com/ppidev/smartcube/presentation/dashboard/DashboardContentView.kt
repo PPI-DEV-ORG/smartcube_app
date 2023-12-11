@@ -59,7 +59,7 @@ fun DashboardContentView(
     isLoadingProfile: Boolean,
     navigateCreateNewServer: () -> Unit,
     navigateCreateNewDevice: () -> Unit,
-    navigateToDetailDevice: (deviceId: UInt) -> Unit
+    navigateToDetailDevice: (index: Int, device: EdgeDevice) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -197,12 +197,13 @@ fun DashboardContentView(
                     } else {
                         itemsIndexed(
                             items = listEdgeDevices,
-                            key = { _, item -> item.id }) { _, item ->
+                            key = { _, item -> item.id }) { index, item ->
                             CardItemDevice(
                                 deviceType = item.type,
                                 vendorName = item.vendorName,
                                 status = true,
                                 onClick = {
+                                    navigateToDetailDevice(index, item)
                                 }
                             )
                         }
@@ -235,7 +236,7 @@ private fun DashboardContentViewPreview() {
         isLoadingListDevices = false,
         isLoadingProfile = false,
         navigateCreateNewServer = {},
-        navigateToDetailDevice = {},
+        navigateToDetailDevice = { _, _ -> },
         navigateCreateNewDevice = {}
     )
 }

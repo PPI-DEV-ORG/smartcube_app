@@ -21,7 +21,7 @@ interface IEdgeDeviceRepository {
 
     suspend fun startEdgeDevice(edgeServerId: UInt, processIndex: Int): ResponseApp<out Any?>
     suspend fun restartEdgeDevice(edgeServerId: UInt, processIndex: Int): ResponseApp<out Any?>
-    suspend fun getDetailEdgeDevice(edgeDeviceId: UInt)
+    suspend fun getDetailEdgeDevice(edgeServerId: UInt, edgeDeviceId: UInt)
     suspend fun updateEdgeDevice(
         edgeDeviceId: UInt,
         edgeServerId: UInt,
