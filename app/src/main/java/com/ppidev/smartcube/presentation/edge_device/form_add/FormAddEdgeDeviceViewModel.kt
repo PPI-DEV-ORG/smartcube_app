@@ -12,7 +12,13 @@ import com.ppidev.smartcube.common.Resource
 import com.ppidev.smartcube.contract.data.remote.service.IMqttService
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IAddEdgeDevicesUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IEdgeDevicesInfoUseCase
+import com.ppidev.smartcube.data.remote.dto.MLModelDto
 import com.ppidev.smartcube.utils.CommandMqtt
+<<<<<<< Updated upstream
+=======
+import com.ppidev.smartcube.utils.convertJsonToDto
+import com.ppidev.smartcube.utils.extractCommandAndDataMqtt
+>>>>>>> Stashed changes
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -125,6 +131,17 @@ class FormAddEdgeDeviceViewModel @Inject constructor(
                         isSuccess = null
                     )
                 }
+<<<<<<< Updated upstream
+=======
+
+                is FormAddEdgeDeviceEvent.SubscribeToMqttTopic -> {
+                    subscribeMqttTopic(event.topic)
+                }
+
+                is FormAddEdgeDeviceEvent.UnsubscribeFromMqttTopic -> {
+                    unsubscribeMqttTopic(event.topic)
+                }
+>>>>>>> Stashed changes
             }
         }
     }
@@ -212,6 +229,7 @@ class FormAddEdgeDeviceViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
+<<<<<<< Updated upstream
     private fun getListModels() {
         viewModelScope.launch {
             val mqttSubTopic = state.edgeDevicesInfo?.mqttSubTopic
@@ -228,13 +246,56 @@ class FormAddEdgeDeviceViewModel @Inject constructor(
                     val installedModelsResponse = result["data"]
 
                     Log.d("MQTT RES from $topic : ", "$msg")
+=======
+    private fun subscribeMqttTopic(topic: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (!mqttService.get().checkIfMqttIsConnected()) {
+                mqttService.get().connect()
+            }
+            Log.d("MQTT", "subscribe to : $topic")
+            mqttService.get().subscribeToTopic(topic) { topic, msg ->
+                val (command, data) = extractCommandAndDataMqtt(msg)
+                when (command) {
+                    CommandMqtt.GET_INSTALLED_MODEL -> {
+                        val dataDecoded = convertJsonToDto<List<MLModelDto>>(data)
+                        Log.d("DATA", dataDecoded.toString())
+                        if (dataDecoded != null) {
+                            val dataMap: Map<Int, String> =
+                                dataDecoded.mapIndexed { index, mlModelDto ->
+                                    index to mlModelDto.name
+                                }.toMap()
+
+                            state = state.copy(
+                                listModel = dataMap
+                            )
+                        }
+                    }
+>>>>>>> Stashed changes
                 }
 
+<<<<<<< Updated upstream
                 mqttService.get().publishToTopic(
                     mqttPubTopic,
                     CommandMqtt.GET_INSTALLED_MODEL
                 )
             }
+=======
+    private fun unsubscribeMqttTopic(topic: String) {
+        if (mqttService.get().checkIfMqttIsConnected()) {
+            Log.d("MQTT", "unsubscribe : $topic")
+            mqttService.get().unsubscribeFromTopic(topic)
+        }
+    }
+
+    private fun getListModels(topic: String) {
+        viewModelScope.launch {
+
+            Log.d("MQTT", "publish $topic")
+            mqttService.get().publishToTopic(
+                topic,
+                CommandMqtt.GET_INSTALLED_MODEL
+            )
+>>>>>>> Stashed changes
         }
     }
 }

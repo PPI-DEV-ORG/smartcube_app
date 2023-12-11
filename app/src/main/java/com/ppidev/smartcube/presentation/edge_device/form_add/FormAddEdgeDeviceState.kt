@@ -33,6 +33,7 @@ data class FormAddEdgeDeviceState(
 
     val listModelType: Map<Int, String> = mapOf(
         0 to "Realtime Object Detection",
+        1 to "Data Analytic"
     ),
     val listModel: Map<Int, String> = mapOf(
         0 to "Fire and smoke detection-v1"

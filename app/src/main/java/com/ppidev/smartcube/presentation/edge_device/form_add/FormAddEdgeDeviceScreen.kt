@@ -12,12 +12,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.ppidev.smartcube.ui.Screen
 import com.ppidev.smartcube.ui.components.modal.DialogApp
 
 
@@ -141,7 +141,7 @@ fun FormAddEdgeDeviceScreen(
             contentMessage = state.message,
             isSuccess = state.isSuccess,
             onDismiss = {}) {
-            if(state.isSuccess) {
+            if (state.isSuccess) {
                 onEvent(FormAddEdgeDeviceEvent.CloseDialog)
                 navHostController.popBackStack()
             } else {
@@ -154,7 +154,18 @@ fun FormAddEdgeDeviceScreen(
         if (state.step > 1) {
             onEvent(FormAddEdgeDeviceEvent.SetStepValue(state.step - 1))
         } else {
+            if (state.edgeDevicesInfo != null) {
+                onEvent(FormAddEdgeDeviceEvent.UnsubscribeFromMqttTopic(state.edgeDevicesInfo.mqttSubTopic))
+            }
             navHostController.popBackStack()
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            if (state.edgeDevicesInfo != null) {
+                onEvent(FormAddEdgeDeviceEvent.UnsubscribeFromMqttTopic(state.edgeDevicesInfo.mqttSubTopic))
+            }
         }
     }
 }

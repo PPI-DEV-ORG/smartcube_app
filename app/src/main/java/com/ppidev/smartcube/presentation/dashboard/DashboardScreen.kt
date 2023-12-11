@@ -95,6 +95,7 @@ fun DashboardScreen(
             onTabChange = { index, _ ->
                 selectedTabIndex = index
                 onEvent(DashboardEvent.UnsubscribeToMqttService)
+                onEvent(DashboardEvent.SetToEmptyServerInfo)
                 onEvent(DashboardEvent.SetEdgeServerId(state.listServerId[index]))
             },
             navigateToDetailDevice = {
