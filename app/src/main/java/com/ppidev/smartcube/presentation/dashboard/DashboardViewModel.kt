@@ -82,7 +82,9 @@ class DashboardViewModel @Inject constructor(
             if (!mqttService.get().checkIfMqttIsConnected()) {
                 mqttService.get().connect()
             }
+
             Log.d("MQTT", "subscribed : $topic")
+
             mqttService.get().subscribeToTopic(topic) { _, msg ->
                 val (command, data) = extractCommandAndDataMqtt(msg)
                 Log.d("MQTT", "command : $command")
@@ -110,7 +112,8 @@ class DashboardViewModel @Inject constructor(
                 is Resource.Error -> {
                     state = state.copy(
                         error = DashboardState.Error(
-                            listServerError = it.message.toString()
+                            listServerError = it.message.toString(),
+                            listServerCode = it.statusCode
                         ),
                         loading = DashboardState.Loading(
                             isLoadingListServer = false
@@ -136,6 +139,9 @@ class DashboardViewModel @Inject constructor(
                         listServerId = serverIds,
                         loading = DashboardState.Loading(
                             isLoadingListServer = false
+                        ),
+                        error = DashboardState.Error(
+                            listServerError = ""
                         )
                     )
                 }
@@ -150,6 +156,9 @@ class DashboardViewModel @Inject constructor(
                     state = state.copy(
                         loading = DashboardState.Loading(
                             isLoadingListDevices = false
+                        ),
+                        error = DashboardState.Error(
+                            listDevicesError = it.message.toString()
                         )
                     )
                 }
@@ -171,6 +180,9 @@ class DashboardViewModel @Inject constructor(
                         mqttSubscribeTopic = res?.mqttSubTopic,
                         loading = DashboardState.Loading(
                             isLoadingListDevices = false
+                        ),
+                        error = DashboardState.Error(
+                            listDevicesError = ""
                         )
                     )
                 }
@@ -196,7 +208,6 @@ class DashboardViewModel @Inject constructor(
 
     private fun getServerInfo(topic: String) {
         viewModelScope.launch {
-
             Log.d("MQTT", "publish : $topic")
             mqttService.get()
                 .publishToTopic(topic, CommandMqtt.GET_SERVER_INFO)
@@ -227,7 +238,8 @@ class DashboardViewModel @Inject constructor(
                     cpuTemp = serverInfo.cpuTemp,
                     storageFree = serverInfo.storage.freeSpace,
                     fanSpeed = serverInfo.fanSpeed,
-                    upTime = serverInfo.upTime
+                    upTime = serverInfo.upTime,
+                    memoryTotal = serverInfo.memoryTotal
                 )
             )
         }

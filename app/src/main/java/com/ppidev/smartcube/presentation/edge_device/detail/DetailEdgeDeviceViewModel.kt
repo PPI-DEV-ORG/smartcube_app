@@ -9,6 +9,9 @@ import androidx.lifecycle.viewModelScope
 import com.ppidev.smartcube.common.Resource
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IRestartEdgeDeviceUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IStartEdgeDeviceUseCase
+import com.ppidev.smartcube.contract.domain.use_case.edge_device.IViewEdgeDeviceUseCase
+import com.ppidev.smartcube.contract.domain.use_case.notification.IViewNotificationUseCase
+import com.ppidev.smartcube.data.remote.dto.toNotificationModel
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -19,7 +22,9 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailEdgeDeviceViewModel @Inject constructor(
     private val startEdgeDeviceUseCase: Lazy<IStartEdgeDeviceUseCase>,
-    private val restartEdgeEdgeDeviceUseCase: Lazy<IRestartEdgeDeviceUseCase>
+    private val restartEdgeEdgeDeviceUseCase: Lazy<IRestartEdgeDeviceUseCase>,
+    private val viewEdgeDeviceUseCase: Lazy<IViewEdgeDeviceUseCase>,
+    private val viewNotificationUseCase: Lazy<IViewNotificationUseCase>
 ) : ViewModel() {
     var state by mutableStateOf(DetailEdgeDeviceState())
         private set
@@ -27,18 +32,35 @@ class DetailEdgeDeviceViewModel @Inject constructor(
     fun onEvent(event: DetailEdgeDeviceEvent) {
         viewModelScope.launch {
             when (event) {
-                DetailEdgeDeviceEvent.GetDetailDevice -> {}
                 DetailEdgeDeviceEvent.RestartEdgeDevice -> restartDevice()
                 DetailEdgeDeviceEvent.StartEdgeDevice -> startDevice()
+                is DetailEdgeDeviceEvent.GetDetailDevice -> {
+                    getDetailDevice(serverId = event.serverId, deviceId = event.deviceId)
+                }
+
                 is DetailEdgeDeviceEvent.SetDeviceInfo -> {
                     state = state.copy(
                         edgeServerId = event.edgeServerId,
                         processId = event.processId
                     )
                 }
+
                 DetailEdgeDeviceEvent.HandleCloseDialogMsg -> {
                     state = state.copy(
                         isDialogMsgOpen = false
+                    )
+                }
+
+                is DetailEdgeDeviceEvent.GetDetailNotification -> {
+                    getDetailNotification(
+                        serverId = event.serverId,
+                        notificationId = event.notificationId
+                    )
+                }
+
+                is DetailEdgeDeviceEvent.SetNotificationId -> {
+                    state = state.copy(
+                        notificationId = event.notificationId
                     )
                 }
             }
@@ -121,5 +143,41 @@ class DetailEdgeDeviceViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+    private suspend fun getDetailDevice(serverId: UInt, deviceId: UInt) {
+        viewEdgeDeviceUseCase.get().invoke(edgeDeviceId = deviceId, edgeServerId = serverId)
+            .onEach {
+                when (it) {
+                    is Resource.Error -> {}
+                    is Resource.Loading -> {}
+                    is Resource.Success -> {
+                        val notifications = it.data?.data?.notifications?.map { item ->
+                            item.toNotificationModel()
+                        } ?: emptyList()
+
+                        Log.d("NOTIFI", notifications.toString())
+                        state = state.copy(
+                            edgeDeviceDetail = it.data?.data,
+                            notifications = notifications
+                        )
+                    }
+                }
+            }.launchIn(viewModelScope)
+    }
+
+    private suspend fun getDetailNotification(notificationId: UInt, serverId: UInt) {
+        viewNotificationUseCase.get()
+            .invoke(notificationId = notificationId, edgeServerId = serverId).onEach {
+                when (it) {
+                    is Resource.Error -> {}
+                    is Resource.Loading -> {}
+                    is Resource.Success -> {
+                        state = state.copy(
+                            notificationDetail = it.data?.data
+                        )
+                    }
+                }
+            }.launchIn(viewModelScope)
     }
 }

@@ -1,38 +1,39 @@
 package com.ppidev.smartcube.data.remote.dto
 
+import com.google.gson.annotations.SerializedName
 import com.ppidev.smartcube.domain.model.DeviceConfigModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class DeviceConfigDto(
-    @SerialName("type")
+    @SerializedName("type")
     val type: String,
 
-    @SerialName("usb_id")
+    @SerializedName("usb_id")
     val usbId: String,
 
-    @SerialName("rtsp_address")
+    @SerializedName("rtsp_address")
     val rtspAddress: String,
 
-    @SerialName("source_type")
+    @SerializedName("source_type")
     val sourceType: String,
 
-    @SerialName("assigned_model_type")
+    @SerializedName("assigned_model_type")
     val assignedModelType: String,
 
-    @SerialName("assigned_model_index")
+    @SerializedName("assigned_model_index")
     val assignedModelIndex: Float,
 
-    @SerialName("additional_info")
+    @SerializedName("additional_info")
     val additionalInfo: AdditionalInfo
 ) {
     @Serializable
     data class AdditionalInfo(
-        @SerialName("device_location")
+        @SerializedName("device_location")
         val deviceLocation: String,
 
-        @SerialName("device_location_coordinate")
+        @SerializedName("device_location_coordinate")
         val deviceLocationCoordinate: String
     )
 }

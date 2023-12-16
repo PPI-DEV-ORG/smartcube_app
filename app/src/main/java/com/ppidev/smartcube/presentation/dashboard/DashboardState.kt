@@ -19,6 +19,7 @@ data class DashboardState(
     data class Error(
         val message: String = "",
         val listServerError: String = "",
+        val listServerCode: Int? = null,
         val listDevicesError: String = ""
     )
 

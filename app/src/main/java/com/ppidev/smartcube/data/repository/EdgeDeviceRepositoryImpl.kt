@@ -8,6 +8,8 @@ import com.ppidev.smartcube.contract.data.repository.IEdgeDeviceRepository
 import com.ppidev.smartcube.data.remote.api.SmartCubeApi
 import com.ppidev.smartcube.data.remote.dto.CreateEdgeDeviceDto
 import com.ppidev.smartcube.data.remote.dto.CreateEdgeServerDto
+import com.ppidev.smartcube.data.remote.dto.DetailEdgeDeviceDto
+import com.ppidev.smartcube.data.remote.dto.EdgeDeviceSensorDto
 import com.ppidev.smartcube.data.remote.dto.EdgeDevicesInfoDto
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -194,7 +196,43 @@ class EdgeDeviceRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getDetailEdgeDevice(edgeServerId: UInt, edgeDeviceId: UInt) {
+    override suspend fun getDetailEdgeDevice(edgeServerId: UInt, edgeDeviceId: UInt): ResponseApp<DetailEdgeDeviceDto?> {
+        try {
+            val response = smartCubeApi.getEdgeDeviceById(
+                edgeServerId = edgeServerId,
+                edgeDeviceId = edgeDeviceId
+            )
+
+            if (!response.isSuccessful) {
+                val errorResponse = response.errorBody()?.string()
+                return Gson().fromJson(
+                    errorResponse,
+                    object : TypeToken<ResponseApp<String?>>() {}.type
+                )
+            }
+
+            val responseBody = response.body()
+                ?: return ResponseApp(
+                    status = response.isSuccessful,
+                    statusCode = response.code(),
+                    message = response.message(),
+                    data = null
+                )
+
+            return ResponseApp(
+                status = responseBody.status,
+                statusCode = response.code(),
+                message = responseBody.message,
+                data = responseBody.data
+            )
+        } catch (e: Exception) {
+            return ResponseApp(
+                status = false,
+                statusCode = EExceptionCode.RepositoryError.code,
+                message = e.message ?: "Repository Error",
+                data = null
+            )
+        }
     }
 
     override suspend fun updateEdgeDevice(
@@ -244,6 +282,52 @@ class EdgeDeviceRepositoryImpl @Inject constructor(
                 statusCode = response.code(),
                 message = responseBody.message,
                 data = "Success"
+            )
+        } catch (e: Exception) {
+            return ResponseApp(
+                status = false,
+                statusCode = EExceptionCode.RepositoryError.code,
+                message = e.message ?: "Repository Error",
+                data = null
+            )
+        }
+    }
+
+    override suspend fun getEdgeDeviceSensor(
+        edgeServerId: UInt,
+        edgeDeviceId: UInt,
+        startDate: String,
+        endDate: String
+    ): ResponseApp<List<EdgeDeviceSensorDto>?> {
+        try {
+            val response = smartCubeApi.readSensorData(
+                edgeServerId = edgeServerId,
+                edgeDeviceId = edgeDeviceId,
+                startDate = startDate,
+                endDate = endDate
+            )
+
+            if (!response.isSuccessful) {
+                val errorResponse = response.errorBody()?.string()
+                return Gson().fromJson(
+                    errorResponse,
+                    object : TypeToken<ResponseApp<List<EdgeDeviceSensorDto>?>>() {}.type
+                )
+            }
+
+            val responseBody = response.body()
+                ?: return ResponseApp(
+                    status = response.isSuccessful,
+                    statusCode = response.code(),
+                    message = response.message(),
+                    data = null
+                )
+
+            return ResponseApp(
+                status = responseBody.status,
+                statusCode = response.code(),
+                message = responseBody.message,
+                data = responseBody.data
             )
         } catch (e: Exception) {
             return ResponseApp(

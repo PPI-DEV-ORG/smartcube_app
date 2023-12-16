@@ -1,5 +1,6 @@
 package com.ppidev.smartcube.data.remote.dto
 
+import com.google.gson.annotations.SerializedName
 import com.ppidev.smartcube.domain.model.MLModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

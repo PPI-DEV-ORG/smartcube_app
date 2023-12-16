@@ -1,6 +1,5 @@
 package com.ppidev.smartcube.ui.components.card
 
-import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -49,12 +48,13 @@ fun CardServerInfo(
     totalRam: String,
     fanSpeed: String,
     upTime: String,
-    ramUsage: Int = 0
+    ramUsage: Float = 0f,
+    ramFree: String
 ) {
     val splitNumberUpTime = extractNumberFromString(upTime)
     var upTimeFormat = "-"
     if (splitNumberUpTime != null) {
-        upTimeFormat =  convertMillisecondsToHoursAndMinutes(splitNumberUpTime)
+        upTimeFormat = convertMillisecondsToHoursAndMinutes(splitNumberUpTime)
     }
 
     Box(
@@ -99,7 +99,8 @@ fun CardServerInfo(
                 progressBackgroundColor = Color.LightGray,
                 progressIndicatorColor = Purple40,
                 midColor = Color.Red,
-                midValue = 50
+                midValue = 50,
+                ramFree = ramFree
             )
         }
     }
@@ -112,18 +113,20 @@ private fun CardServerInfoPreview() {
         avgCpuTemp = "70 C",
         totalRam = "80 GB",
         fanSpeed = "3000 Rpm",
-        upTime = "10h 5min"
+        upTime = "10h 5min",
+        ramFree = "3 Gb"
     )
 }
 
 @Composable
 private fun AnimatedCircularProgressIndicator(
-    currentValue: Int,
+    currentValue: Float,
     midValue: Int,
     maxValue: Int,
     progressBackgroundColor: Color,
     progressIndicatorColor: Color,
     midColor: Color,
+    ramFree: String,
     modifier: Modifier = Modifier
 ) {
 
@@ -131,52 +134,59 @@ private fun AnimatedCircularProgressIndicator(
         Stroke(width = 6.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
     }
 
-    Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        ProgressStatus(
-            currentValue = currentValue,
-            progressBackgroundColor = progressBackgroundColor,
-            progressIndicatorColor = progressIndicatorColor,
-            midColor = midColor,
-            midValue = midValue
-        )
-
-        val animateFloat = remember { Animatable(0f) }
-        LaunchedEffect(animateFloat) {
-            animateFloat.animateTo(
-                targetValue = currentValue / maxValue.toFloat(),
-                animationSpec = tween(durationMillis = 2000, easing = FastOutSlowInEasing)
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(modifier = modifier, contentAlignment = Alignment.Center) {
+            ProgressStatus(
+                currentValue = currentValue,
+                progressBackgroundColor = progressBackgroundColor,
+                progressIndicatorColor = progressIndicatorColor,
+                midColor = midColor,
+                midValue = midValue
             )
+
+            val animateFloat = remember { Animatable(0f) }
+
+            LaunchedEffect(animateFloat, currentValue) {
+                animateFloat.animateTo(
+                    targetValue = currentValue / maxValue.toFloat(),
+                    animationSpec = tween(durationMillis = 2000, easing = FastOutSlowInEasing)
+                )
+            }
+
+            Canvas(
+                Modifier
+                    .progressSemantics(currentValue / maxValue.toFloat())
+                    .size(CircularIndicatorDiameter)
+            ) {
+                val startAngle = 90f
+                val sweep: Float = animateFloat.value * 360f
+                val diameterOffset = stroke.width / 2
+
+                drawCircle(
+                    color = progressBackgroundColor,
+                    style = stroke,
+                    radius = size.minDimension / 2.0f - diameterOffset
+                )
+
+                drawCircularProgressIndicator(
+                    startAngle,
+                    sweep,
+                    if (currentValue <= midValue) progressIndicatorColor else midColor,
+                    stroke
+                )
+            }
         }
-
-        Canvas(
-            Modifier
-                .progressSemantics(currentValue / maxValue.toFloat())
-                .size(CircularIndicatorDiameter)
-        ) {
-            val startAngle = 90f
-            val sweep: Float = animateFloat.value * 360f
-            val diameterOffset = stroke.width / 2
-
-            drawCircle(
-                color = progressBackgroundColor,
-                style = stroke,
-                radius = size.minDimension / 2.0f - diameterOffset
-            )
-
-            drawCircularProgressIndicator(
-                startAngle,
-                sweep,
-                if (currentValue <= midValue) progressIndicatorColor else midColor,
-                stroke
-            )
-        }
+        Text(text = "RAM", style = MaterialTheme.typography.bodyMedium)
+        Text(text = "Available $ramFree", style = MaterialTheme.typography.bodySmall)
     }
 }
 
 
 @Composable
 private fun ProgressStatus(
-    currentValue: Int,
+    currentValue: Float,
     midValue: Int,
     progressBackgroundColor: Color,
     progressIndicatorColor: Color,

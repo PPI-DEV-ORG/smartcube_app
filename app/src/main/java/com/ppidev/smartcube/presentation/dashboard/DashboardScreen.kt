@@ -19,9 +19,12 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.navigation.NavHostController
+import com.ppidev.smartcube.domain.model.TypeEdgeDevice
 import com.ppidev.smartcube.ui.Screen
+import com.ppidev.smartcube.utils.extractFloatFromString
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 @SuppressLint("RememberReturnType")
 @Composable
@@ -78,6 +81,18 @@ fun DashboardScreen(
             .fillMaxSize()
             .nestedScroll(nestedScrollConnection)
     ) {
+
+        val memoryUsage: Float = try {
+            val memoryFree = state.serverInfoMQTT?.memoryFree?.takeIf { it.isNotEmpty() }
+                ?.let { extractFloatFromString(it) } ?: 0f
+            val totalMemory = state.serverInfoMQTT?.memoryTotal?.takeIf { it.isNotEmpty() }
+                ?.let { extractFloatFromString(it) } ?: 0f
+
+            val result = if (totalMemory != 0.0f) memoryFree / totalMemory else 0f
+            ((result * 100) * 10).roundToInt().toFloat() / 10
+        } catch (e: NumberFormatException) {
+            0f
+        }
         DashboardContentView(
             username = state.username,
             email = state.email,
@@ -91,6 +106,9 @@ fun DashboardScreen(
             isLoadingProfile = false,
             isLoadingListDevices = state.loading.isLoadingListDevices,
             isLoadingListServer = state.loading.isLoadingListServer,
+            ramUsage = memoryUsage,
+            ramFree = state.serverInfoMQTT?.memoryFree ?: "-",
+            errors = state.error,
             onTabChange = { index, _ ->
                 selectedTabIndex = index
                 onEvent(DashboardEvent.UnsubscribeToMqttService)
@@ -98,15 +116,24 @@ fun DashboardScreen(
                 onEvent(DashboardEvent.SetEdgeServerId(state.listServerId[index]))
             },
             navigateToDetailDevice = { index, device ->
-                navHostController.navigate(
-                    Screen.DetailEdgeDevice.withArgs(
-                        state.edgeServerId.toString(),
-                        device.id.toString(),
-                        index.toString(),
-                        device.vendorName,
-                        device.type
+                if (device.type == TypeEdgeDevice.CAMERA.typeName) {
+                    navHostController.navigate(
+                        Screen.DetailEdgeDevice.withArgs(
+                            state.edgeServerId.toString(),
+                            device.id.toString(),
+                            index.toString(),
+                            device.vendorName,
+                            device.type
+                        )
                     )
-                )
+                } else if (device.type == TypeEdgeDevice.SENSOR.typeName) {
+                    navHostController.navigate(
+                        Screen.DetailEdgeDeviceSensor.withArgs(
+                            state.edgeServerId.toString(),
+                            device.id.toString(),
+                        )
+                    )
+                }
             },
             navigateCreateNewServer = {
                 navHostController.navigate(Screen.FormAddEdgeServer.screenRoute)
@@ -116,7 +143,7 @@ fun DashboardScreen(
                 if (serverId != null) {
                     navHostController.navigate(Screen.FormAddEdgeDevice.withArgs("${state.edgeServerId}"))
                 }
-            }
+            },
         )
     }
 

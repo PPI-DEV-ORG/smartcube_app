@@ -51,9 +51,11 @@ fun DashboardContentView(
     onTabChange: (index: Int, name: String) -> Unit,
     avgCpuTemp: String = "",
     totalRam: String = "",
+    ramFree: String = "",
     fanSpeed: String = "",
     upTime: String = "",
-    ramUsage: Int = 0,
+    errors: DashboardState.Error,
+    ramUsage: Float = 0f,
     isLoadingListServer: Boolean,
     isLoadingListDevices: Boolean,
     isLoadingProfile: Boolean,
@@ -113,6 +115,19 @@ fun DashboardContentView(
                 ) {}
             }
 
+        } else if (errors.listServerError.isNotEmpty() && errors.listServerCode == 504) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 118.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.thumb_error_504),
+                    contentDescription = errors.listServerError
+                )
+            }
         } else {
             if (listEdgeServer.isEmpty()) {
                 Column(
@@ -164,7 +179,8 @@ fun DashboardContentView(
                     totalRam = totalRam,
                     fanSpeed = fanSpeed,
                     upTime = upTime,
-                    ramUsage = ramUsage
+                    ramUsage = ramUsage,
+                    ramFree = ramFree
                 )
 
                 if (listEdgeServer.count() > 1) {
@@ -235,6 +251,7 @@ private fun DashboardContentViewPreview() {
         isLoadingListServer = false,
         isLoadingListDevices = false,
         isLoadingProfile = false,
+        errors = DashboardState.Error(),
         navigateCreateNewServer = {},
         navigateToDetailDevice = { _, _ -> },
         navigateCreateNewDevice = {}

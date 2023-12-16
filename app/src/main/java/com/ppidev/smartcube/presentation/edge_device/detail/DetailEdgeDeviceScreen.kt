@@ -1,6 +1,7 @@
 package com.ppidev.smartcube.presentation.edge_device.detail
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,7 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,13 +30,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.ppidev.smartcube.R
 import com.ppidev.smartcube.domain.model.NotificationModel
+import com.ppidev.smartcube.ui.components.card.CardDetailNotification
 import com.ppidev.smartcube.ui.components.card.CardNotification
 import com.ppidev.smartcube.ui.components.modal.DialogApp
 import com.ppidev.smartcube.utils.dateFormat
@@ -52,6 +53,12 @@ fun DetailEdgeDeviceScreen(
     type: String
 ) {
     LaunchedEffect(Unit) {
+        onEvent(
+            DetailEdgeDeviceEvent.GetDetailDevice(
+                serverId = edgeServerId,
+                deviceId = edgeDeviceId
+            )
+        )
         onEvent(DetailEdgeDeviceEvent.SetDeviceInfo(edgeServerId, processId))
     }
 
@@ -62,16 +69,30 @@ fun DetailEdgeDeviceScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
         ) {
-            Image(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(210.dp),
-                contentScale = ContentScale.Crop,
-                painter = painterResource(id = R.drawable.avatar),
-                contentDescription = null
-            )
+            if (state.notificationId != null && state.notificationDetail != null) {
+                CardDetailNotification(
+                    title = state.notificationDetail.title,
+                    date = state.notificationDetail.createdAt,
+                    serverName = state.notificationDetail.edgeServerId.toString(),
+                    deviceName = state.notificationDetail.edgeDeviceId.toString(),
+                    description = state.notificationDetail.description,
+                    imgUrl = state.notificationDetail.imageUrl,
+                    riskLevel = state.notificationDetail.riskLevel,
+                    objectLabel = state.notificationDetail.objectLabel,
+                    type = state.notificationDetail.deviceType
+                )
+            } else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(210.dp)
+                        .background(Color.Gray),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = "No Image", color = Color.White)
+                }
+            }
 
             Spacer(modifier = Modifier.size(16.dp))
 
@@ -94,10 +115,16 @@ fun DetailEdgeDeviceScreen(
                 Spacer(modifier = Modifier.size(32.dp))
 
                 ListNotificationDetailDevice(
-                    listNotification = emptyList(),
-                    notificationActiveId = 0.toUInt()
+                    listNotification = state.notifications,
+                    notificationActiveId = state.notificationId
                 ) {
-
+                    onEvent(DetailEdgeDeviceEvent.SetNotificationId(it))
+                    onEvent(
+                        DetailEdgeDeviceEvent.GetDetailNotification(
+                            serverId = edgeServerId,
+                            notificationId = it
+                        )
+                    )
                 }
             }
         }
@@ -121,8 +148,8 @@ fun DetailEdgeDeviceScreen(
 @Composable
 private fun ListNotificationDetailDevice(
     listNotification: List<NotificationModel>,
-    notificationActiveId: UInt,
-    onClick: () -> Unit
+    notificationActiveId: UInt? = null,
+    onClick: (notificationId: UInt) -> Unit
 ) {
     if (listNotification.isEmpty()) {
         Column(
@@ -130,23 +157,27 @@ private fun ListNotificationDetailDevice(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Image(modifier = Modifier.size(160.dp) ,painter = painterResource(id = R.drawable.thumb_empty), contentDescription = null)
+            Image(
+                modifier = Modifier.size(160.dp),
+                painter = painterResource(id = R.drawable.thumb_empty),
+                contentDescription = null
+            )
             Spacer(modifier = Modifier.size(8.dp))
             Text(text = "Empty Notification")
         }
     } else {
-        LazyRow {
+        LazyColumn {
             itemsIndexed(listNotification, key = { _, d -> d.id }) { _, item ->
                 CardNotification(
                     title = item.title,
                     date = dateFormat(item.createdAt) ?: "-",
                     type = item.deviceType,
                     imgUrl = item.imageUrl,
-                    server = "",
-                    device = "",
+                    server = item.edgeServerId.toString(),
+                    device = item.edgeDeviceId.toString(),
                     isFocus = notificationActiveId == item.id.toUInt(),
                     onClick = {
-                        onClick()
+                        onClick(item.id.toUInt())
                     }
                 )
             }
