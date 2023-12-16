@@ -22,6 +22,7 @@ import com.ppidev.smartcube.contract.data.repository.IUserRepository
 import com.ppidev.smartcube.data.local.entity.ENotificationChannel
 import com.ppidev.smartcube.data.remote.dto.FcmMessage
 import com.ppidev.smartcube.presentation.MainActivity
+import com.ppidev.smartcube.ui.Screen
 import com.ppidev.smartcube.utils.getBitmapFromUrl
 import com.ppidev.smartcube.utils.manager.MyNotificationManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -62,7 +63,7 @@ class FcmService : FirebaseMessagingService(), IMessagingService<RemoteMessage> 
     }
 
     override fun handleOnMessageReceived(messages: RemoteMessage) {
-        Log.d("MESSAGE_FCM", messages.toString())
+        Log.d("MESSAGE_FCM", messages.data.toString())
         messages.data.apply {
             val imageUrl = this[KEY_IMAGE_URL].toString()
             val notificationTitle = this[KEY_TITLE].toString()
@@ -100,7 +101,7 @@ class FcmService : FirebaseMessagingService(), IMessagingService<RemoteMessage> 
 
             val intent = Intent(
                 Intent.ACTION_VIEW,
-                "$APP_URL/$NOTIFICATION_ARG=${data.notificationId}".toUri(),
+                "$APP_URL/${Screen.Notifications.screenRoute}".toUri(),
                 applicationContext,
                 MainActivity::class.java
             )
