@@ -149,8 +149,14 @@ fun NavigationApp(navController: NavHostController) {
 
         }
 
-        composable(Screen.Notifications.screenRoute) {
+        composable(
+            Screen.Notifications.screenRoute,
+            deepLinks = listOf(navDeepLink {
+                uriPattern = "$APP_URL/${Screen.Notifications.screenRoute}"
+            })
+        ) {
             val viewModel = hiltViewModel<NotificationViewModel>()
+
             NotificationListScreen(
                 state = viewModel.state,
                 onEvent = viewModel::onEvent,
