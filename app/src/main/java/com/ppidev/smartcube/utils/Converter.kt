@@ -1,10 +1,11 @@
 package com.ppidev.smartcube.utils
 
 import android.annotation.SuppressLint
-import android.util.Log
 import java.text.SimpleDateFormat
+import java.time.Instant
 import java.util.Date
 import java.util.TimeZone
+
 
 fun convertMillisecondsToHoursAndMinutes(milliseconds: Long): String {
     val seconds = milliseconds / 1000
@@ -26,6 +27,11 @@ fun extractNumberFromString(inputString: String): Long? {
     }
 }
 
+fun extractFloatFromString(input: String): Float? {
+    val regex = Regex("""\d+\.\d+""")
+    val matchResult = regex.find(input)
+    return matchResult?.value?.toFloatOrNull()
+}
 
 @SuppressLint("SimpleDateFormat")
 fun dateFormat(isoDate: String): String? {
@@ -43,4 +49,10 @@ fun dateFormat(isoDate: String): String? {
     } catch (e: Exception) {
         null
     }
+}
+
+
+fun isoDateToEpoch(isoDateString: String): Long {
+    val instant = Instant.parse(isoDateString)
+    return instant.epochSecond
 }

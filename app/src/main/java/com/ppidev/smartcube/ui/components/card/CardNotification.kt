@@ -186,7 +186,7 @@ fun CardDetailNotification(
             AsyncImage(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(186.dp)
+                    .height(150.dp)
                     .clip(RoundedCornerShape(8.dp)),
                 contentScale = ContentScale.Crop, model = imgUrl, contentDescription = null,
                 onError = { throwable ->

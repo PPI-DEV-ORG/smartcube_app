@@ -21,6 +21,8 @@ import com.ppidev.smartcube.presentation.dashboard.DashboardScreen
 import com.ppidev.smartcube.presentation.dashboard.DashboardViewModel
 import com.ppidev.smartcube.presentation.edge_device.detail.DetailEdgeDeviceScreen
 import com.ppidev.smartcube.presentation.edge_device.detail.DetailEdgeDeviceViewModel
+import com.ppidev.smartcube.presentation.edge_device.detail.sensor.DetailEdgeDeviceSensorScreen
+import com.ppidev.smartcube.presentation.edge_device.detail.sensor.DetailEdgeDeviceSensorViewModel
 import com.ppidev.smartcube.presentation.edge_device.form_add.FormAddEdgeDeviceScreen
 import com.ppidev.smartcube.presentation.edge_device.form_add.FormAddEdgeDeviceViewModel
 import com.ppidev.smartcube.presentation.edge_device.update.UpdateEdgeDeviceScreen
@@ -295,6 +297,31 @@ fun NavigationApp(navController: NavHostController) {
                 edgeDeviceId = edgeDeviceId.toUInt()
             )
         }
+
+        composable(
+            route = Screen.DetailEdgeDeviceSensor.screenRoute + "/{${EDGE_SERVER_ID_ARG}}/{${EDGE_DEVICE_ID_ARG}}",
+            arguments = listOf(
+                navArgument(EDGE_SERVER_ID_ARG) { type = NavType.IntType },
+                navArgument(EDGE_DEVICE_ID_ARG) { type = NavType.IntType },
+            )
+        ) {
+            val arguments = it.arguments
+            val edgeServerId = arguments?.getInt(EDGE_SERVER_ID_ARG)
+            val edgeDeviceId = arguments?.getInt(EDGE_DEVICE_ID_ARG)
+
+            if (edgeServerId == null || edgeDeviceId == null) {
+                return@composable
+            }
+
+            val viewModel = hiltViewModel<DetailEdgeDeviceSensorViewModel>()
+            DetailEdgeDeviceSensorScreen(
+                state = viewModel.state,
+                onEvent = viewModel::onEvent,
+                edgeServerId = edgeServerId.toUInt(),
+                edgeDeviceId = edgeDeviceId.toUInt(),
+                navHostController = navController
+            )
+        }
     }
 }
 
@@ -318,6 +345,7 @@ sealed class Screen(val screenRoute: String) {
     object DetailEdgeServer : Screen(screenRoute = "detailEdgeServer")
     object DetailEdgeDevice : Screen(screenRoute = "detailEdgeDevice")
     object UpdateEdgeDevice : Screen(screenRoute = "updateEdgeDevice")
+    object DetailEdgeDeviceSensor : Screen(screenRoute = "detailEdgeDeviceSensor")
 
     fun withArgs(vararg args: String): String {
         return buildString {

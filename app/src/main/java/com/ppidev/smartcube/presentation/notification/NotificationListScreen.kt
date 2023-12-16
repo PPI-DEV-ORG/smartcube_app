@@ -85,7 +85,7 @@ fun NotificationListScreen(
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(150.dp)
+                                .height(48.dp)
                                 .clip(
                                     RoundedCornerShape(10.dp)
                                 )

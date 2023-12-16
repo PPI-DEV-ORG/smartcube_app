@@ -4,6 +4,8 @@ import com.ppidev.smartcube.BuildConfig
 import com.ppidev.smartcube.common.ResponseApp
 import com.ppidev.smartcube.data.remote.dto.CreateEdgeDeviceDto
 import com.ppidev.smartcube.data.remote.dto.CreateEdgeServerDto
+import com.ppidev.smartcube.data.remote.dto.DetailEdgeDeviceDto
+import com.ppidev.smartcube.data.remote.dto.EdgeDeviceSensorDto
 import com.ppidev.smartcube.data.remote.dto.EdgeDevicesInfoDto
 import com.ppidev.smartcube.data.remote.dto.EdgeServerItemDto
 import com.ppidev.smartcube.data.remote.dto.LoginDto
@@ -128,11 +130,11 @@ interface EdgeDeviceApi {
         @Path("edgeServerId") edgeServerId: UInt
     ): Response<ResponseApp<EdgeDevicesInfoDto?>>
 
-    @GET("edge-device/{edgeDeviceId}")
-    suspend fun getEdgeDevicesById(
+    @GET("edge-device/{edgeServerId}/view/{edgeDeviceId}")
+    suspend fun getEdgeDeviceById(
         @Path("edgeServerId") edgeServerId: UInt,
         @Path("edgeDeviceId") edgeDeviceId: UInt
-    )
+    ): Response<ResponseApp<DetailEdgeDeviceDto?>>
 
     @FormUrlEncoded
     @PUT("edge-device/{edgeDeviceId}")
@@ -162,4 +164,12 @@ interface EdgeDeviceApi {
         @Field("edge_server_id") edgeServerId: UInt,
         @Field("process_index") processIndex: Int
     ): Response<ResponseApp<Any>>
+
+    @GET("edge-device-sensor/server/{edgeServerId}/device/{edgeDeviceId}")
+    suspend fun readSensorData(
+        @Path("edgeServerId") edgeServerId: UInt,
+        @Path("edgeDeviceId") edgeDeviceId: UInt,
+        @Query("start_date") startDate: String,
+        @Query("end_date") endDate: String
+    ): Response<ResponseApp<List<EdgeDeviceSensorDto>>>
 }

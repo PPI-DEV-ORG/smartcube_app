@@ -1,63 +1,64 @@
 package com.ppidev.smartcube.data.remote.dto
 
+import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class LoginDto(
-    @SerialName("accessToken")
+    @SerializedName("accessToken")
     val accessToken: String
 )
 
 @Serializable
 data class RegisterDto(
-    @SerialName("id")
+    @SerializedName("id")
     val id: UInt,
 
-    @SerialName("username")
+    @SerializedName("username")
     val username: String,
 
-    @SerialName("email")
+    @SerializedName("email")
     val email: String,
 
-    @SerialName("password")
+    @SerializedName("password")
     val password: String? = null,
 
-    @SerialName("isVerified")
+    @SerializedName("isVerified")
     val isVerified: Boolean,
 
-    @SerialName("verificationCode")
+    @SerializedName("verificationCode")
     val verificationCode: String,
 )
 
 @Serializable
 data class VerificationDto(
-   @SerialName("id")
+   @SerializedName("id")
     val id: UInt,
 
-    @SerialName("username")
+    @SerializedName("username")
     val username: String,
 
-    @SerialName("email")
+    @SerializedName("email")
     val email : String,
 
-    @SerialName("password")
+    @SerializedName("password")
     val password: String? = null,
 
-    @SerialName("resetToken")
+    @SerializedName("resetToken")
     val resetToken : String? = null,
 
-    @SerialName("isVerified")
+    @SerializedName("isVerified")
     val isVerified : Boolean,
 
-    @SerialName("verificationCode")
+    @SerializedName("verificationCode")
     val verificationCode : String? = null,
 
-    @SerialName("fcmRegistrationToken")
+    @SerializedName("fcmRegistrationToken")
     val fcmRegistrationToken : String? = null,
 )
 
 data class ResetPasswordRequestDto(
-    @SerialName("data")
+    @SerializedName("data")
     val data: String
 )

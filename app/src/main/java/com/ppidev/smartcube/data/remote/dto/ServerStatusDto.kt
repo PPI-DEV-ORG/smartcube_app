@@ -55,6 +55,7 @@ fun ServerStatusDto.toDeviceStatusModel(): ServerStatusModel {
         memoryFree = memoryFree,
         storageFree = storage.freeSpace,
         fanSpeed = fanSpeed,
-        upTime = upTime
+        upTime = upTime,
+        memoryTotal = memoryTotal
     )
 }

@@ -54,6 +54,7 @@ import com.ppidev.smartcube.ui.components.CustomTab
 import com.ppidev.smartcube.ui.components.card.CardServerInfo
 import com.ppidev.smartcube.ui.components.modal.ModalInfoServerConfig
 import com.ppidev.smartcube.ui.theme.Typography
+import com.ppidev.smartcube.utils.extractFloatFromString
 import com.ppidev.smartcube.utils.getNumberFromPercentage
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -106,11 +107,25 @@ fun DetailEdgeServerScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp)
         ) {
+            val memoryUsage: Float = try {
+                val memoryFree = state.serverInfo?.memoryFree?.takeIf { it.isNotEmpty() }
+                    ?.let { extractFloatFromString(it) } ?: 0f
+                val totalMemory = state.serverInfo?.memoryTotal?.takeIf { it.isNotEmpty() }
+                    ?.let { extractFloatFromString(it) } ?: 0f
+
+                val result = if (totalMemory != 0.0f) memoryFree / totalMemory else 0f
+                ((result * 100) * 10).roundToInt().toFloat() / 10
+            } catch (e: NumberFormatException) {
+                0f
+            }
+
             CardServerInfo(
                 avgCpuTemp = state.serverInfo?.cpuTemp ?: "-",
                 fanSpeed = state.serverInfo?.fanSpeed ?: "-",
                 totalRam = state.serverInfo?.memoryTotal ?: "-",
-                upTime = state.serverInfo?.upTime ?: "-"
+                upTime = state.serverInfo?.upTime ?: "-",
+                ramFree = state.serverInfo?.memoryFree ?: "-",
+                ramUsage = memoryUsage
             )
 
             Spacer(modifier = Modifier.size(14.dp))

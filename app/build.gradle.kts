@@ -75,6 +75,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-wallet:19.2.1")
     implementation("androidx.test:core-ktx:1.5.0")
     implementation("androidx.test.ext:junit-ktx:1.1.5")
+    implementation("com.google.firebase:firebase-messaging:23.4.0")
     // test dependencies
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -131,6 +132,19 @@ dependencies {
     implementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")
     implementation ("org.eclipse.paho:org.eclipse.paho.android.service:1.1.1")
     implementation("org.bouncycastle:bcpkix-jdk15on:1.59")
+
+    // chart library
+    implementation("co.yml:ycharts:2.1.0")
+    // For Jetpack Compose.
+    implementation("com.patrykandpatrick.vico:compose:1.13.1")
+    // For `compose`. Creates a `ChartStyle` based on an M3 Material Theme.
+    implementation("com.patrykandpatrick.vico:compose-m3:1.13.1")
+
+    // Houses the core logic for charts and other elements. Included in all other modules.
+    implementation("com.patrykandpatrick.vico:core:1.13.1")
+
+    // For the view system.
+    implementation("com.patrykandpatrick.vico:views:1.13.1")
 
     implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")

@@ -3,6 +3,8 @@ package com.ppidev.smartcube.contract.domain.use_case.edge_device
 import com.ppidev.smartcube.common.Resource
 import com.ppidev.smartcube.common.ResponseApp
 import com.ppidev.smartcube.data.remote.dto.CreateEdgeDeviceDto
+import com.ppidev.smartcube.data.remote.dto.DetailEdgeDeviceDto
+import com.ppidev.smartcube.data.remote.dto.EdgeDeviceSensorDto
 import com.ppidev.smartcube.data.remote.dto.EdgeDevicesInfoDto
 import kotlinx.coroutines.flow.Flow
 
@@ -11,8 +13,10 @@ interface IEdgeDevicesInfoUseCase {
 }
 
 interface IViewEdgeDeviceUseCase {
-    suspend fun invoke(edgeServerId: UInt, edgeDeviceId: UInt)
-}
+    suspend fun invoke(
+        edgeServerId: UInt,
+        edgeDeviceId: UInt,
+    ): Flow<Resource<ResponseApp<DetailEdgeDeviceDto?>>>}
 
 interface IAddEdgeDevicesUseCase {
     suspend fun invoke(
@@ -55,4 +59,13 @@ interface IUpdateEdgeDeviceUseCase {
         assignedModelIndex: UInt,
         additionalInfo: String
     ): Flow<Resource<ResponseApp<String?>>>
+}
+
+interface IReadEdgeDeviceSensorUseCase {
+    suspend fun invoke(
+        edgeServerId: UInt,
+        edgeDeviceId: UInt,
+        startDate: String,
+        endDate: String
+    ): Flow<Resource<ResponseApp<List<EdgeDeviceSensorDto>?>>>
 }

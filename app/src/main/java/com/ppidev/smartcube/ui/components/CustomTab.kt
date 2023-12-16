@@ -2,10 +2,9 @@ package com.ppidev.smartcube.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
@@ -20,22 +19,23 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun CustomTab(
+    modifier: Modifier = Modifier,
     currentPage: Int,
     onChangePage: (page: Int) -> Unit,
     listPage: List<String>
 ) {
     TabRow(
         selectedTabIndex = currentPage,
-        modifier = Modifier
-            .height(24.dp)
+        modifier = modifier
+            .fillMaxWidth()
+            .height(40.dp)
             .clip(RoundedCornerShape(4.dp)),
         divider = {
-            Spacer(modifier = Modifier.size(8.dp))
         },
-        indicator = { tabPositions ->
+        indicator = { _ ->
             Box {
             }
-        },
+        }
     ) {
         listPage.forEachIndexed { idx, name ->
             Tab(
@@ -51,16 +51,18 @@ fun CustomTab(
                 },
                 modifier = if (currentPage == idx) {
                     Modifier
-                        .height(24.dp)
-                        .padding(horizontal = 24.dp)
+                        .padding(
+                            start = if ((idx+1) % 2 == 0) 12.dp else 0.dp,
+                            end = if ((idx+1) % 2 != 0) 12.dp else 0.dp
+                        )
+                        .height(40.dp)
                         .clip(RoundedCornerShape(4.dp))
                         .background(
                             MaterialTheme.colorScheme.primary
                         )
                 } else {
                     Modifier
-                        .height(24.dp)
-                        .padding(horizontal = 24.dp)
+                        .height(40.dp)
                         .background(
                             Color.White
                         )
@@ -74,5 +76,5 @@ fun CustomTab(
 @Preview(showBackground = true)
 @Composable
 private fun CustomTabPreview() {
-    CustomTab(0, onChangePage = {}, listPage = emptyList() )
+    CustomTab(currentPage = 0, onChangePage = {}, listPage = listOf("TAB 1", "TAB 2"))
 }

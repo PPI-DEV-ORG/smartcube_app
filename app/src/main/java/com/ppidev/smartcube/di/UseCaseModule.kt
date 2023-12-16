@@ -3,13 +3,15 @@ package com.ppidev.smartcube.di
 import com.ppidev.smartcube.contract.domain.use_case.auth.IChangePasswordUseCase
 import com.ppidev.smartcube.contract.domain.use_case.auth.ILoginUseCase
 import com.ppidev.smartcube.contract.domain.use_case.auth.IRegisterUseCase
-import com.ppidev.smartcube.contract.domain.use_case.auth.IVerificationUseCase
 import com.ppidev.smartcube.contract.domain.use_case.auth.IRequestLinkResetPasswordUseCase
+import com.ppidev.smartcube.contract.domain.use_case.auth.IVerificationUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IAddEdgeDevicesUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IEdgeDevicesInfoUseCase
+import com.ppidev.smartcube.contract.domain.use_case.edge_device.IReadEdgeDeviceSensorUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IRestartEdgeDeviceUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IStartEdgeDeviceUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IUpdateEdgeDeviceUseCase
+import com.ppidev.smartcube.contract.domain.use_case.edge_device.IViewEdgeDeviceUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_server.IAddEdgeServerUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_server.IListEdgeServerUseCase
 import com.ppidev.smartcube.contract.domain.use_case.notification.IListNotificationUseCase
@@ -19,13 +21,15 @@ import com.ppidev.smartcube.contract.domain.use_case.weather.IViewCurrentWeather
 import com.ppidev.smartcube.domain.use_case.auth.ChangePasswordUseCase
 import com.ppidev.smartcube.domain.use_case.auth.LoginUseCase
 import com.ppidev.smartcube.domain.use_case.auth.RegisterUseCase
-import com.ppidev.smartcube.domain.use_case.auth.VerificationUseCase
 import com.ppidev.smartcube.domain.use_case.auth.RequestLinkResetPasswordUseCase
+import com.ppidev.smartcube.domain.use_case.auth.VerificationUseCase
 import com.ppidev.smartcube.domain.use_case.edge_device.AddEdgeDeviceUseCase
 import com.ppidev.smartcube.domain.use_case.edge_device.EdgeDevicesInfoUseCase
+import com.ppidev.smartcube.domain.use_case.edge_device.ReadEdgeDeviceSensorUseCase
 import com.ppidev.smartcube.domain.use_case.edge_device.RestartEdgeEdgeDeviceUseCase
 import com.ppidev.smartcube.domain.use_case.edge_device.StartEdgeEdgeDeviceUseCase
 import com.ppidev.smartcube.domain.use_case.edge_device.UpdateEdgeDeviceUseCase
+import com.ppidev.smartcube.domain.use_case.edge_device.ViewEdgeDeviceUseCase
 import com.ppidev.smartcube.domain.use_case.edge_server.AddEdgeServerUseCase
 import com.ppidev.smartcube.domain.use_case.edge_server.ListEdgeServerUseCase
 import com.ppidev.smartcube.domain.use_case.notification.ListNotificationUseCase
@@ -138,4 +142,16 @@ abstract class UseCaseModule {
     abstract fun bindUpdateFcmTokenUseCase(
         updateFcmTokenUseCase: UpdateFcmTokenUseCase
     ): IUpdateFcmTokenUseCase
+
+    @Binds
+    @Singleton
+    abstract fun bindReadSensorDataUseCase(
+        readSensorUseCase: ReadEdgeDeviceSensorUseCase
+    ): IReadEdgeDeviceSensorUseCase
+
+    @Binds
+    @Singleton
+    abstract fun bindViewEdgeDeviceUseCase(
+        viewEdgeDeviceUseCase: ViewEdgeDeviceUseCase
+    ): IViewEdgeDeviceUseCase
 }

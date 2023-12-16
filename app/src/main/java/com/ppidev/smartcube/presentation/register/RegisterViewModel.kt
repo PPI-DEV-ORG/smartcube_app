@@ -111,7 +111,7 @@ class RegisterViewModel @Inject constructor(
 
                     is Resource.Error -> {
                         setLoadingStatus(false)
-
+                        Log.d("REGIS", it.message.toString())
                         state = state.copy(
                             error = RegisterState.RegisterError(
                                 message = it.message.toString()
