@@ -12,6 +12,7 @@ import com.ppidev.smartcube.contract.data.repository.ITokenAppRepository
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IEdgeDevicesInfoUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_server.IListEdgeServerUseCase
 import com.ppidev.smartcube.contract.domain.use_case.user.IUpdateFcmTokenUseCase
+import com.ppidev.smartcube.contract.domain.use_case.user.IUserProfileUseCase
 import com.ppidev.smartcube.contract.domain.use_case.weather.IViewCurrentWeather
 import com.ppidev.smartcube.data.remote.dto.ServerStatusDto
 import com.ppidev.smartcube.domain.model.ServerStatusModel
@@ -33,8 +34,9 @@ class DashboardViewModel @Inject constructor(
     private val mqttService: Lazy<IMqttService>,
     private val listEdgeServerUseCase: Lazy<IListEdgeServerUseCase>,
     private val edgeDevicesInfo: Lazy<IEdgeDevicesInfoUseCase>,
-    private val tokenRepository: Lazy<ITokenAppRepository>,
-    private val updateFcmTokenUseCase: Lazy<IUpdateFcmTokenUseCase>
+    private val updateFcmTokenUseCase: Lazy<IUpdateFcmTokenUseCase>,
+    private val userProfileUserCase: Lazy<IUserProfileUseCase>,
+    private val tokenRepository: Lazy<ITokenAppRepository>
 ) : ViewModel() {
     var state by mutableStateOf(DashboardState())
         private set
@@ -82,6 +84,10 @@ class DashboardViewModel @Inject constructor(
                 DashboardEvent.StoreFCMToken -> {
                     storeFCMTokenToAPI()
                 }
+
+                DashboardEvent.GetUserProfile -> {
+                    getUserProfile()
+                }
             }
         }
     }
@@ -113,6 +119,38 @@ class DashboardViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private suspend fun getUserProfile() {
+        userProfileUserCase.get().invoke().onEach {
+            when(it) {
+                is Resource.Error -> {
+                    state = state.copy(
+                        loading = DashboardState.Loading(
+                            isLoadingUserProfile = false
+                        )
+                    )
+                }
+                is Resource.Loading -> {
+                    state = state.copy(
+                        loading = DashboardState.Loading(
+                            isLoadingUserProfile = true
+                        )
+                    )
+                }
+                is Resource.Success -> {
+                    val data = it.data?.data
+
+                    state = state.copy(
+                        username = data?.userName.toString(),
+                        email = data?.userEmail.toString(),
+                        loading = DashboardState.Loading(
+                            isLoadingUserProfile = false
+                        )
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     private fun getListEdgeServer() {

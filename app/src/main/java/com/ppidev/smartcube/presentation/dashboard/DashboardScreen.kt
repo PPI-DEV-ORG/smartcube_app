@@ -38,6 +38,7 @@ fun DashboardScreen(
     var selectedTabIndex by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(Unit) {
+        onEvent(DashboardEvent.GetUserProfile)
         onEvent(DashboardEvent.GetListEdgeServer)
         onEvent(DashboardEvent.GetCurrentWeather)
         onEvent(DashboardEvent.StoreFCMToken)

@@ -40,6 +40,7 @@ import com.ppidev.smartcube.presentation.notification.NotificationViewModel
 import com.ppidev.smartcube.presentation.notification.detail.NotificationDetailScreen
 import com.ppidev.smartcube.presentation.notification.detail.NotificationDetailViewModel
 import com.ppidev.smartcube.presentation.profile.ProfileScreen
+import com.ppidev.smartcube.presentation.profile.ProfileViewModel
 import com.ppidev.smartcube.presentation.register.RegisterScreen
 import com.ppidev.smartcube.presentation.register.RegisterViewModel
 import com.ppidev.smartcube.presentation.reset_password.ResetPasswordScreen
@@ -145,7 +146,14 @@ fun NavigationApp(navController: NavHostController) {
         }
 
         composable(Screen.Profile.screenRoute) {
-            ProfileScreen()
+
+            val viewModel = hiltViewModel<ProfileViewModel>()
+
+            ProfileScreen(
+                state = viewModel.state,
+                onEvent = viewModel::onEvent,
+                navHostController = navController
+            )
 
         }
 

@@ -25,6 +25,7 @@ data class DashboardState(
 
     data class Loading(
         val isLoadingListServer: Boolean = false,
-        val isLoadingListDevices: Boolean = false
+        val isLoadingListDevices: Boolean = false,
+        val isLoadingUserProfile: Boolean = false
     )
 }

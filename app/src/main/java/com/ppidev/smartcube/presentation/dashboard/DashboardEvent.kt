@@ -6,6 +6,7 @@ sealed class DashboardEvent {
     object GetCurrentWeather : DashboardEvent()
     object SetToEmptyServerInfo : DashboardEvent()
     object GetListEdgeServer : DashboardEvent()
+    object GetUserProfile : DashboardEvent()
     object StoreFCMToken : DashboardEvent()
     data class GetServerInfoMqtt(val topic: String) : DashboardEvent()
     data class GetDevicesConfig(val serverId: UInt) : DashboardEvent()

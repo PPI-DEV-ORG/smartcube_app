@@ -17,6 +17,7 @@ import com.ppidev.smartcube.contract.domain.use_case.edge_server.IListEdgeServer
 import com.ppidev.smartcube.contract.domain.use_case.notification.IListNotificationUseCase
 import com.ppidev.smartcube.contract.domain.use_case.notification.IViewNotificationUseCase
 import com.ppidev.smartcube.contract.domain.use_case.user.IUpdateFcmTokenUseCase
+import com.ppidev.smartcube.contract.domain.use_case.user.IUserProfileUseCase
 import com.ppidev.smartcube.contract.domain.use_case.weather.IViewCurrentWeather
 import com.ppidev.smartcube.domain.use_case.auth.ChangePasswordUseCase
 import com.ppidev.smartcube.domain.use_case.auth.LoginUseCase
@@ -35,6 +36,7 @@ import com.ppidev.smartcube.domain.use_case.edge_server.ListEdgeServerUseCase
 import com.ppidev.smartcube.domain.use_case.notification.ListNotificationUseCase
 import com.ppidev.smartcube.domain.use_case.notification.ViewNotificationUseCase
 import com.ppidev.smartcube.domain.use_case.user.UpdateFcmTokenUseCase
+import com.ppidev.smartcube.domain.use_case.user.UserProfileUseCase
 import com.ppidev.smartcube.domain.use_case.weather.ViewCurrentWeather
 import dagger.Binds
 import dagger.Module
@@ -154,4 +156,10 @@ abstract class UseCaseModule {
     abstract fun bindViewEdgeDeviceUseCase(
         viewEdgeDeviceUseCase: ViewEdgeDeviceUseCase
     ): IViewEdgeDeviceUseCase
+
+    @Binds
+    @Singleton
+    abstract fun bindUserProfileUseCase(
+        userProfileUseCase: UserProfileUseCase
+    ): IUserProfileUseCase
 }
