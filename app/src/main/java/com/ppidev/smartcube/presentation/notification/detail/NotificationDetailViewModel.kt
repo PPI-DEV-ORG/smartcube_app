@@ -26,6 +26,11 @@ class NotificationDetailViewModel @Inject constructor(
         viewModelScope.launch {
             when (event) {
                 is NotificationDetailEvent.GetDetailNotification -> getDetailNotification(event.notificationId, event.edgeServerId)
+                is NotificationDetailEvent.SetOverlayImageStatus -> {
+                    state = state.copy(
+                        isOpenImageOverlay = event.status
+                    )
+                }
             }
         }
     }

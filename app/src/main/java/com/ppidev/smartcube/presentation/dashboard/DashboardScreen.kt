@@ -40,6 +40,7 @@ fun DashboardScreen(
     LaunchedEffect(Unit) {
         onEvent(DashboardEvent.GetListEdgeServer)
         onEvent(DashboardEvent.GetCurrentWeather)
+        onEvent(DashboardEvent.StoreFCMToken)
     }
 
     LaunchedEffect(key1 = state.edgeServerId) {

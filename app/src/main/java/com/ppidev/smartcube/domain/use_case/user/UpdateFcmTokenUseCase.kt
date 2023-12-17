@@ -7,13 +7,15 @@ import com.ppidev.smartcube.contract.data.repository.IUserRepository
 import com.ppidev.smartcube.contract.domain.use_case.user.IUpdateFcmTokenUseCase
 import dagger.Lazy
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class UpdateFcmTokenUseCase @Inject constructor(
     private val userRepository: Lazy<IUserRepository>
 ) : IUpdateFcmTokenUseCase {
-    override suspend fun invoke(fcmToken: String): Flow<Resource<ResponseApp<Any?>>> {
-        TODO("Not yet implemented")
+    override suspend fun invoke(fcmToken: String): Flow<Resource<ResponseApp<Any?>>> = flow {
+        emit(Resource.Loading())
+        emit(updateFcmToken(fcmToken))
     }
 
     private suspend fun updateFcmToken(fcmToken: String): Resource<ResponseApp<Any?>> {
