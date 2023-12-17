@@ -29,13 +29,14 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.ppidev.smartcube.R
 import com.ppidev.smartcube.domain.model.TypeEdgeDevice
 import com.ppidev.smartcube.ui.theme.Typography
+import com.ppidev.smartcube.utils.isoDateFormatToStringDate
 import java.util.Locale
 
 
@@ -56,24 +57,27 @@ fun CardNotification(
             .fillMaxWidth()
             .clickable {
                 onClick()
-            }
-            .padding(8.dp),
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
         Icon(
             modifier = Modifier.size(28.dp),
-            painter = if (type == "camera") painterResource(id = R.drawable.ic_fire) else if (type == "sensor") painterResource(
-                id = R.drawable.ic_sensor
-            ) else painterResource(id = R.drawable.img_no_image),
+            painter = when (type) {
+                TypeEdgeDevice.CAMERA.typeName -> painterResource(id = R.drawable.ic_fire)
+                TypeEdgeDevice.SENSOR.typeName -> painterResource(
+                    id = R.drawable.ic_sensor
+                )
+                else -> painterResource(id = R.drawable.img_no_image)
+            },
             contentDescription = null,
-            tint = if (type == "camera") {
+            tint = if (type == TypeEdgeDevice.CAMERA.typeName) {
                 if (isFocus) {
                     MaterialTheme.colorScheme.primary
                 } else {
                     Color.Red
                 }
-            } else if (type == "sensor") {
+            } else if (type ==  TypeEdgeDevice.SENSOR.typeName) {
                 if (isFocus) {
                     MaterialTheme.colorScheme.primary
                 } else {
@@ -139,7 +143,10 @@ fun CardNotification(
                     modifier = Modifier
                         .fillMaxWidth(),
                     contentScale = ContentScale.Crop,
-                    model = imgUrl, contentDescription = null
+                    placeholder = painterResource(id = R.drawable.thumb_flame),
+                    error = painterResource(id = R.drawable.thumb_error),
+                    model = imgUrl,
+                    contentDescription = null
                 )
 
                 if (isFocus) {
@@ -166,6 +173,9 @@ fun CardNotification(
 @Composable
 fun CardDetailNotification(
     modifier: Modifier = Modifier,
+    modifierImage: Modifier = Modifier,
+    modifierContent: Modifier = Modifier,
+    paddingHorizontalContent: Dp = 16.dp,
     title: String,
     date: String,
     serverName: String,
@@ -179,80 +189,85 @@ fun CardDetailNotification(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp)
     ) {
-
         if (!imgUrl.isNullOrEmpty() && type == TypeEdgeDevice.CAMERA.typeName) {
             AsyncImage(
-                modifier = Modifier
+                modifier = modifierImage
                     .fillMaxWidth()
-                    .height(150.dp)
-                    .clip(RoundedCornerShape(8.dp)),
+                    .height(180.dp),
+                placeholder = painterResource(id = R.drawable.thumb_flame),
+                error = painterResource(id = R.drawable.thumb_error),
                 contentScale = ContentScale.Crop, model = imgUrl, contentDescription = null,
                 onError = { throwable ->
-                    // Handle image loading failure
                     println("Image loading failed: ${throwable.result}")
-                }
+                },
             )
         }
 
         Spacer(modifier = Modifier.size(14.dp))
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = modifierContent.padding(horizontal = paddingHorizontalContent)
         ) {
-            Text(text = title, style = MaterialTheme.typography.titleMedium)
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = title, style = MaterialTheme.typography.titleMedium)
 
-            if (!riskLevel.isNullOrEmpty() && type == TypeEdgeDevice.SENSOR.typeName) {
-                val riskLevelLowerCase = riskLevel.lowercase(Locale.ROOT)
-                Spacer(modifier = Modifier.size(12.dp))
-                Box(
-                    modifier = Modifier
-                        .clip(
-                            RoundedCornerShape(8.dp)
+                if (!riskLevel.isNullOrEmpty() && type == TypeEdgeDevice.SENSOR.typeName) {
+                    val riskLevelLowerCase = riskLevel.lowercase(Locale.ROOT)
+                    Spacer(modifier = Modifier.size(12.dp))
+                    Box(
+                        modifier = Modifier
+                            .clip(
+                                RoundedCornerShape(8.dp)
+                            )
+                            .background(
+                                color = when (riskLevelLowerCase) {
+                                    "high" -> Color.Red.copy(alpha = 0.7f)
+                                    "medium" -> Color(0xFFFFBF00)
+                                    "low" -> Color(0xFF77DD77)
+                                    else -> Color.Gray.copy(alpha = 0.7f)
+                                }
+                            )
+                            .padding(vertical = 4.dp, horizontal = 12.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = riskLevel.uppercase(Locale.ROOT),
+                            style = MaterialTheme.typography.bodySmall,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.White
                         )
-                        .background(
-                            color = if (riskLevelLowerCase == "high") {
-                                Color.Red.copy(alpha = 0.7f)
-                            } else if (riskLevelLowerCase == "medium") {
-                                Color(0xFFFFBF00)
-                            } else if (riskLevelLowerCase == "low") {
-                                Color(0xFF77DD77)
-                            } else {
-                                Color.Gray.copy(alpha = 0.7f)
-                            }
-                        )
-                        .padding(vertical = 4.dp, horizontal = 12.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = riskLevel.uppercase(Locale.ROOT), style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.SemiBold, color = Color.White)
+                    }
+                } else if (!objectLabel.isNullOrEmpty() && type == TypeEdgeDevice.CAMERA.typeName) {
+                    Text(text = " - $objectLabel", style = MaterialTheme.typography.titleMedium)
                 }
-            } else if(!objectLabel.isNullOrEmpty() && type == TypeEdgeDevice.CAMERA.typeName) {
-                Text(text = " - $objectLabel")
             }
+
+            Spacer(modifier = Modifier.size(4.dp))
+
+            Text(
+                text = isoDateFormatToStringDate(date),
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Gray
+            )
+
+            Spacer(modifier = Modifier.size(12.dp))
+
+            Text(
+                text = "$serverName - $deviceName",
+                style = MaterialTheme.typography.titleMedium,
+                color = Color.DarkGray,
+                fontWeight = FontWeight.Medium
+            )
+            Spacer(modifier = Modifier.size(4.dp))
+            Text(
+                text = description,
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.DarkGray
+            )
         }
-
-        Spacer(modifier = Modifier.size(6.dp))
-
-        Text(
-            text = date,
-            style = MaterialTheme.typography.bodyMedium,
-            color = Color.Gray
-        )
-
-        Spacer(modifier = Modifier.size(14.dp))
-
-        Text(
-            text = "$serverName - $deviceName",
-            style = MaterialTheme.typography.bodyLarge,
-            color = Color.DarkGray,
-            fontWeight = FontWeight.Medium
-        )
-        Text(
-            text = description,
-            style = MaterialTheme.typography.bodyMedium,
-            color = Color.DarkGray
-        )
     }
 }
 

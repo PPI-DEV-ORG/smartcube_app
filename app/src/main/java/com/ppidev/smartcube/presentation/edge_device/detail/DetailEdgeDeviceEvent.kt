@@ -11,6 +11,6 @@ sealed class DetailEdgeDeviceEvent {
         val edgeServerId: UInt,
         val processId: Int,
     ) : DetailEdgeDeviceEvent()
-
+    data class SetOpenImageOverlay(val status: Boolean) : DetailEdgeDeviceEvent()
     object HandleCloseDialogMsg : DetailEdgeDeviceEvent()
 }

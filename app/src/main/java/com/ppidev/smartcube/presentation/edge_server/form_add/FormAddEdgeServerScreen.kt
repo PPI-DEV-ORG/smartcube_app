@@ -153,7 +153,6 @@ fun FormAddEdgeServerScreen(
             }
         }
 
-
         state.isSuccess?.let {
             DialogApp(
                 message = if (it) "Success" else "Failed",
@@ -163,7 +162,10 @@ fun FormAddEdgeServerScreen(
                 },
                 onConfirm = {
                     onEvent(FormAddEdgeServerEvent.HandleCloseDialog {
-                        if (it) navHostController.navigate(Screen.DetailEdgeServer.screenRoute + "?$EDGE_SERVER_ID_ARG=${state.edgeServerId}" + "&$EDGE_SERVER_ACCESS_TOKEN=${state.edgeServerAccessToken}") else null
+                        if (it) {
+                            navHostController.popBackStack()
+                            navHostController.navigate(Screen.DetailEdgeServer.screenRoute + "?$EDGE_SERVER_ID_ARG=${state.edgeServerId}" + "&$EDGE_SERVER_ACCESS_TOKEN=${state.edgeServerAccessToken}")
+                        }
                     })
                 }
             )

@@ -60,7 +60,7 @@ import com.ppidev.smartcube.ui.components.rememberMarker
 import com.ppidev.smartcube.ui.components.shimmerEffect
 import com.ppidev.smartcube.utils.FilterChart
 import com.ppidev.smartcube.utils.createAxisValueFormatter
-import com.ppidev.smartcube.utils.dateFormat
+import com.ppidev.smartcube.utils.isoDateFormatToStringDate
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -170,7 +170,7 @@ fun DetailEdgeDeviceSensorScreen(
                             ) {
                                 CardDetailNotification(
                                     title = state.detailNotification?.title.orEmpty(),
-                                    date = dateFormat(state.detailNotification?.createdAt ?: "")
+                                    date = isoDateFormatToStringDate(state.detailNotification?.createdAt ?: "")
                                         ?: "-",
                                     serverName = "${state.detailNotification?.edgeServerId}",
                                     deviceName = "${state.detailNotification?.edgeDeviceId}",
@@ -190,7 +190,7 @@ fun DetailEdgeDeviceSensorScreen(
                                     key = { _, d -> d.id }) { _, item ->
                                     CardNotification(
                                         title = item.title,
-                                        date = dateFormat(item.createdAt) ?: "-",
+                                        date = isoDateFormatToStringDate(item.createdAt) ?: "-",
                                         type = item.deviceType,
                                         imgUrl = item.image,
                                         server = detailEdgeDevice.edgeServers[0].name,
