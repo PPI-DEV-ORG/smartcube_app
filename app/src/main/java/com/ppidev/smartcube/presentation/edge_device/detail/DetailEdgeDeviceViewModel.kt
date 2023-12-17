@@ -152,8 +152,16 @@ class DetailEdgeDeviceViewModel @Inject constructor(
         viewEdgeDeviceUseCase.get().invoke(edgeDeviceId = deviceId, edgeServerId = serverId)
             .onEach {
                 when (it) {
-                    is Resource.Error -> {}
-                    is Resource.Loading -> {}
+                    is Resource.Error -> {
+                        state = state.copy(
+                            isLoadingDetailDevice = false
+                        )
+                    }
+                    is Resource.Loading -> {
+                        state = state.copy(
+                            isLoadingDetailDevice = true
+                        )
+                    }
                     is Resource.Success -> {
                         val notifications = it.data?.data?.notifications?.map { item ->
                             item.toNotificationModel()
@@ -161,7 +169,8 @@ class DetailEdgeDeviceViewModel @Inject constructor(
 
                         state = state.copy(
                             edgeDeviceDetail = it.data?.data,
-                            notifications = notifications
+                            notifications = notifications,
+                            isLoadingDetailDevice = false
                         )
                     }
                 }

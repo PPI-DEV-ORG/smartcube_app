@@ -98,7 +98,12 @@ class DetailEdgeDeviceSensorViewModel @Inject constructor(
     private suspend fun getDetailDevice(edgeDeviceId: UInt, edgeServerId: UInt) {
         viewEdgeDeviceUseCase.get().invoke(edgeServerId, edgeDeviceId).onEach {
             when (it) {
-                is Resource.Error -> {}
+                is Resource.Error -> {
+                    state = state.copy(
+                        isLoadingDeviceDetail = false
+                    )
+                }
+
                 is Resource.Loading -> {
                     state = state.copy(
                         isLoadingDeviceDetail = true
@@ -127,15 +132,21 @@ class DetailEdgeDeviceSensorViewModel @Inject constructor(
             .invoke(edgeServerId = edgeServerId, notificationId = notificationId).onEach {
                 when (it) {
                     is Resource.Error -> {
+                        state = state.copy(
+                            isLoadingNotificationDetail = false
+                        )
                     }
 
                     is Resource.Loading -> {
-
+                        state = state.copy(
+                            isLoadingNotificationDetail = true
+                        )
                     }
 
                     is Resource.Success -> {
                         state = state.copy(
-                            detailNotification = it.data?.data
+                            detailNotification = it.data?.data,
+                            isLoadingNotificationDetail = false
                         )
                     }
                 }
@@ -156,6 +167,9 @@ class DetailEdgeDeviceSensorViewModel @Inject constructor(
         ).onEach {
             when (it) {
                 is Resource.Error -> {
+                    state = state.copy(
+                        isLoadingSensorData = false
+                    )
                 }
 
                 is Resource.Loading -> {
@@ -215,7 +229,6 @@ class DetailEdgeDeviceSensorViewModel @Inject constructor(
                             isLoadingSensorData = false
                         )
                     }
-
                 }
             }
         }.launchIn(viewModelScope)

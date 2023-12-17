@@ -68,8 +68,6 @@ fun DashboardContentView(
     navigateToDetailDevice: (index: Int, device: EdgeDevice) -> Unit
 ) {
 
-
-
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(

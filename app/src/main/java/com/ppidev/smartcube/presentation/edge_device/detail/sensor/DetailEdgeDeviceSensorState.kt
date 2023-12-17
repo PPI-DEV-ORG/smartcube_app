@@ -10,6 +10,7 @@ import java.util.Locale
 data class DetailEdgeDeviceSensorState(
     val isLoadingSensorData: Boolean = false,
     val isLoadingDeviceDetail: Boolean = false,
+    val isLoadingNotificationDetail: Boolean = false,
     val listTemperatureData: List<Pair<Long, Float>> = emptyList(),
     val listHumidityData: List<Pair<Long, Float>> = emptyList(),
     val listSmokeData: List<Pair<Long, Float>> = emptyList(),

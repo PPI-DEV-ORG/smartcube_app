@@ -258,21 +258,21 @@ fun NavigationApp(navController: NavHostController) {
         }
 
         composable(
-            route = Screen.DetailEdgeDevice.screenRoute + "/{$EDGE_SERVER_ID_ARG}/{$EDGE_DEVICE_ID_ARG}/{$DEVICE_PROCESS_ID}/{vendor}/{type}",
+            route = Screen.DetailEdgeDevice.screenRoute + "/{$EDGE_SERVER_ID_ARG}/{$EDGE_DEVICE_ID_ARG}/{$DEVICE_PROCESS_ID}/{mqttPubTopic}/{mqttSubTopic}",
             arguments = listOf(
                 navArgument(EDGE_SERVER_ID_ARG) { type = NavType.IntType },
                 navArgument(EDGE_DEVICE_ID_ARG) { type = NavType.IntType },
                 navArgument(DEVICE_PROCESS_ID) { type = NavType.IntType },
-                navArgument("vendor") { type = NavType.StringType },
-                navArgument("type") { type = NavType.StringType }
+                navArgument("mqttPubTopic") { type = NavType.StringType },
+                navArgument("mqttSubTopic") { type = NavType.StringType }
             )
         ) {
             val arguments = it.arguments
             val edgeServerId = arguments?.getInt(EDGE_SERVER_ID_ARG) ?: return@composable
             val edgeDeviceId = arguments.getInt(EDGE_DEVICE_ID_ARG) ?: return@composable
             val processId = arguments.getInt(DEVICE_PROCESS_ID) ?: return@composable
-            val vendor = arguments.getString("vendor") ?: return@composable
-            val type = arguments.getString("type") ?: return@composable
+            val mqttPubTopic = arguments.getString("mqttPubTopic") ?: return@composable
+            val mqttSubTopic = arguments.getString("mqttSubTopic") ?: return@composable
 
             val viewModel = hiltViewModel<DetailEdgeDeviceViewModel>()
 
@@ -283,25 +283,26 @@ fun NavigationApp(navController: NavHostController) {
                 edgeDeviceId = edgeDeviceId.toUInt(),
                 edgeServerId = edgeServerId.toUInt(),
                 processId = processId,
-                vendor = vendor,
-                type = type
+                mqttPubTopic = mqttPubTopic,
+                mqttSubTopic = mqttSubTopic
             )
         }
 
         composable(
-            route = Screen.UpdateEdgeDevice.screenRoute + "/{${EDGE_SERVER_ID_ARG}}/{${EDGE_DEVICE_ID_ARG}}",
+            route = Screen.UpdateEdgeDevice.screenRoute + "/{${EDGE_SERVER_ID_ARG}}/{${EDGE_DEVICE_ID_ARG}}/{mqttPubTopic}/{mqttSubTopic}",
             arguments = listOf(
                 navArgument(EDGE_SERVER_ID_ARG) { type = NavType.IntType },
                 navArgument(EDGE_DEVICE_ID_ARG) { type = NavType.IntType },
-            )
+                navArgument("mqttPubTopic") { type = NavType.StringType },
+                navArgument("mqttSubTopic") { type = NavType.StringType },
+
+                )
         ) {
             val arguments = it.arguments
-            val edgeServerId = arguments?.getInt(EDGE_SERVER_ID_ARG)
-            val edgeDeviceId = arguments?.getInt(EDGE_DEVICE_ID_ARG)
-
-            if (edgeServerId == null || edgeDeviceId == null) {
-                return@composable
-            }
+            val edgeServerId = arguments?.getInt(EDGE_SERVER_ID_ARG) ?: return@composable
+            val edgeDeviceId = arguments.getInt(EDGE_DEVICE_ID_ARG) ?: return@composable
+            val mqttPubTopic = arguments.getString("mqttPubTopic") ?: return@composable
+            val mqttSubTopic = arguments.getString("mqttSubTopic") ?: return@composable
 
             val viewModel = hiltViewModel<UpdateEdgeDeviceViewModel>()
 
@@ -309,24 +310,30 @@ fun NavigationApp(navController: NavHostController) {
                 state = viewModel.state,
                 onEvent = viewModel::onEvent,
                 edgeServerId = edgeServerId.toUInt(),
-                edgeDeviceId = edgeDeviceId.toUInt()
+                edgeDeviceId = edgeDeviceId.toUInt(),
+                mqttSubTopic = mqttSubTopic,
+                mqttPubTopic = mqttPubTopic,
+                navHostController = navController
             )
         }
 
         composable(
-            route = Screen.DetailEdgeDeviceSensor.screenRoute + "/{${EDGE_SERVER_ID_ARG}}/{${EDGE_DEVICE_ID_ARG}}",
+            route = Screen.DetailEdgeDeviceSensor.screenRoute + "/{${EDGE_SERVER_ID_ARG}}/{${EDGE_DEVICE_ID_ARG}}/{$DEVICE_PROCESS_ID}/{mqttPubTopic}/{mqttSubTopic}",
             arguments = listOf(
                 navArgument(EDGE_SERVER_ID_ARG) { type = NavType.IntType },
                 navArgument(EDGE_DEVICE_ID_ARG) { type = NavType.IntType },
+                navArgument(DEVICE_PROCESS_ID) { type = NavType.IntType },
+                navArgument("mqttPubTopic") { type = NavType.StringType },
+                navArgument("mqttSubTopic") { type = NavType.StringType },
             )
         ) {
             val arguments = it.arguments
-            val edgeServerId = arguments?.getInt(EDGE_SERVER_ID_ARG)
-            val edgeDeviceId = arguments?.getInt(EDGE_DEVICE_ID_ARG)
+            val edgeServerId = arguments?.getInt(EDGE_SERVER_ID_ARG) ?: return@composable
+            val edgeDeviceId = arguments.getInt(EDGE_DEVICE_ID_ARG) ?: return@composable
+            val processId = arguments.getInt(DEVICE_PROCESS_ID) ?: return@composable
+            val mqttPubTopic = arguments.getString("mqttPubTopic") ?: return@composable
+            val mqttSubTopic = arguments.getString("mqttSubTopic") ?: return@composable
 
-            if (edgeServerId == null || edgeDeviceId == null) {
-                return@composable
-            }
 
             val viewModel = hiltViewModel<DetailEdgeDeviceSensorViewModel>()
             DetailEdgeDeviceSensorScreen(
@@ -334,6 +341,9 @@ fun NavigationApp(navController: NavHostController) {
                 onEvent = viewModel::onEvent,
                 edgeServerId = edgeServerId.toUInt(),
                 edgeDeviceId = edgeDeviceId.toUInt(),
+                processId = processId,
+                mqttPubTopic = mqttPubTopic,
+                mqttSubTopic = mqttSubTopic,
                 navHostController = navController
             )
         }
