@@ -24,7 +24,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material.icons.filled.RestartAlt
 import androidx.compose.material3.BottomSheetScaffold
@@ -37,7 +38,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -52,12 +52,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import co.yml.charts.common.extensions.isNotNull
 import com.ppidev.smartcube.R
 import com.ppidev.smartcube.domain.model.NotificationModel
+import com.ppidev.smartcube.ui.Screen
 import com.ppidev.smartcube.ui.components.card.CardDetailNotification
 import com.ppidev.smartcube.ui.components.card.CardNotification
 import com.ppidev.smartcube.ui.components.modal.DialogApp
@@ -74,8 +76,8 @@ fun DetailEdgeDeviceScreen(
     edgeDeviceId: UInt,
     edgeServerId: UInt,
     processId: Int,
-    vendor: String,
-    type: String
+    mqttPubTopic: String,
+    mqttSubTopic: String,
 ) {
     LaunchedEffect(Unit) {
         onEvent(
@@ -124,20 +126,33 @@ fun DetailEdgeDeviceScreen(
                                     (it.size.height + 150).toDp()
                                 }
                             },
-                            type = type,
-                            vendorName = vendor,
+                            isLoading = state.isLoadingDetailDevice,
+                            vendorName = state.edgeDeviceDetail?.vendorName ?: "",
                             serialNumber = "",
                             handleRestartDevice = {
                                 onEvent(DetailEdgeDeviceEvent.RestartEdgeDevice)
                             },
                             handleStartDevice = {
                                 onEvent(DetailEdgeDeviceEvent.StartEdgeDevice)
-                            })
+                            },
+                            navigateToUpdateDeviceScreen = {
+                                navHostController.navigate(
+                                    Screen.UpdateEdgeDevice.withArgs(
+                                        "$edgeServerId",
+                                        "$edgeDeviceId",
+                                        mqttPubTopic,
+                                        mqttSubTopic
+                                    )
+                                )
+                            },
+                            deleteDevice = {}
+                        )
 
                         Spacer(modifier = Modifier.size(32.dp))
 
                         ListNotificationDetailDevice(
                             listNotification = state.notifications,
+                            isLoading = state.isLoadingDetailDevice,
                             notificationActiveId = state.notificationId
                         ) {
                             if (state.notificationId != it) {
@@ -219,7 +234,6 @@ fun DetailEdgeDeviceScreen(
                     }
                 }
 
-
                 Spacer(modifier = Modifier.size(16.dp))
             }
         }
@@ -250,39 +264,56 @@ fun DetailEdgeDeviceScreen(
 private fun ListNotificationDetailDevice(
     listNotification: List<NotificationModel>,
     notificationActiveId: UInt? = null,
+    isLoading: Boolean,
     onClick: (notificationId: UInt) -> Unit
 ) {
-    if (listNotification.isEmpty()) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Image(
-                modifier = Modifier.size(160.dp),
-                painter = painterResource(id = R.drawable.thumb_empty),
-                contentDescription = null
-            )
-            Spacer(modifier = Modifier.size(8.dp))
-            Text(text = "Empty Notification")
-        }
-    } else {
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            itemsIndexed(listNotification, key = { _, d -> d.id }) { _, item ->
-                CardNotification(
-                    title = item.title,
-                    date = isoDateFormatToStringDate(item.createdAt) ?: "-",
-                    type = item.deviceType,
-                    imgUrl = item.imageUrl,
-                    server = item.edgeServerId.toString(),
-                    device = item.edgeDeviceId.toString(),
-                    isFocus = notificationActiveId == item.id.toUInt(),
-                    onClick = {
-                        onClick(item.id.toUInt())
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        if (isLoading) {
+            items(4) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                        .clip(
+                            RoundedCornerShape(4.dp)
+                        )
+                        .shimmerEffect()
+                ) {}
+            }
+        } else {
+            if (listNotification.isEmpty()) {
+                item {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Image(
+                            modifier = Modifier.size(160.dp),
+                            painter = painterResource(id = R.drawable.thumb_empty),
+                            contentDescription = null
+                        )
+                        Spacer(modifier = Modifier.size(8.dp))
+                        Text(text = "Empty Notification")
                     }
-                )
+                }
+            } else {
+                itemsIndexed(listNotification, key = { _, d -> d.id }) { _, item ->
+                    CardNotification(
+                        title = item.title,
+                        date = isoDateFormatToStringDate(item.createdAt) ?: "-",
+                        type = item.deviceType,
+                        imgUrl = item.imageUrl,
+                        server = item.edgeServerId.toString(),
+                        device = item.edgeDeviceId.toString(),
+                        isFocus = notificationActiveId == item.id.toUInt(),
+                        onClick = {
+                            onClick(item.id.toUInt())
+                        }
+                    )
+                }
             }
         }
     }
@@ -291,11 +322,13 @@ private fun ListNotificationDetailDevice(
 @Composable
 private fun CardDetailDevice(
     modifier: Modifier = Modifier,
-    type: String,
     vendorName: String,
     serialNumber: String,
+    isLoading: Boolean,
     handleRestartDevice: () -> Unit,
-    handleStartDevice: () -> Unit
+    handleStartDevice: () -> Unit,
+    navigateToUpdateDeviceScreen: () -> Unit,
+    deleteDevice: () -> Unit
 ) {
     Column(
         modifier = modifier.fillMaxWidth()
@@ -305,13 +338,49 @@ private fun CardDetailDevice(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column {
-                Text(text = vendorName, style = MaterialTheme.typography.titleMedium)
-                Text(
-                    text = serialNumber,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray
-                )
+            if (isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.4f)
+                        .height(48.dp)
+                        .clip(
+                            RoundedCornerShape(4.dp)
+                        )
+                        .shimmerEffect()
+                ) {}
+            } else {
+                Column {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = vendorName,
+                            style = MaterialTheme.typography.titleMedium,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        IconButton(onClick = {
+                            navigateToUpdateDeviceScreen()
+                        }) {
+                            Icon(imageVector = Icons.Filled.Edit, contentDescription = "edit")
+                        }
+                    }
+                    Text(
+                        text = serialNumber,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.Gray
+                    )
+                }
+
+                IconButton(onClick = {
+                    deleteDevice()
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.Delete,
+                        contentDescription = "delete",
+                        tint = Color.Red
+                    )
+                }
             }
         }
 
@@ -354,11 +423,5 @@ private fun CardDetailDevice(
 @Composable
 @Preview(showBackground = true)
 private fun CardDetailDevicePreview() {
-    CardDetailDevice(
-        type = "",
-        vendorName = "",
-        serialNumber = "",
-        handleRestartDevice = { }) {
 
-    }
 }

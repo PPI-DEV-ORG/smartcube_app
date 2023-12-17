@@ -22,8 +22,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,16 +37,24 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.PopupProperties
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
@@ -53,6 +66,7 @@ import com.patrykandpatrick.vico.compose.style.ProvideChartStyle
 import com.patrykandpatrick.vico.core.entry.entryModelOf
 import com.patrykandpatrick.vico.core.entry.entryOf
 import com.ppidev.smartcube.R
+import com.ppidev.smartcube.ui.Screen
 import com.ppidev.smartcube.ui.components.CustomTab
 import com.ppidev.smartcube.ui.components.card.CardDetailNotification
 import com.ppidev.smartcube.ui.components.card.CardNotification
@@ -70,12 +84,23 @@ fun DetailEdgeDeviceSensorScreen(
     onEvent: (event: DetailEdgeDeviceSensorEvent) -> Unit,
     edgeServerId: UInt,
     edgeDeviceId: UInt,
+    processId: Int,
+    mqttSubTopic: String,
+    mqttPubTopic: String,
     navHostController: NavHostController
 ) {
     val pagerState = rememberPagerState(
         pageCount = { 2 }
     )
     val coroutineScope = rememberCoroutineScope()
+    // state of the menu
+    var expanded by remember {
+        mutableStateOf(false)
+    }
+    val listItems: ArrayList<MenuItemData> = arrayListOf(
+        MenuItemData(text = "Edit", icon = Icons.Filled.Edit),
+        MenuItemData(text = "Delete", icon = Icons.Filled.Delete)
+    )
 
     LaunchedEffect(Unit) {
         onEvent(DetailEdgeDeviceSensorEvent.GetDetailDevice(edgeServerId, edgeDeviceId))
@@ -102,20 +127,83 @@ fun DetailEdgeDeviceSensorScreen(
 
     val detailEdgeDevice = state.edgeDeviceDetail
 
+
     Column {
-        TopAppBar(title = {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
-            ) {
-                IconButton(onClick = {
-                    navHostController.popBackStack()
-                }) {
-                    Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "back")
+        TopAppBar(
+            title = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    IconButton(onClick = {
+                        navHostController.popBackStack()
+                    }) {
+                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "back")
+                    }
+                    Text(text = "Sensor Device")
                 }
-                Text(text = "Sensor Device")
-            }
-        })
+            },
+            actions = {
+                IconButton(onClick = {
+                    expanded = true
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "Open Options"
+                    )
+                }
+
+                // drop down menu
+                DropdownMenu(
+                    modifier = Modifier.width(width = 150.dp),
+                    expanded = expanded,
+                    onDismissRequest = {
+                        expanded = false
+                    },
+                    offset = DpOffset(x = (-102).dp, y = (-10).dp),
+                    properties = PopupProperties()
+                ) {
+                    listItems.forEach { menuItemData ->
+                        DropdownMenuItem(
+                            onClick = {
+                                when (menuItemData.text) {
+                                    "Edit" -> {
+                                        navHostController.navigate(
+                                            Screen.UpdateEdgeDevice.withArgs(
+                                                "$edgeServerId",
+                                                "$edgeDeviceId",
+                                                mqttPubTopic,
+                                                mqttSubTopic
+                                            )
+                                        )
+                                    }
+
+                                    "Delete" -> {
+
+                                    }
+                                }
+                                expanded = false
+                            },
+                            enabled = true,
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = menuItemData.icon,
+                                    contentDescription = menuItemData.text,
+                                    tint = Color.DarkGray
+                                )
+                            },
+                            text = {
+                                Text(
+                                    text = menuItemData.text,
+                                    fontWeight = FontWeight.Medium,
+                                    fontSize = 16.sp,
+                                    color = Color.DarkGray
+                                )
+                            }
+                        )
+                    }
+                }
+            })
 
         Column(
             modifier = Modifier.padding(horizontal = 16.dp)
@@ -125,7 +213,8 @@ fun DetailEdgeDeviceSensorScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Bottom
             ) {
-                Column {
+                Column(
+                ) {
                     Text(
                         modifier = Modifier.width(165.dp),
                         text = detailEdgeDevice?.vendorName ?: "-",
@@ -170,7 +259,9 @@ fun DetailEdgeDeviceSensorScreen(
                             ) {
                                 CardDetailNotification(
                                     title = state.detailNotification?.title.orEmpty(),
-                                    date = isoDateFormatToStringDate(state.detailNotification?.createdAt ?: "")
+                                    date = isoDateFormatToStringDate(
+                                        state.detailNotification?.createdAt ?: ""
+                                    )
                                         ?: "-",
                                     serverName = "${state.detailNotification?.edgeServerId}",
                                     deviceName = "${state.detailNotification?.edgeDeviceId}",
@@ -401,6 +492,8 @@ fun DetailEdgeDeviceSensorScreen(
     }
 }
 
+data class MenuItemData(val text: String, val icon: ImageVector)
+
 @Preview(showBackground = true)
 @Composable
 fun DetailEdgeDeviceSensorScreenPreview() {
@@ -409,6 +502,9 @@ fun DetailEdgeDeviceSensorScreenPreview() {
         onEvent = {},
         edgeServerId = 0.toUInt(),
         edgeDeviceId = 0.toUInt(),
+        processId = 0,
+        mqttSubTopic = "",
+        mqttPubTopic = "",
         navHostController = rememberNavController()
     )
 }

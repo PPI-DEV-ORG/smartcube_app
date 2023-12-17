@@ -34,9 +34,7 @@ fun DashboardScreen(
     onEvent: (DashboardEvent) -> Unit,
     navHostController: NavHostController
 ) {
-    val intervalSync = 10000L
-    val coroutineScope = rememberCoroutineScope()
-    val scrollState = rememberScrollState()
+    val intervalSync = 1000L
     var selectedTabIndex by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(Unit) {
@@ -78,6 +76,7 @@ fun DashboardScreen(
         } catch (e: NumberFormatException) {
             0f
         }
+
         DashboardContentView(
             username = state.username,
             email = state.email,
@@ -107,8 +106,8 @@ fun DashboardScreen(
                             state.edgeServerId.toString(),
                             device.id.toString(),
                             index.toString(),
-                            device.vendorName,
-                            device.type
+                            state.mqttPublishTopic.toString(),
+                            state.mqttSubscribeTopic.toString()
                         )
                     )
                 } else if (device.type == TypeEdgeDevice.SENSOR.typeName) {
@@ -116,6 +115,9 @@ fun DashboardScreen(
                         Screen.DetailEdgeDeviceSensor.withArgs(
                             state.edgeServerId.toString(),
                             device.id.toString(),
+                            index.toString(),
+                            state.mqttPublishTopic.toString(),
+                            state.mqttSubscribeTopic.toString()
                         )
                     )
                 }
