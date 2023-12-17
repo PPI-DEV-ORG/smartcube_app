@@ -1,6 +1,7 @@
 package com.ppidev.smartcube.presentation.notification.detail
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -40,6 +41,8 @@ import co.yml.charts.common.extensions.isNotNull
 import coil.compose.AsyncImage
 import com.ppidev.smartcube.R
 import com.ppidev.smartcube.domain.model.TypeEdgeDevice
+import com.ppidev.smartcube.presentation.edge_device.detail.DetailEdgeDeviceEvent
+import com.ppidev.smartcube.ui.components.modal.DialogImageOverlay
 import com.ppidev.smartcube.utils.bottomBorder
 import com.ppidev.smartcube.utils.isoDateFormatToStringDate
 import java.util.Locale
@@ -83,7 +86,9 @@ fun NotificationDetailScreen(
                     AsyncImage(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(200.dp),
+                            .height(200.dp).clickable {
+                                onEvent(NotificationDetailEvent.SetOverlayImageStatus(true))
+                            },
                         placeholder = painterResource(id = R.drawable.thumb_flame),
                         error = painterResource(id = R.drawable.thumb_error),
                         contentScale = ContentScale.Crop,
@@ -169,6 +174,12 @@ fun NotificationDetailScreen(
                     )
                 }
             }
+        }
+    }
+
+    if (state.notificationModel.isNotNull() && state.isOpenImageOverlay) {
+        DialogImageOverlay(imageUrl = state.notificationModel?.imageUrl) {
+            onEvent(NotificationDetailEvent.SetOverlayImageStatus(false))
         }
     }
 }

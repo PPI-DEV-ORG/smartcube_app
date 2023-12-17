@@ -8,8 +8,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ppidev.smartcube.common.Resource
 import com.ppidev.smartcube.contract.data.remote.service.IMqttService
+import com.ppidev.smartcube.contract.data.repository.ITokenAppRepository
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IEdgeDevicesInfoUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_server.IListEdgeServerUseCase
+import com.ppidev.smartcube.contract.domain.use_case.user.IUpdateFcmTokenUseCase
 import com.ppidev.smartcube.contract.domain.use_case.weather.IViewCurrentWeather
 import com.ppidev.smartcube.data.remote.dto.ServerStatusDto
 import com.ppidev.smartcube.domain.model.ServerStatusModel
@@ -19,6 +21,7 @@ import com.ppidev.smartcube.utils.extractCommandAndDataMqtt
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -30,13 +33,15 @@ class DashboardViewModel @Inject constructor(
     private val mqttService: Lazy<IMqttService>,
     private val listEdgeServerUseCase: Lazy<IListEdgeServerUseCase>,
     private val edgeDevicesInfo: Lazy<IEdgeDevicesInfoUseCase>,
+    private val tokenRepository: Lazy<ITokenAppRepository>,
+    private val updateFcmTokenUseCase: Lazy<IUpdateFcmTokenUseCase>
 ) : ViewModel() {
     var state by mutableStateOf(DashboardState())
         private set
 
     init {
         viewModelScope.launch {
-            if(!mqttService.get().checkIfMqttIsConnected()) {
+            if (!mqttService.get().checkIfMqttIsConnected()) {
                 mqttService.get().connect()
             }
         }
@@ -72,6 +77,10 @@ class DashboardViewModel @Inject constructor(
 
                 is DashboardEvent.GetProcessDeviceId -> {
                     getProcessDeviceId(event.topic)
+                }
+
+                DashboardEvent.StoreFCMToken -> {
+                    storeFCMTokenToAPI()
                 }
             }
         }
@@ -222,6 +231,24 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
+
+    private suspend fun storeFCMTokenToAPI() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val fcmToken = tokenRepository.get().getFcmToken().first()
+
+            updateFcmTokenUseCase.get().invoke(fcmToken).onEach {
+                when (it) {
+                    is Resource.Error -> {
+                        Log.d("FCM", "Failed update token")
+                    }
+                    is Resource.Loading -> {}
+                    is Resource.Success -> {
+                        Log.d("FCM", "success update token")
+                    }
+                }
+            }.launchIn(viewModelScope)
+        }
+    }
 
     private fun unsubscribeFromTopic() {
         viewModelScope.launch {
