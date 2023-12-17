@@ -6,12 +6,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -63,177 +67,243 @@ fun DashboardContentView(
     navigateCreateNewDevice: () -> Unit,
     navigateToDetailDevice: (index: Int, device: EdgeDevice) -> Unit
 ) {
-    Column(
-        modifier = modifier
-            .padding(horizontal = 16.dp, vertical = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+
+
+
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        contentPadding = PaddingValues(
+            bottom = 160.dp
+        ),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        UserSection(username = username, email = email, isLoading = isLoadingProfile)
-
-        if (isLoadingListServer) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(162.dp)
-                    .clip(
-                        RoundedCornerShape(8.dp)
-                    )
-                    .shimmerEffect()
-            ) {}
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .width(90.dp)
-                        .height(32.dp)
-                        .clip(
-                            RoundedCornerShape(4.dp)
-                        )
-                        .shimmerEffect()
-                ) {}
-
-                Box(
-                    modifier = Modifier
-                        .width(90.dp)
-                        .height(32.dp)
-                        .clip(
-                            RoundedCornerShape(4.dp)
-                        )
-                        .shimmerEffect()
-                ) {}
-
-                Box(
-                    modifier = Modifier
-                        .width(90.dp)
-                        .height(32.dp)
-                        .clip(
-                            RoundedCornerShape(4.dp)
-                        )
-                        .shimmerEffect()
-                ) {}
-            }
-
-        } else if (errors.listServerError.isNotEmpty() && errors.listServerCode == 504) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 118.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.thumb_error_504),
-                    contentDescription = errors.listServerError
+        item(
+            span = { GridItemSpan(2) }
+        ) {
+            Column {
+                Spacer(modifier = Modifier.size(12.dp))
+                UserSection(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    username = username,
+                    email = email,
+                    isLoading = isLoadingProfile
                 )
             }
-        } else {
-            if (listEdgeServer.isEmpty()) {
+        }
+
+        if (isLoadingListServer) {
+            item(
+                span = { GridItemSpan(2) }
+            ) {
+                Column(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(162.dp)
+                            .clip(
+                                RoundedCornerShape(8.dp)
+                            )
+                            .shimmerEffect()
+                    ) {}
+
+                    Spacer(modifier = Modifier.size(12.dp))
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .width(92.dp)
+                                .height(32.dp)
+                                .clip(
+                                    RoundedCornerShape(4.dp)
+                                )
+                                .shimmerEffect()
+
+                        ) {}
+
+                        Box(
+                            modifier = Modifier
+                                .width(92.dp)
+                                .height(32.dp)
+                                .clip(
+                                    RoundedCornerShape(4.dp)
+                                )
+                                .shimmerEffect()
+                        ) {}
+
+                        Box(
+                            modifier = Modifier
+                                .width(92.dp)
+                                .height(32.dp)
+                                .clip(
+                                    RoundedCornerShape(4.dp)
+                                )
+                                .shimmerEffect()
+                        ) {}
+                    }
+                }
+            }
+        } else if (errors.listServerError.isNotEmpty() && errors.listServerCode == 504) {
+            item(
+                span = { GridItemSpan(2) }
+            ) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
+                        .padding(horizontal = 16.dp)
                         .padding(top = 118.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(28.dp)
+                    verticalArrangement = Arrangement.Center
                 ) {
                     Image(
+                        painter = painterResource(id = R.drawable.thumb_error_504),
+                        contentDescription = errors.listServerError
+                    )
+                }
+            }
+        } else {
+            if (listEdgeServer.isEmpty()) {
+                item(
+                    span = { GridItemSpan(2) }
+                ) {
+                    Column(
                         modifier = Modifier
-                            .width(254.dp)
-                            .height(254.dp),
-                        painter = painterResource(id = R.drawable.empty_dashboard),
-                        contentDescription = null
-                    )
-                    Text(
-                        modifier = Modifier.width(200.dp),
-                        text = "Start To Create Your First Server", style = TextStyle(
-                            fontSize = 24.sp,
-                            lineHeight = 32.sp,
-                            fontWeight = FontWeight(600),
-                            color = MaterialTheme.colorScheme.secondary,
-                            textAlign = TextAlign.Center,
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp)
+                            .padding(top = 118.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(28.dp)
+                    ) {
+                        Image(
+                            modifier = Modifier
+                                .width(254.dp)
+                                .height(254.dp),
+                            painter = painterResource(id = R.drawable.empty_dashboard),
+                            contentDescription = null
                         )
-                    )
-                    Button(modifier = Modifier
-                        .shadow(
-                            elevation = 2.dp,
-                            spotColor = Color(0xFF6750A4),
-                            ambientColor = Color(0xFF6750A4)
+                        Text(
+                            modifier = Modifier.width(200.dp),
+                            text = "Start To Create Your First Server", style = TextStyle(
+                                fontSize = 24.sp,
+                                lineHeight = 32.sp,
+                                fontWeight = FontWeight(600),
+                                color = MaterialTheme.colorScheme.secondary,
+                                textAlign = TextAlign.Center,
+                            )
                         )
-                        .width(230.dp)
-                        .height(44.dp),
-                        shape = RoundedCornerShape(4.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0x80F3F3F3),
-                            contentColor = Color.Gray
-                        ),
-                        onClick = {
-                            navigateCreateNewServer()
-                        }) {
-                        Text(text = "Add Server", style = MaterialTheme.typography.bodyMedium)
+                        Button(modifier = Modifier
+                            .shadow(
+                                elevation = 2.dp,
+                                spotColor = Color(0xFF6750A4),
+                                ambientColor = Color(0xFF6750A4)
+                            )
+                            .width(230.dp)
+                            .height(44.dp),
+                            shape = RoundedCornerShape(4.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0x80F3F3F3),
+                                contentColor = Color.Gray
+                            ),
+                            onClick = {
+                                navigateCreateNewServer()
+                            }) {
+                            Text(text = "Add Server", style = MaterialTheme.typography.bodyMedium)
+                        }
                     }
                 }
             } else {
-                CardServerInfo(
-                    avgCpuTemp = avgCpuTemp,
-                    totalRam = totalRam,
-                    fanSpeed = fanSpeed,
-                    upTime = upTime,
-                    ramUsage = ramUsage,
-                    ramFree = ramFree
-                )
-
-                if (listEdgeServer.count() > 1) {
-                    AppScrollableTabLayout(
-                        selectedTabIndex = selectedTabIndex,
-                        listItems = listEdgeServer,
-                        onTabChange = { index, name -> onTabChange(index, name) })
-                }
-
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(
-                        bottom = 16.dp
-                    ),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                item(
+                    span = { GridItemSpan(2) }
                 ) {
-                    if (isLoadingListDevices) {
-                        items(count = 2) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(176.dp)
-                                    .clip(
-                                        RoundedCornerShape(4.dp)
-                                    )
-                                    .shimmerEffect()
-                            )
-                        }
-                    } else {
-                        itemsIndexed(
-                            items = listEdgeDevices,
-                            key = { _, item -> item.id }) { index, item ->
-                            CardItemDevice(
-                                deviceType = item.type,
-                                vendorName = item.vendorName,
-                                status = true,
-                                onClick = {
-                                    navigateToDetailDevice(index, item)
-                                }
-                            )
-                        }
-
-                        item {
-                            CardAddDevice(
-                                onClick = {
-                                    navigateCreateNewDevice()
-                                }
-                            )
-                        }
+                    Column {
+                        CardServerInfo(
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                            avgCpuTemp = avgCpuTemp,
+                            totalRam = totalRam,
+                            fanSpeed = fanSpeed,
+                            upTime = upTime,
+                            ramUsage = ramUsage,
+                            ramFree = ramFree
+                        )
                     }
                 }
+
+
+                if (listEdgeServer.count() > 1) {
+                    item(
+                        span = { GridItemSpan(2) }
+                    ) {
+                        AppScrollableTabLayout(
+                            selectedTabIndex = selectedTabIndex,
+                            listItems = listEdgeServer,
+                            onTabChange = { index, name -> onTabChange(index, name) })
+                    }
+                }
+
+                listGridDevice(
+                    isLoadingListDevices = isLoadingListDevices,
+                    listEdgeDevices = listEdgeDevices,
+                    navigateToDetailDevice = navigateToDetailDevice,
+                    navigateCreateNewDevice = navigateCreateNewDevice
+                )
             }
+        }
+    }
+}
+
+fun LazyGridScope.listGridDevice(
+    isLoadingListDevices: Boolean,
+    listEdgeDevices: List<EdgeDevice>,
+    navigateToDetailDevice: (index: Int, item: EdgeDevice) -> Unit,
+    navigateCreateNewDevice: () -> Unit
+) {
+    if (isLoadingListDevices) {
+        items(count = 2) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(176.dp)
+                    .padding(
+                        start = if (it % 2 == 0) 16.dp else 0.dp,
+                        end = if (it % 2 != 0) 16.dp else 0.dp
+                    )
+                    .clip(
+                        RoundedCornerShape(4.dp)
+                    )
+                    .shimmerEffect()
+            )
+        }
+    } else {
+        itemsIndexed(
+            items = listEdgeDevices,
+            key = { _, item -> item.id }) { index, item ->
+
+            CardItemDevice(
+                modifier = if (index % 2 == 0) Modifier.padding(start = 16.dp) else Modifier.padding(
+                    end = 16.dp
+                ),
+                deviceType = item.type,
+                vendorName = item.vendorName,
+                status = true,
+                onClick = {
+                    navigateToDetailDevice(index, item)
+                }
+            )
+        }
+
+        item {
+            CardAddDevice(
+                modifier = if (listEdgeDevices.count() % 2 == 0) Modifier.padding(start = 16.dp) else Modifier.padding(
+                    end = 16.dp
+                ),
+                onClick = {
+                    navigateCreateNewDevice()
+                }
+            )
         }
     }
 }

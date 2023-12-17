@@ -63,6 +63,12 @@ class DetailEdgeDeviceViewModel @Inject constructor(
                         notificationId = event.notificationId
                     )
                 }
+
+                is DetailEdgeDeviceEvent.SetOpenImageOverlay -> {
+                    state = state.copy(
+                        isOpenImageOverlay = event.status
+                    )
+                }
             }
         }
     }
@@ -78,7 +84,6 @@ class DetailEdgeDeviceViewModel @Inject constructor(
         startEdgeDeviceUseCase.get().invoke(edgeDeviceId, processId).onEach {
             when (it) {
                 is Resource.Error -> {
-                    Log.d("START_ERR", it.message.toString())
                     state = state.copy(
                         isLoading = false,
                         isDialogMsgOpen = true,
@@ -123,7 +128,6 @@ class DetailEdgeDeviceViewModel @Inject constructor(
                         messageDialog = it.message.toString(),
                         isSuccess = false
                     )
-                    Log.d("RESTART_ERR", it.message.toString())
                 }
 
                 is Resource.Loading -> {
@@ -139,7 +143,6 @@ class DetailEdgeDeviceViewModel @Inject constructor(
                         messageDialog = it.data?.message.toString(),
                         isSuccess = true
                     )
-                    Log.d("RESTART_SUCC", it.data?.message.toString())
                 }
             }
         }.launchIn(viewModelScope)
@@ -156,7 +159,6 @@ class DetailEdgeDeviceViewModel @Inject constructor(
                             item.toNotificationModel()
                         } ?: emptyList()
 
-                        Log.d("NOTIFI", notifications.toString())
                         state = state.copy(
                             edgeDeviceDetail = it.data?.data,
                             notifications = notifications
@@ -166,15 +168,24 @@ class DetailEdgeDeviceViewModel @Inject constructor(
             }.launchIn(viewModelScope)
     }
 
-    private suspend fun getDetailNotification(notificationId: UInt, serverId: UInt) {
+    private fun getDetailNotification(notificationId: UInt, serverId: UInt) {
         viewNotificationUseCase.get()
             .invoke(notificationId = notificationId, edgeServerId = serverId).onEach {
                 when (it) {
-                    is Resource.Error -> {}
-                    is Resource.Loading -> {}
+                    is Resource.Error -> {
+                        state = state.copy(
+                            isLoadingDetailNotification = false
+                        )
+                    }
+                    is Resource.Loading -> {
+                        state = state.copy(
+                            isLoadingDetailNotification = true
+                        )
+                    }
                     is Resource.Success -> {
                         state = state.copy(
-                            notificationDetail = it.data?.data
+                            notificationDetail = it.data?.data,
+                            isLoadingDetailNotification = false
                         )
                     }
                 }

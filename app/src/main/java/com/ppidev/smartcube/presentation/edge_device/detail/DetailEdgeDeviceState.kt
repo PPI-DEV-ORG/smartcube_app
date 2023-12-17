@@ -5,6 +5,8 @@ import com.ppidev.smartcube.domain.model.NotificationModel
 
 data class DetailEdgeDeviceState(
     val isLoading: Boolean = false,
+    val isLoadingDetailNotification: Boolean = false,
+    val isOpenImageOverlay: Boolean = false,
     val edgeServerId: UInt? = null,
     val notificationId: UInt? = null,
     val notificationDetail: NotificationModel? = null,

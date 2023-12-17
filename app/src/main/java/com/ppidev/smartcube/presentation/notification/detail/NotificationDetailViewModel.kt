@@ -12,24 +12,36 @@ import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class NotificationDetailViewModel @Inject constructor(
     private val viewNotificationUseCase: Lazy<IViewNotificationUseCase>
 ) : ViewModel() {
-
     var state by mutableStateOf(NotificationDetailState())
         private set
 
     fun onEvent(event: NotificationDetailEvent) {
-        when (event) {
-            is NotificationDetailEvent.GetDetailNotification -> getDetailNotification(event.notificationId)
+        viewModelScope.launch {
+            when (event) {
+                is NotificationDetailEvent.GetDetailNotification -> getDetailNotification(event.notificationId, event.edgeServerId)
+            }
         }
     }
 
-    private fun getDetailNotification(notificationId: UInt, ) {
-
+    private fun getDetailNotification(notificationId: UInt, edgeServerId: UInt ) {
+        viewNotificationUseCase.get().invoke(notificationId, edgeServerId).onEach {
+            when(it) {
+                is Resource.Error -> {}
+                is Resource.Loading -> {}
+                is Resource.Success -> {
+                    state = state.copy(
+                        notificationModel = it.data?.data
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
 }

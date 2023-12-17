@@ -164,23 +164,32 @@ fun NavigationApp(navController: NavHostController) {
             )
         }
         composable(
-            route = Screen.DetailNotification.screenRoute + "/{$NOTIFICATION_ARG}",
-            arguments = listOf(navArgument(NOTIFICATION_ARG) { type = NavType.IntType }),
+            route = Screen.DetailNotification.screenRoute + "/{$NOTIFICATION_ARG}/{${EDGE_SERVER_ID_ARG}}/{deviceType}",
+            arguments = listOf(
+                navArgument(NOTIFICATION_ARG) { type = NavType.IntType },
+                navArgument(EDGE_SERVER_ID_ARG) { type = NavType.IntType },
+                navArgument("deviceType") { type = NavType.StringType }),
             deepLinks = listOf(navDeepLink {
-                uriPattern = "$APP_URL/$NOTIFICATION_ARG={$NOTIFICATION_ARG}"
+                uriPattern =
+                    "$APP_URL/$NOTIFICATION_ARG={$NOTIFICATION_ARG}/$EDGE_SERVER_ID_ARG={$EDGE_SERVER_ID_ARG}/deviceType={deviceType}"
             })
         ) {
             val arguments = it.arguments
-            arguments?.getInt(NOTIFICATION_ARG)?.let { message ->
-                val viewModel = hiltViewModel<NotificationDetailViewModel>()
+            val notificationId = arguments?.getInt(NOTIFICATION_ARG) ?: return@composable
+            val serverId = arguments.getInt(EDGE_SERVER_ID_ARG) ?: return@composable
+            val deviceType = arguments.getString("deviceType") ?: return@composable
 
-                NotificationDetailScreen(
-                    state = viewModel.state,
-                    onEvent = viewModel::onEvent,
-                    notificationId = message.toUInt(),
-                    navHostController = navController
-                )
-            }
+            val viewModel = hiltViewModel<NotificationDetailViewModel>()
+
+            NotificationDetailScreen(
+                state = viewModel.state,
+                onEvent = viewModel::onEvent,
+                notificationId = notificationId.toUInt(),
+                edgeServerId = serverId.toUInt(),
+                deviceType = deviceType,
+                navHostController = navController
+            )
+
         }
 
         composable(

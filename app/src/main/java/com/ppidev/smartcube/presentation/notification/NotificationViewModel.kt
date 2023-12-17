@@ -20,18 +20,28 @@ import javax.inject.Inject
 class NotificationViewModel @Inject constructor(
     private val listNotificationsUseCase: Lazy<IListNotificationUseCase>,
     private val detailNotificationUseCase: Lazy<IViewNotificationUseCase>
-): ViewModel() {
+) : ViewModel() {
     var state by mutableStateOf(NotificationState())
         private set
 
     fun onEvent(event: NotificationEvent) {
         viewModelScope.launch {
-            when(event){
+            when (event) {
                 NotificationEvent.GetListNotification -> getListNotification()
-                is NotificationEvent.GetNotificationDetail -> getDetailNotification(event.notificationId, event.edgeServerId)
+                is NotificationEvent.GetNotificationDetail -> getDetailNotification(
+                    event.notificationId,
+                    event.edgeServerId
+                )
+
                 is NotificationEvent.SetNotificationId -> {
                     state = state.copy(
                         notificationId = event.notificationId
+                    )
+                }
+
+                is NotificationEvent.SetOpenImageOverlay -> {
+                    state = state.copy(
+                        isOpenImageOverlay = event.status
                     )
                 }
             }
@@ -40,16 +50,18 @@ class NotificationViewModel @Inject constructor(
 
     private fun getListNotification() {
         listNotificationsUseCase.get().invoke().onEach {
-            when(it) {
+            when (it) {
                 is Resource.Loading -> {
                     setStatusLoading(true)
                 }
+
                 is Resource.Success -> {
                     state = state.copy(
                         notifications = it.data ?: emptyList()
                     )
                     setStatusLoading(false)
                 }
+
                 is Resource.Error -> {
                     state = state.copy(
                         error = it.message ?: ""
@@ -62,15 +74,17 @@ class NotificationViewModel @Inject constructor(
 
     private fun getDetailNotification(notificationId: UInt, edgeServerId: UInt) {
         detailNotificationUseCase.get().invoke(notificationId, edgeServerId).onEach {
-            when(it) {
+            when (it) {
                 is Resource.Loading -> {
                 }
+
                 is Resource.Success -> {
                     Log.d("TEST", it.data?.data.toString())
                     state = state.copy(
                         detailNotification = it.data?.data
                     )
                 }
+
                 is Resource.Error -> {
                 }
             }

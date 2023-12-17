@@ -7,5 +7,6 @@ data class NotificationState(
     val isLoading: Boolean = false,
     val error: String = "",
     val notificationId: UInt? = null,
-    val detailNotification: NotificationModel? = null
+    val detailNotification: NotificationModel? = null,
+    val isOpenImageOverlay: Boolean = false
 )

@@ -34,20 +34,16 @@ fun extractFloatFromString(input: String): Float? {
 }
 
 @SuppressLint("SimpleDateFormat")
-fun dateFormat(isoDate: String): String? {
+fun isoDateFormatToStringDate(isoDate: String): String {
     return try {
         val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-
-        inputFormat.timeZone = TimeZone.getTimeZone("UTC")
-
+        inputFormat.timeZone = TimeZone.getDefault()
         val date = inputFormat.parse(isoDate) as Date
-
         val outputFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss")
         outputFormat.timeZone = TimeZone.getDefault()
-
         outputFormat.format(date)
     } catch (e: Exception) {
-        null
+        "-"
     }
 }
 

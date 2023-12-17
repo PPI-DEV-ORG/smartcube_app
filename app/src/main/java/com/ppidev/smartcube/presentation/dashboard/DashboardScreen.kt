@@ -2,6 +2,7 @@ package com.ppidev.smartcube.presentation.dashboard
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.gestures.scrollBy
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
@@ -38,21 +39,6 @@ fun DashboardScreen(
     val scrollState = rememberScrollState()
     var selectedTabIndex by remember { mutableIntStateOf(0) }
 
-    val nestedScrollConnection = remember {
-        object : NestedScrollConnection {
-            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-
-                val delta = -available.y
-                coroutineScope.launch {
-                    if (scrollState.isScrollInProgress.not()) {
-                        scrollState.scrollBy(delta)
-                    }
-                }
-                return Offset.Zero
-            }
-        }
-    }
-
     LaunchedEffect(Unit) {
         onEvent(DashboardEvent.GetListEdgeServer)
         onEvent(DashboardEvent.GetCurrentWeather)
@@ -76,10 +62,9 @@ fun DashboardScreen(
         }
     }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .nestedScroll(nestedScrollConnection)
     ) {
 
         val memoryUsage: Float = try {

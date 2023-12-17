@@ -33,6 +33,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.key
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -184,11 +185,14 @@ fun DetailEdgeServerScreen(
                         )
                         Spacer(modifier = Modifier.size(8.dp))
                         state.devices.map { item ->
-                            CardDevice(
-                                type = item.sourceType,
-                                name = item.type,
-                                status = true
-                            )
+                            key(item.id) {
+                                CardDevice(
+                                    type = item.sourceType,
+                                    name = item.type,
+                                    status = true
+                                )
+                                Spacer(modifier = Modifier.size(8.dp))
+                            }
                         }
                     }
 
