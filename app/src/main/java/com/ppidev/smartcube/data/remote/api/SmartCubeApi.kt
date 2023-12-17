@@ -11,6 +11,7 @@ import com.ppidev.smartcube.data.remote.dto.EdgeServerItemDto
 import com.ppidev.smartcube.data.remote.dto.LoginDto
 import com.ppidev.smartcube.data.remote.dto.NotificationDto
 import com.ppidev.smartcube.data.remote.dto.RegisterDto
+import com.ppidev.smartcube.data.remote.dto.UserDto
 import com.ppidev.smartcube.data.remote.dto.VerificationDto
 import com.ppidev.smartcube.data.remote.dto.WeatherDto
 import retrofit2.Response
@@ -83,6 +84,15 @@ interface UserApi {
     suspend fun updateFcmToken(
         @Field("fcm_registration_token") fcmRegistrationToken: String,
     ): Response<ResponseApp<Any>>
+
+    @GET("user-profile")
+    suspend fun getProfile(): Response<ResponseApp<UserDto?>>
+
+    @PUT("user-profile/{id}")
+    suspend fun updateProfilePicture(
+        @Path("id") userId: UInt,
+        @Field("avatar") description: String
+    ): Response<ResponseApp<Any?>>
 }
 
 interface EdgeServerApi {
