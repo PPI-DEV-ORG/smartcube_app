@@ -16,6 +16,8 @@ data class ProfileState(
     val errorJoinUserGroup: String = "",
     val isLoadingJoinUserGroup: Boolean = false,
 
+    val isShowAlertLogout: Boolean = false,
+
     val user: UserDto? = null,
     val listServer: List<EdgeServerItemDto> = emptyList(),
     val selectedServerId: UInt? = null,

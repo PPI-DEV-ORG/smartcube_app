@@ -1,5 +1,6 @@
 package com.ppidev.smartcube.data.repository
 
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.ppidev.smartcube.common.EExceptionCode
@@ -20,7 +21,7 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun login(email: String, password: String): ResponseApp<LoginDto?> {
         try {
             val response = api.login(email, password)
-
+            Log.d("LOGIN", response.toString())
             if (!response.isSuccessful) {
                 val errorResponse = response.errorBody()?.string()
                 return Gson().fromJson(
@@ -48,6 +49,8 @@ class AuthRepositoryImpl @Inject constructor(
                 data = null
             )
         } catch (e: Exception) {
+            Log.d("LOGIN", e.message.toString())
+
             return ResponseApp(
                 status = false,
                 statusCode = EExceptionCode.RepositoryError.code,
@@ -184,7 +187,7 @@ class AuthRepositoryImpl @Inject constructor(
         confirmNewPassword: String
     ): ResponseApp<Boolean?> {
         try {
-            val response =  api.changePassword(resetToken, newPassword, confirmNewPassword)
+            val response =  api.changePassword("Bearer $resetToken", newPassword, confirmNewPassword)
             if (!response.isSuccessful) {
                 val errorResponse = response.errorBody()?.string()
                 return Gson().fromJson(

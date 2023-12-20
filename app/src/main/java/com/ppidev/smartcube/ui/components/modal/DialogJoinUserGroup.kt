@@ -82,6 +82,7 @@ fun DialogJoinUserGroup(
                 Spacer(modifier = Modifier.size(24.dp))
 
                 CustomInputField(
+                    placeholder = "invitation token",
                     label = "Invitation Code",
                     text = invitationCode,
                     errorText = errorText,

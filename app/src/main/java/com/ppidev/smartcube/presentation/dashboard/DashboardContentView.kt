@@ -186,7 +186,7 @@ fun DashboardContentView(
                         )
                         Text(
                             modifier = Modifier.width(200.dp),
-                            text = "Start To Create Your First Server", style = TextStyle(
+                            text = "Create Your Cluster", style = TextStyle(
                                 fontSize = 24.sp,
                                 lineHeight = 32.sp,
                                 fontWeight = FontWeight(600),
@@ -210,7 +210,7 @@ fun DashboardContentView(
                             onClick = {
                                 navigateCreateNewServer()
                             }) {
-                            Text(text = "Add Server", style = MaterialTheme.typography.bodyMedium)
+                            Text(text = "Add Cluster", style = MaterialTheme.typography.bodyMedium)
                         }
                     }
                 }
@@ -230,7 +230,6 @@ fun DashboardContentView(
                         )
                     }
                 }
-
 
                 if (listEdgeServer.count() > 1) {
                     item(

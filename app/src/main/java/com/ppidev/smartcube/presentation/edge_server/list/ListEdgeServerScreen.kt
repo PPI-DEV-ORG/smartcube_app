@@ -72,7 +72,7 @@ fun ListEdgeServerScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "Cube Server", color = Color.White)
+                Text(text = "Cluster", color = Color.White)
 
                 IconButton(onClick = {
                     navHostController.navigate(Screen.FormAddEdgeServer.screenRoute)
