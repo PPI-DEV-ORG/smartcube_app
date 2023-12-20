@@ -43,9 +43,6 @@ import com.ppidev.smartcube.R
 import com.ppidev.smartcube.ui.Screen
 import com.ppidev.smartcube.ui.components.form.CustomInputField
 
-
-
-
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun RegisterScreen(
@@ -106,6 +103,7 @@ fun RegisterScreen(
                 .testTag("input_email"),
             errorTestTag= "text_error_email" ,
             text = state.email,
+            placeholder = "Enter your email",
             label = "Email",
             errorText = state.error.email,
             keyboardType = KeyboardType.Email,
@@ -120,6 +118,7 @@ fun RegisterScreen(
             modifier = Modifier
                 .semantics { testTagsAsResourceId = true }
                 .testTag("input_password"),
+            placeholder = "Enter your password",
             text = state.password,
             label = "Password",
             showText = state.isShowPassword,
@@ -136,7 +135,7 @@ fun RegisterScreen(
                     )
                 else
                     Icon(
-                        imageVector = Icons.Outlined.HideSource,
+                        painter = painterResource(id = R.drawable.ic_eye_close),
                         contentDescription = "show password"
                     )
             },
@@ -153,6 +152,7 @@ fun RegisterScreen(
                 .semantics { testTagsAsResourceId = true }
                 .testTag("input_confirm_password"),
             text = state.confirmPassword,
+            placeholder = "Enter your confirmation password",
             label = "Confirmation Password",
             showText = state.isShowConfirmPassword,
             iconStart = false,
@@ -168,7 +168,7 @@ fun RegisterScreen(
                     )
                 else
                     Icon(
-                        imageVector = Icons.Outlined.HideSource,
+                        painter = painterResource(id = R.drawable.ic_eye_close),
                         contentDescription = "show password"
                     )
             },
@@ -182,7 +182,9 @@ fun RegisterScreen(
         Spacer(modifier = Modifier.size(40.dp))
 
         Button(
-            modifier = Modifier.fillMaxWidth().semantics { testTagsAsResourceId = true }
+            modifier = Modifier
+                .fillMaxWidth()
+                .semantics { testTagsAsResourceId = true }
                 .testTag("btn_signup"),
             onClick = { onEvent(RegisterEvent.HandleRegister) },
             enabled = !state.isLoading

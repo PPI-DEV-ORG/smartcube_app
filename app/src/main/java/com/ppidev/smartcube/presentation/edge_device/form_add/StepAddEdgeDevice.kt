@@ -89,19 +89,31 @@ fun Step2(
     Column(
         modifier = modifier.verticalScroll(rememberScrollState())
     ) {
-        CustomInputField(text = vendorName, customLabel = {
-            InputLabel(label = "Vendor Name", isRequired = true)
-        }, errorText = errorVendor, onTextChanged = {
-            onVendorChange(it)
-        })
+        CustomInputField(
+            text = vendorName,
+            customLabel = {
+                InputLabel(label = "Vendor Name", isRequired = true)
+            },
+            errorText = errorVendor,
+            onTextChanged = {
+                onVendorChange(it)
+            },
+            placeholder = "Enter vendor device name",
+        )
 
         Spacer(modifier = Modifier.size(16.dp))
 
-        CustomInputField(text = serialNumberName, customLabel = {
-            InputLabel(label = "Serial Number", isRequired = true)
-        }, errorText = errorSerialNumber, onTextChanged = {
-            onSerialNumberChange(it)
-        })
+        CustomInputField(
+            text = serialNumberName,
+            customLabel = {
+                InputLabel(label = "Serial Number", isRequired = true)
+            },
+            errorText = errorSerialNumber,
+            onTextChanged = {
+                onSerialNumberChange(it)
+            },
+            placeholder = "Enter serial number device",
+        )
 
         Spacer(modifier = Modifier.size(38.dp))
 
@@ -179,11 +191,17 @@ fun Step3(
 
         Spacer(modifier = Modifier.size(14.dp))
 
-        CustomInputField(text = sourceAddress, customLabel = {
-            InputLabel(label = "Source Address", isRequired = true)
-        }, errorText = errorSourceAddress, onTextChanged = {
-            onSourceAddressChange(it)
-        })
+        CustomInputField(
+            text = sourceAddress,
+            customLabel = {
+                InputLabel(label = "Source Address", isRequired = true)
+            },
+            errorText = errorSourceAddress,
+            onTextChanged = {
+                onSourceAddressChange(it)
+            },
+            placeholder = "source address device : IP / Usb / RTSP",
+        )
 
         Spacer(modifier = Modifier.size(14.dp))
 

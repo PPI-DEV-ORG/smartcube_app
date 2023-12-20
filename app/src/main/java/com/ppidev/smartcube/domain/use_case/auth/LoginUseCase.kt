@@ -1,5 +1,6 @@
 package com.ppidev.smartcube.domain.use_case.auth
 
+import android.util.Log
 import com.ppidev.smartcube.common.EExceptionCode
 import com.ppidev.smartcube.common.Resource
 import com.ppidev.smartcube.common.ResponseApp
@@ -31,6 +32,7 @@ class LoginUseCase @Inject constructor(
             }
             return Resource.Success(loginResponse)
         } catch (e: Exception) {
+            Log.d("LOGIN_SUSECASE", e.message.toString())
             return Resource.Error(
                 EExceptionCode.UseCaseError.code,
                 e.message ?: "Something wrong"

@@ -90,6 +90,7 @@ fun UpdateEdgeDeviceScreen(
                 CustomInputField(
                     text = state.vendorName,
                     label = "Vendor Name",
+                    placeholder = "Enter device vendor name",
                     errorText = state.errors.vendorName,
                     onTextChanged = {
                         onEvent(UpdateEdgeDeviceEvent.OnChangeVendorName(it))
@@ -100,6 +101,7 @@ fun UpdateEdgeDeviceScreen(
                 CustomInputField(
                     text = state.vendorNumber,
                     label = "Vendor Serial Number",
+                    placeholder = "Enter serial number device",
                     errorText = state.errors.vendorNumber,
                     onTextChanged = {
                         onEvent(UpdateEdgeDeviceEvent.OnChangeVendorNumber(it))
@@ -157,6 +159,7 @@ fun UpdateEdgeDeviceScreen(
                 CustomInputField(
                     text = state.sourceAddress,
                     label = "Source address",
+                    placeholder = "Enter source address device : IP/RTSP/USB",
                     errorText = state.errors.sourceAddress,
                     onTextChanged = {
                         onEvent(UpdateEdgeDeviceEvent.OnChangeSourceAddress(it))

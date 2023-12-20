@@ -21,6 +21,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.TextStyle
@@ -28,6 +29,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.ppidev.smartcube.R
 import com.ppidev.smartcube.ui.Screen
 import com.ppidev.smartcube.ui.components.form.CustomInputField
 import com.ppidev.smartcube.ui.components.modal.DialogApp
@@ -78,6 +80,7 @@ fun ChangePasswordScreen(
                 text = state.password,
                 label = "New Password",
                 showText = state.isShowPassword,
+                placeholder = "Enter new password",
                 iconStart = false,
                 errorText = state.error.password,
                 onClickIcon = {
@@ -89,7 +92,7 @@ fun ChangePasswordScreen(
                         contentDescription = "hide password"
                     )
                     else Icon(
-                        imageVector = Icons.Outlined.HideSource,
+                        painter = painterResource(id = R.drawable.ic_eye_close),
                         contentDescription = "show password"
                     )
                 },
@@ -108,6 +111,7 @@ fun ChangePasswordScreen(
                 .testTag("input_confirm_password"),
                 text = state.confirmPassword,
                 label = "Confirm New Password",
+                placeholder = "Enter confirmation password",
                 showText = state.isShowConfirmPassword,
                 iconStart = false,
                 errorText = state.error.confirmPassword,
@@ -120,7 +124,7 @@ fun ChangePasswordScreen(
                         contentDescription = "hide password"
                     )
                     else Icon(
-                        imageVector = Icons.Outlined.HideSource,
+                        painter = painterResource(id = R.drawable.ic_eye_close),
                         contentDescription = "show password"
                     )
                 },

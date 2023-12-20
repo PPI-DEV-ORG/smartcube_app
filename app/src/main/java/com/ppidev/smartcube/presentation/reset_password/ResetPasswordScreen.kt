@@ -71,6 +71,7 @@ fun ResetPasswordScreen(
             CustomInputField(modifier = Modifier
                 .semantics { testTagsAsResourceId = true }
                 .testTag("input_email"),
+                placeholder = "Enter email registered",
                 text = state.email,
                 label = "Email",
                 errorText = state.error.email,

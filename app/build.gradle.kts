@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
-
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -12,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.ppidev.smartcube"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.ppidev.smartcube"
@@ -21,16 +19,16 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner =  "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
-        compileSdkPreview = "UpsideDownCake"
+//        compileSdkPreview = "UpsideDownCake"
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -53,8 +51,9 @@ android {
     }
     packaging {
         resources {
-            // excludes += "/META-INF/{AL2.0,LGPL2.1}"
-            excludes += listOf("/META-INF/{AL2.0,LGPL2.1}","META-INF/INDEX.LIST", "META-INF/io.netty.versions.properties")
+//            excludes += "META-INF/*"
+//            excludes += "META-INF/io.netty.versions.properties"
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
     testOptions {
@@ -128,10 +127,9 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
 
     // MQTT
-    implementation("com.hivemq:hivemq-mqtt-client:1.3.0")
     implementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")
-    implementation ("org.eclipse.paho:org.eclipse.paho.android.service:1.1.1")
-    implementation("org.bouncycastle:bcpkix-jdk15on:1.59")
+    implementation("org.eclipse.paho:org.eclipse.paho.android.service:1.1.1")
+    implementation("org.bouncycastle:bcpkix-jdk15on:1.67")
 
     // chart library
     implementation("co.yml:ycharts:2.1.0")

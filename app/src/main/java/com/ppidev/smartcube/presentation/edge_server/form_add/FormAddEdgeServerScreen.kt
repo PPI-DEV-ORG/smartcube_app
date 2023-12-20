@@ -64,7 +64,7 @@ fun FormAddEdgeServerScreen(
                     Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "back")
                 }
                 Text(
-                    text = "Add Edge Server", style = TextStyle(
+                    text = "Add Cluster", style = TextStyle(
                         fontWeight = FontWeight.Medium,
                         fontSize = 16.sp
                     )
@@ -102,7 +102,7 @@ fun FormAddEdgeServerScreen(
 
         Spacer(modifier = Modifier.size(32.dp))
         CardItemAddServer(
-            titleTag = "Server",
+            titleTag = "Cluster",
             serverName = state.serverName,
             description = state.description,
             serverVendor = state.serverVendor,
@@ -204,22 +204,25 @@ private fun CardItemAddServer(
             modifier = Modifier.padding(vertical = 32.dp)
         ) {
             CustomInputField(
-                label = "Edge Server Name",
+                label = "Cluster Name",
                 customLabel = {
-                    InputLabel(label = "Edge Server Name", isRequired = true)
+                    InputLabel(label = "Cluster Name", isRequired = true)
                 },
+                placeholder = "Enter cluster name",
                 text = serverName,
                 errorText = errorServerName,
                 onTextChanged = { onServerNameChange(it) })
             CustomInputField(
                 customLabel = {
-                    InputLabel(label = "Vendor Name", isRequired = true)
+                    InputLabel(label = "Server vendor", isRequired = true)
                 },
                 text = serverVendor,
+                placeholder = "Enter server vendor name",
                 errorText = errorVendor,
                 onTextChanged = { onServerVendorChange(it) })
             CustomInputField(
                 label = "Description",
+                placeholder = "Enter description cluster",
                 text = description,
                 errorText = errorDescription,
                 onTextChanged = { onDescriptionChange(it) })

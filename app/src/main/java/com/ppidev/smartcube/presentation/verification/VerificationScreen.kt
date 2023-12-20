@@ -54,6 +54,7 @@ fun VerificationScreen(
         CustomInputField(
             text = state.verificationCode,
             label = "Verification Code",
+            placeholder = "Verification code",
             errorText = state.error.verificationCode,
             keyboardType = KeyboardType.Text,
             enabled = !state.isLoading,

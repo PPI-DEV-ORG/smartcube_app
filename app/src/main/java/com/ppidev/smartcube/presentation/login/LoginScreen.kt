@@ -1,5 +1,6 @@
 package com.ppidev.smartcube.presentation.login
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -22,6 +23,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.AnnotatedString
@@ -33,6 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.ppidev.smartcube.BuildConfig
+import com.ppidev.smartcube.R
 import com.ppidev.smartcube.ui.Screen
 import com.ppidev.smartcube.ui.components.form.CustomInputField
 
@@ -82,6 +86,7 @@ fun LoginScreen(
             modifier = Modifier
                 .semantics { testTagsAsResourceId = true }
                 .testTag("input_email"),
+            placeholder = "Enter your email",
             text = state.email,
             label = "Email",
             errorText = state.error.email,
@@ -99,6 +104,7 @@ fun LoginScreen(
                 .semantics { testTagsAsResourceId = true }
                 .testTag("input_password"),
             text = state.password,
+            placeholder = "Enter your password",
             label = "Password",
             showText = state.isShowPassword,
             iconStart = false,
@@ -115,7 +121,7 @@ fun LoginScreen(
                     )
                 else
                     Icon(
-                        imageVector = Icons.Outlined.HideSource,
+                        painter = painterResource(id = R.drawable.ic_eye_close),
                         contentDescription = "show password"
                     )
             },
@@ -152,6 +158,7 @@ fun LoginScreen(
                 .semantics { testTagsAsResourceId = true }
                 .testTag("btn_login"),
             onClick = {
+                Log.d("LOGIN_CLICK", BuildConfig.API_URL.toString())
                 onEvent(LoginEvent.HandleLogin {
                     navHostController.popBackStack()
                     navHostController.navigate(Screen.Dashboard.screenRoute)

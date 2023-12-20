@@ -6,6 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ppidev.smartcube.common.Resource
+import com.ppidev.smartcube.contract.data.remote.service.IMqttService
+import com.ppidev.smartcube.contract.data.repository.ITokenAppRepository
 import com.ppidev.smartcube.contract.domain.use_case.edge_server.IInviteUserUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_server.IJoinUserUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_server.IListEdgeServerUseCase
@@ -23,7 +25,9 @@ class ProfileViewModel @Inject constructor(
     private val userProfileUseCase: Lazy<IUserProfileUseCase>,
     private val listEdgeServerUseCase: Lazy<IListEdgeServerUseCase>,
     private val inviteUserUseCase: Lazy<IInviteUserUseCase>,
-    private val joinUserUseCase: Lazy<IJoinUserUseCase>
+    private val joinUserUseCase: Lazy<IJoinUserUseCase>,
+    private val tokenRepository: Lazy<ITokenAppRepository>,
+    private val mqttService: Lazy<IMqttService>
 ) : ViewModel() {
     var state by mutableStateOf(ProfileState())
         private set
@@ -82,6 +86,22 @@ class ProfileViewModel @Inject constructor(
                 is ProfileEvent.SetStatusOpenDialogJoinUser -> {
                     state = state.copy(
                         isOpenDialogJoinUserGroup = event.status
+                    )
+                }
+
+                is ProfileEvent.Logout -> {
+                    try {
+                        val res = tokenRepository.get().removeAccessToken()
+                        mqttService.get().disconnect()
+                        event.callback(res)
+                    } catch (e: Exception) {
+                        event.callback(false)
+                    }
+                }
+
+                is ProfileEvent.SetAlertLogoutStatus -> {
+                    state = state.copy(
+                        isShowAlertLogout = event.status
                     )
                 }
             }
