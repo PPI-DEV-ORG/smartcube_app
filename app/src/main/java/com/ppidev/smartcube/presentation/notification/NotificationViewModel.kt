@@ -44,6 +44,10 @@ class NotificationViewModel @Inject constructor(
                         isOpenImageOverlay = event.status
                     )
                 }
+
+                NotificationEvent.OnRefresh -> {
+                    getListNotification()
+                }
             }
         }
     }

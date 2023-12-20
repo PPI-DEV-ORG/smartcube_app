@@ -27,6 +27,10 @@ class ListEdgeServerViewModel @Inject constructor(
                 ListEdgeServerEvent.GetListEdgeServer -> {
                     getListEdgeServer()
                 }
+
+                ListEdgeServerEvent.OnRefresh -> {
+                    getListEdgeServer()
+                }
             }
         }
     }
