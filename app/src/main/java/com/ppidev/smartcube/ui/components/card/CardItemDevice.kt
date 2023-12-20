@@ -1,39 +1,34 @@
 package com.ppidev.smartcube.ui.components.card
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.ppidev.smartcube.R
 import com.ppidev.smartcube.domain.model.TypeEdgeDevice
+import com.ppidev.smartcube.ui.theme.isLight
 
 @Composable
 fun CardItemDevice(
@@ -47,12 +42,15 @@ fun CardItemDevice(
         modifier = modifier
             .shadow(
                 elevation = 4.dp,
-                spotColor = Color(0x40858585),
-                ambientColor = Color(0x40858585)
+                spotColor = Color.Gray,
+                ambientColor = Color.Gray
             )
             .fillMaxWidth()
             .height(172.dp)
-            .background(color = Color(0xFFFEFEFE), shape = RoundedCornerShape(size = 8.dp))
+            .background(
+                color = MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(size = 8.dp)
+            )
             .clickable {
                 onClick()
             }
@@ -63,16 +61,20 @@ fun CardItemDevice(
             Box(
                 modifier = Modifier
                     .size(42.dp)
-                    .background(color = Color.LightGray, shape = CircleShape),
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        shape = CircleShape
+                    ),
                 contentAlignment = Alignment.Center
             ) {
-                Image(
+                Icon(
                     painter = if (deviceType == TypeEdgeDevice.CAMERA.typeName) painterResource(id = R.drawable.ic_camera) else painterResource(
                         id = R.drawable.ic_sensor
                     ),
                     contentDescription = "logo",
                     modifier = Modifier
-                        .size(24.dp)
+                        .size(24.dp),
+                    tint = if (MaterialTheme.colorScheme.isLight()) MaterialTheme.colorScheme.primary else Color.White
                 )
             }
 

@@ -4,6 +4,8 @@ import com.ppidev.smartcube.common.Resource
 import com.ppidev.smartcube.common.ResponseApp
 import com.ppidev.smartcube.data.remote.dto.CreateEdgeServerDto
 import com.ppidev.smartcube.data.remote.dto.EdgeServerItemDto
+import com.ppidev.smartcube.data.remote.dto.InvitationCodeDto
+import com.ppidev.smartcube.data.remote.dto.JoinServerDto
 import kotlinx.coroutines.flow.Flow
 
 interface IAddEdgeServerUseCase {
@@ -16,4 +18,12 @@ interface IAddEdgeServerUseCase {
 
 interface IListEdgeServerUseCase {
     operator fun invoke(): Flow<Resource<ResponseApp<List<EdgeServerItemDto>>>>
+}
+
+interface IInviteUserUseCase {
+    operator fun invoke(edgeServerId: UInt): Flow<Resource<ResponseApp<InvitationCodeDto?>>>
+}
+
+interface IJoinUserUseCase {
+    operator fun invoke(invitationCode: String): Flow<Resource<ResponseApp<JoinServerDto?>>>
 }

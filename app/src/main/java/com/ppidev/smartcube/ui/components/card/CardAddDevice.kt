@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.ppidev.smartcube.ui.theme.isLight
 
 @Composable
 fun CardAddDevice(
@@ -35,12 +37,12 @@ fun CardAddDevice(
         modifier = modifier
             .shadow(
                 elevation = 4.dp,
-                spotColor = Color(0x40858585),
-                ambientColor = Color(0x40858585)
+                spotColor = Color.Gray,
+                ambientColor = Color.Gray
             )
             .fillMaxWidth()
             .height(172.dp)
-            .background(color = Color(0xFFFEFEFE), shape = RoundedCornerShape(size = 8.dp))
+            .background(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(size = 8.dp))
             .clickable {
                 onClick()
             }
@@ -52,11 +54,11 @@ fun CardAddDevice(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Image(
+            Icon(
                 imageVector = Icons.Filled.Add,
                 contentDescription = null,
                 modifier = Modifier
-                    .size(24.dp)
+                    .size(24.dp),
             )
 
             Spacer(modifier = Modifier.size(10.dp))
@@ -66,7 +68,7 @@ fun CardAddDevice(
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                color = MaterialTheme.colorScheme.primary,
+                color = if(MaterialTheme.colorScheme.isLight()) MaterialTheme.colorScheme.primary else Color.White ,
                 fontWeight = FontWeight.SemiBold
             )
         }

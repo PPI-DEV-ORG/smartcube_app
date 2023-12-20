@@ -123,30 +123,26 @@ class DashboardViewModel @Inject constructor(
 
     private suspend fun getUserProfile() {
         userProfileUserCase.get().invoke().onEach {
-            when(it) {
+            when (it) {
                 is Resource.Error -> {
                     state = state.copy(
-                        loading = DashboardState.Loading(
-                            isLoadingUserProfile = false
-                        )
+                        isLoadingUserProfile = false
                     )
                 }
+
                 is Resource.Loading -> {
                     state = state.copy(
-                        loading = DashboardState.Loading(
-                            isLoadingUserProfile = true
-                        )
+                        isLoadingUserProfile = true
                     )
                 }
+
                 is Resource.Success -> {
                     val data = it.data?.data
 
                     state = state.copy(
                         username = data?.userName.toString(),
                         email = data?.userEmail.toString(),
-                        loading = DashboardState.Loading(
-                            isLoadingUserProfile = false
-                        )
+                        isLoadingUserProfile = false,
                     )
                 }
             }
@@ -162,17 +158,13 @@ class DashboardViewModel @Inject constructor(
                             listServerError = it.message.toString(),
                             listServerCode = it.statusCode
                         ),
-                        loading = DashboardState.Loading(
-                            isLoadingListServer = false
-                        )
+                        isLoadingListServer = false,
                     )
                 }
 
                 is Resource.Loading -> {
                     state = state.copy(
-                        loading = DashboardState.Loading(
-                            isLoadingListServer = true
-                        )
+                        isLoadingListServer = true,
                     )
                 }
 
@@ -184,9 +176,7 @@ class DashboardViewModel @Inject constructor(
                         listServer = servers,
                         edgeServerId = res?.firstOrNull()?.id,
                         listServerId = serverIds,
-                        loading = DashboardState.Loading(
-                            isLoadingListServer = false
-                        ),
+                        isLoadingListServer = false,
                         error = DashboardState.Error(
                             listServerError = ""
                         )
@@ -201,9 +191,7 @@ class DashboardViewModel @Inject constructor(
             when (it) {
                 is Resource.Error -> {
                     state = state.copy(
-                        loading = DashboardState.Loading(
-                            isLoadingListDevices = false
-                        ),
+                        isLoadingListDevices = false,
                         error = DashboardState.Error(
                             listDevicesError = it.message.toString()
                         )
@@ -212,9 +200,7 @@ class DashboardViewModel @Inject constructor(
 
                 is Resource.Loading -> {
                     state = state.copy(
-                        loading = DashboardState.Loading(
-                            isLoadingListDevices = true
-                        )
+                        isLoadingListDevices = true,
                     )
                 }
 
@@ -225,9 +211,7 @@ class DashboardViewModel @Inject constructor(
                         listDevices = res?.devices ?: emptyList(),
                         mqttPublishTopic = res?.mqttPubTopic,
                         mqttSubscribeTopic = res?.mqttSubTopic,
-                        loading = DashboardState.Loading(
-                            isLoadingListDevices = false
-                        ),
+                        isLoadingListDevices = false,
                         error = DashboardState.Error(
                             listDevicesError = ""
                         )
@@ -279,6 +263,7 @@ class DashboardViewModel @Inject constructor(
                     is Resource.Error -> {
                         Log.d("FCM", "Failed update token")
                     }
+
                     is Resource.Loading -> {}
                     is Resource.Success -> {
                         Log.d("FCM", "success update token")

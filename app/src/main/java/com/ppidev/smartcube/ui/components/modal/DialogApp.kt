@@ -11,8 +11,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.SmsFailed
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -37,9 +39,6 @@ fun DialogApp(
 ) {
     Dialog(
         onDismissRequest = { onDismiss() },
-//        properties = DialogProperties(
-//            usePlatformDefaultWidth = false
-//        )
     ) {
         Card(
             shape = RoundedCornerShape(15.dp),
@@ -77,7 +76,7 @@ fun DialogApp(
                             modifier = Modifier.size(90.dp),
                             imageVector = Icons.Outlined.SmsFailed,
                             contentDescription = message,
-                            tint = Color.Red
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
 
@@ -98,7 +97,8 @@ fun DialogApp(
                     },
                     modifier = Modifier
                         .fillMaxWidth(),
-                    shape = CircleShape
+                    shape = CircleShape,
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.secondary)
                 ) {
                     Text(
                         text = "Confirm",

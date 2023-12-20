@@ -1,6 +1,7 @@
 package com.ppidev.smartcube.presentation.dashboard
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,8 +39,8 @@ fun DashboardScreen(
     var selectedTabIndex by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(Unit) {
-        onEvent(DashboardEvent.GetUserProfile)
         onEvent(DashboardEvent.GetListEdgeServer)
+        onEvent(DashboardEvent.GetUserProfile)
         onEvent(DashboardEvent.GetCurrentWeather)
         onEvent(DashboardEvent.StoreFCMToken)
     }
@@ -89,9 +90,9 @@ fun DashboardScreen(
             selectedTabIndex = selectedTabIndex,
             listEdgeServer = state.listServer,
             listEdgeDevices = state.listDevices,
-            isLoadingProfile = false,
-            isLoadingListDevices = state.loading.isLoadingListDevices,
-            isLoadingListServer = state.loading.isLoadingListServer,
+            isLoadingProfile = state.isLoadingUserProfile,
+            isLoadingListDevices = state.isLoadingListDevices,
+            isLoadingListServer = state.isLoadingListServer,
             ramUsage = memoryUsage,
             ramFree = state.serverInfoMQTT?.memoryFree ?: "-",
             errors = state.error,

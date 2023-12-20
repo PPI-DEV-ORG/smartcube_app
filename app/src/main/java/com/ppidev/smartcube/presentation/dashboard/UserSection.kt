@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -81,10 +80,10 @@ fun UserSection(
             }
         }
         Image(
-            painter = painterResource(id = R.drawable.app_logo),
-            contentDescription = "logo",
+            painter = painterResource(R.drawable.app_logo),
+            contentDescription = null,
             modifier = Modifier
-                .size(30.dp)
+                .size(35.dp)
         )
     }
 }

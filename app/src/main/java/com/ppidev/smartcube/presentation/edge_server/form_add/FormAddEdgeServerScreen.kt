@@ -15,20 +15,21 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -41,7 +42,6 @@ import com.ppidev.smartcube.ui.components.TagLabel
 import com.ppidev.smartcube.ui.components.form.CustomInputField
 import com.ppidev.smartcube.ui.components.form.InputLabel
 import com.ppidev.smartcube.ui.components.modal.DialogApp
-import com.ppidev.smartcube.ui.theme.Typography
 import com.ppidev.smartcube.utils.bottomBorder
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,22 +54,29 @@ fun FormAddEdgeServerScreen(
     Column(
         modifier = Modifier.verticalScroll(rememberScrollState())
     ) {
-        TopAppBar(
-            modifier = Modifier.bottomBorder(1.dp, Color.LightGray),
-            title = {
+        TopAppBar(title = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = {
+                    navHostController.popBackStack()
+                }) {
+                    Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "back")
+                }
                 Text(
                     text = "Add Edge Server", style = TextStyle(
                         fontWeight = FontWeight.Medium,
                         fontSize = 16.sp
                     )
                 )
-            })
+            }
+        })
 
         Spacer(modifier = Modifier.size(44.dp))
 
         Box(
             modifier = Modifier
-                .background(Color.White)
+                .background(MaterialTheme.colorScheme.surface)
                 .padding(horizontal = 20.dp)
         ) {
             TagLabel(modifier = Modifier.offset(y = (-24).dp),
@@ -129,7 +136,7 @@ fun FormAddEdgeServerScreen(
                 modifier = Modifier.weight(1f),
                 elevation = null,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFDB5050),
+                    containerColor = MaterialTheme.colorScheme.primary,
                 ),
             ) {
                 Text(text = "Cancel")
@@ -188,7 +195,7 @@ private fun CardItemAddServer(
 ) {
     Box(
         modifier = Modifier
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.surface)
             .padding(horizontal = 20.dp)
     ) {
         TagLabel(modifier = Modifier.offset(y = (-24).dp), text = titleTag)

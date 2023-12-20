@@ -23,7 +23,7 @@ data class CreateEdgeServerDto(
     @SerializedName("egde_server_access_token")
     val egdeServerAccessToken: String? = "",
 
-)
+    )
 
 @Serializable
 data class EdgeServerItemDto(
@@ -35,4 +35,26 @@ data class EdgeServerItemDto(
 
     @SerializedName("vendor")
     val vendor: String? = "",
+)
+
+
+@Serializable
+data class InvitationCodeDto(
+    @SerializedName("invitation_code")
+    val invitationCode: String,
+)
+
+@Serializable
+data class JoinServerDto(
+    @SerializedName("id")
+    val id: UInt? = null,
+
+    @SerializedName("user_id")
+    val userId: UInt? = null,
+
+    @SerializedName("edge_server_id")
+    val edgeServerId: UInt? = null,
+
+    @SerializedName("role_id")
+    val roleId: UInt? = null,
 )

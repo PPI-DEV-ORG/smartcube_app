@@ -1,8 +1,14 @@
 package com.ppidev.smartcube.presentation.profile
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,13 +17,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CopyAll
 import androidx.compose.material.icons.filled.HelpCenter
+import androidx.compose.material.icons.filled.JoinFull
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.filled.SupervisedUserCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -30,16 +38,21 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.ppidev.smartcube.R
+import com.ppidev.smartcube.ui.components.form.CustomInputField
+import com.ppidev.smartcube.ui.components.modal.DialogInviteUser
+import com.ppidev.smartcube.ui.components.modal.DialogJoinUserGroup
 
 
 @Composable
@@ -48,6 +61,10 @@ fun ProfileScreen(
     onEvent: (event: ProfileEvent) -> Unit,
     navHostController: NavHostController
 ) {
+    val context = LocalContext.current
+    val clipboardManager =
+        context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -79,16 +96,30 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.size(8.dp))
 
-            Text(text = state.user?.userEmail ?: "-", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+            Text(
+                text = state.user?.userEmail ?: "-",
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.Gray
+            )
         }
 
         Column(
             modifier = Modifier.padding(top = 60.dp)
         ) {
             CardSectionProfile(
-                onClick = { },
-                title = "Profile",
-                icon = Icons.Filled.Person
+                onClick = {
+                    onEvent(ProfileEvent.SetStatusOpenDialogInviteUser(true))
+                },
+                title = "Invite User",
+                icon = Icons.Filled.SupervisedUserCircle
+            )
+
+            CardSectionProfile(
+                onClick = {
+                    onEvent(ProfileEvent.SetStatusOpenDialogJoinUser(true))
+                },
+                title = "Insert Join Code",
+                icon = Icons.Filled.JoinFull
             )
 
             CardSectionProfile(
@@ -102,6 +133,89 @@ fun ProfileScreen(
                 title = "Help Center",
                 icon = Icons.Filled.HelpCenter
             )
+        }
+
+
+        DialogInviteUser(
+            listEdgeServer = state.listServer,
+            errorSelectServer = "",
+            isLoading = state.isLoadingGetInvitationCode,
+            selectedServerLabel = state.selectedServerLabel,
+            onInviteUser = {
+                if (state.selectedServerId != null) {
+                    onEvent(ProfileEvent.GetTokenInviteUser(state.selectedServerId))
+                }
+            },
+            isOpen = state.isOpenDialogInviteUser,
+            onChangeServer = {
+                onEvent(ProfileEvent.OnChangeServerId(it))
+            },
+            onClose = {
+                onEvent(ProfileEvent.SetStatusOpenDialogInviteUser(false))
+            }
+        )
+
+        DialogJoinUserGroup(
+            isOpen = state.isOpenDialogJoinUserGroup,
+            errorText = state.errorJoinUserGroup,
+            invitationCode = state.inputInvitationCode,
+            onChangeInvitationCode = {
+                onEvent(ProfileEvent.SetInputInvitationCode(it))
+            },
+            isLoading = state.isLoadingJoinUserGroup,
+            onJoinUserGroup = {
+                onEvent(ProfileEvent.JoinUserGroup)
+            },
+            onClose = {
+                onEvent(ProfileEvent.SetStatusOpenDialogJoinUser(false))
+            }
+        )
+
+        if (state.isOpenDialogSuccessGetInvitationCode) {
+            Dialog(onDismissRequest = {
+                onEvent(ProfileEvent.SetDialogSuccessGetInvitationCode(false))
+            }) {
+                Column(
+                    modifier = Modifier
+                        .shadow(
+                            elevation = 4.dp,
+                            spotColor = Color.Gray,
+                            ambientColor = Color.Gray
+                        )
+                        .width(360.dp)
+                        .clip(RoundedCornerShape(size = 8.dp))
+                        .background(MaterialTheme.colorScheme.surface)
+                        .padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    CustomInputField(
+                        label = "Your invitation token",
+                        enabled = false,
+                        text = state.invitationCode,
+                        errorText = "",
+                        iconStart = false,
+                        onClickIcon = {
+                            clipboardManager.setPrimaryClip(
+                                ClipData.newPlainText(
+                                    "text",
+                                    state.invitationCode
+                                )
+                            )
+                            Toast.makeText(context, "Copied to Clipboard", Toast.LENGTH_SHORT)
+                                .show()
+                        },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Filled.CopyAll,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        },
+                        onTextChanged = {}
+                    )
+                }
+            }
         }
     }
 }

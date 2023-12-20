@@ -1,10 +1,11 @@
 package com.ppidev.smartcube.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,11 +22,12 @@ fun RoundedIcon(modifier: Modifier = Modifier, modifierIcon: Modifier = Modifier
             .background(color = Color.LightGray, shape = CircleShape),
         contentAlignment = Alignment.Center
     ) {
-        Image(
+        Icon(
             painter = icon,
             contentDescription = "logo",
             modifier = modifierIcon
-                .size(24.dp)
+                .size(24.dp),
+            tint = MaterialTheme.colorScheme.primary
         )
     }
 }

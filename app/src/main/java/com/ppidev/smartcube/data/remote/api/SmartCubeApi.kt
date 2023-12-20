@@ -1,5 +1,6 @@
 package com.ppidev.smartcube.data.remote.api
 
+import com.google.gson.JsonObject
 import com.ppidev.smartcube.BuildConfig
 import com.ppidev.smartcube.common.ResponseApp
 import com.ppidev.smartcube.data.remote.dto.CreateEdgeDeviceDto
@@ -8,6 +9,8 @@ import com.ppidev.smartcube.data.remote.dto.DetailEdgeDeviceDto
 import com.ppidev.smartcube.data.remote.dto.EdgeDeviceSensorDto
 import com.ppidev.smartcube.data.remote.dto.EdgeDevicesInfoDto
 import com.ppidev.smartcube.data.remote.dto.EdgeServerItemDto
+import com.ppidev.smartcube.data.remote.dto.InvitationCodeDto
+import com.ppidev.smartcube.data.remote.dto.JoinServerDto
 import com.ppidev.smartcube.data.remote.dto.LoginDto
 import com.ppidev.smartcube.data.remote.dto.NotificationDto
 import com.ppidev.smartcube.data.remote.dto.RegisterDto
@@ -15,10 +18,12 @@ import com.ppidev.smartcube.data.remote.dto.UserDto
 import com.ppidev.smartcube.data.remote.dto.VerificationDto
 import com.ppidev.smartcube.data.remote.dto.WeatherDto
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Headers
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -107,6 +112,16 @@ interface EdgeServerApi {
     @GET("edge-server")
     suspend fun getListEdgeServer(): Response<ResponseApp<List<EdgeServerItemDto>>>
 
+    @GET("edge-server-user-invite/{edge_server_id}")
+    suspend fun getInvitationCode(
+        @Path("edge_server_id") edgeServerId: UInt
+    ): Response<ResponseApp<InvitationCodeDto?>>
+
+    @Headers("Content-Type: application/json")
+    @POST("edge-server-user-join")
+    suspend fun joinInvitationCode(
+        @Body body: JsonObject
+    ): Response<ResponseApp<JoinServerDto?>>
 }
 
 
