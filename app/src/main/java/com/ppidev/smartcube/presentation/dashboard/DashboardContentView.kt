@@ -69,6 +69,7 @@ fun DashboardContentView(
 ) {
 
     LazyVerticalGrid(
+        modifier = modifier,
         columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(
             bottom = 160.dp
@@ -145,7 +146,7 @@ fun DashboardContentView(
                     }
                 }
             }
-        } else if (errors.listServerError.isNotEmpty() && errors.listServerCode == 504) {
+        } else if (errors.listServerError.isNotEmpty()) {
             item(
                 span = { GridItemSpan(2) }
             ) {

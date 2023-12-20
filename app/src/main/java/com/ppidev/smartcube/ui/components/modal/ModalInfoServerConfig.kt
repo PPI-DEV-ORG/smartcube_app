@@ -67,7 +67,7 @@ fun ModalInfoServerConfig(
                     ambientColor = Color(0x40535353)
                 )
                 .width(358.dp)
-                .background(color = Color.White, shape = RoundedCornerShape(size = 8.dp))
+                .background(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(size = 8.dp))
         ) {
             Row(
                 modifier = Modifier

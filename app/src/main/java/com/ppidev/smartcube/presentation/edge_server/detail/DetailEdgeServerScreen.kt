@@ -244,7 +244,7 @@ private fun CardDevice(type: String, name: String, status: Boolean) {
             .clip(
                 RoundedCornerShape(4.dp)
             )
-            .background(Color(0xFFF8F8F8))
+            .background(MaterialTheme.colorScheme.surfaceVariant)
             .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically,
@@ -257,13 +257,15 @@ private fun CardDevice(type: String, name: String, status: Boolean) {
                 Icon(
                     painterResource(id = R.drawable.ic_camera),
                     contentDescription = null,
-                    modifier = Modifier.size(44.dp)
+                    modifier = Modifier.size(44.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             } else {
                 Icon(
                     painterResource(id = R.drawable.ic_sensor),
                     contentDescription = null,
-                    modifier = Modifier.size(44.dp)
+                    modifier = Modifier.size(44.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
@@ -296,7 +298,8 @@ private fun CardServerSummary(
             .fillMaxWidth()
             .height(138.dp)
             .background(
-                color = Color(0xFFFBFBFB), shape = RoundedCornerShape(size = 8.dp)
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                shape = RoundedCornerShape(size = 8.dp)
             )
             .padding(horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -310,7 +313,7 @@ private fun CardServerSummary(
                     fontSize = 20.sp,
                     lineHeight = 24.sp,
                     fontWeight = FontWeight(700),
-                    color = Color(0xFF000000)
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             )
             Text(
@@ -318,7 +321,7 @@ private fun CardServerSummary(
                     fontSize = 10.sp,
                     lineHeight = 10.sp,
                     fontWeight = FontWeight(500),
-                    color = Color(0xFF444444),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             )
 
@@ -328,7 +331,7 @@ private fun CardServerSummary(
                     fontSize = 12.sp,
                     lineHeight = 14.sp,
                     fontWeight = FontWeight(400),
-                    color = Color(0xFF000000),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             )
         }
@@ -336,7 +339,8 @@ private fun CardServerSummary(
         Icon(
             painter = painterResource(id = R.drawable.ic_cube),
             contentDescription = null,
-            modifier = Modifier.size(74.dp)
+            modifier = Modifier.size(74.dp),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

@@ -13,6 +13,8 @@ import com.ppidev.smartcube.contract.domain.use_case.edge_device.IStartEdgeDevic
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IUpdateEdgeDeviceUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IViewEdgeDeviceUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_server.IAddEdgeServerUseCase
+import com.ppidev.smartcube.contract.domain.use_case.edge_server.IInviteUserUseCase
+import com.ppidev.smartcube.contract.domain.use_case.edge_server.IJoinUserUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_server.IListEdgeServerUseCase
 import com.ppidev.smartcube.contract.domain.use_case.notification.IListNotificationUseCase
 import com.ppidev.smartcube.contract.domain.use_case.notification.IViewNotificationUseCase
@@ -32,6 +34,8 @@ import com.ppidev.smartcube.domain.use_case.edge_device.StartEdgeEdgeDeviceUseCa
 import com.ppidev.smartcube.domain.use_case.edge_device.UpdateEdgeDeviceUseCase
 import com.ppidev.smartcube.domain.use_case.edge_device.ViewEdgeDeviceUseCase
 import com.ppidev.smartcube.domain.use_case.edge_server.AddEdgeServerUseCase
+import com.ppidev.smartcube.domain.use_case.edge_server.InviteUerUseCase
+import com.ppidev.smartcube.domain.use_case.edge_server.JoinUserUseCase
 import com.ppidev.smartcube.domain.use_case.edge_server.ListEdgeServerUseCase
 import com.ppidev.smartcube.domain.use_case.notification.ListNotificationUseCase
 import com.ppidev.smartcube.domain.use_case.notification.ViewNotificationUseCase
@@ -162,4 +166,16 @@ abstract class UseCaseModule {
     abstract fun bindUserProfileUseCase(
         userProfileUseCase: UserProfileUseCase
     ): IUserProfileUseCase
+
+    @Binds
+    @Singleton
+    abstract fun bindInviteUserUseCase(
+        inviteUerUseCase: InviteUerUseCase
+    ): IInviteUserUseCase
+
+    @Binds
+    @Singleton
+    abstract fun bindJoinUserUseCase(
+        joinUserUseCase: JoinUserUseCase
+    ): IJoinUserUseCase
 }

@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -59,9 +60,10 @@ fun CardServerInfo(
 
     Box(
         modifier = modifier
+            .shadow(elevation = 2.dp, spotColor = Color.Gray, ambientColor = Color.Gray, clip = true)
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
-            .background(Color(0xFFF8F8F8))
+            .background(MaterialTheme.colorScheme.surface)
     ) {
         Row(
             modifier = Modifier
@@ -97,7 +99,7 @@ fun CardServerInfo(
                 currentValue = ramUsage,
                 maxValue = 100,
                 progressBackgroundColor = Color.LightGray,
-                progressIndicatorColor = Purple40,
+                progressIndicatorColor = MaterialTheme.colorScheme.primary,
                 midColor = Color.Red,
                 midValue = 50,
                 ramFree = ramFree

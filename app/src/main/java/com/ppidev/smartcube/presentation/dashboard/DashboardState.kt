@@ -14,18 +14,14 @@ data class DashboardState(
     val mqttPublishTopic: String? = null,
     val mqttSubscribeTopic: String? = null,
     val error: Error = Error(),
-    val loading: Loading = Loading()
+    val isLoadingListServer: Boolean = false,
+    val isLoadingListDevices: Boolean = false,
+    val isLoadingUserProfile: Boolean = false
 ) {
     data class Error(
         val message: String = "",
         val listServerError: String = "",
         val listServerCode: Int? = null,
         val listDevicesError: String = ""
-    )
-
-    data class Loading(
-        val isLoadingListServer: Boolean = false,
-        val isLoadingListDevices: Boolean = false,
-        val isLoadingUserProfile: Boolean = false
     )
 }

@@ -36,6 +36,7 @@ import coil.compose.AsyncImage
 import com.ppidev.smartcube.R
 import com.ppidev.smartcube.domain.model.TypeEdgeDevice
 import com.ppidev.smartcube.ui.theme.Typography
+import com.ppidev.smartcube.ui.theme.isLight
 import com.ppidev.smartcube.utils.isoDateFormatToStringDate
 import java.util.Locale
 
@@ -81,7 +82,7 @@ fun CardNotification(
                 if (isFocus) {
                     MaterialTheme.colorScheme.primary
                 } else {
-                    Color.Gray
+                    if (MaterialTheme.colorScheme.isLight()) Color.Gray else Color.White
                 }
             } else {
                 if (isFocus) {
@@ -111,7 +112,7 @@ fun CardNotification(
                     color = if (isFocus) {
                         MaterialTheme.colorScheme.primary
                     } else {
-                        MaterialTheme.colorScheme.secondary
+                        MaterialTheme.colorScheme.onBackground
                     }
                 ).toSpanStyle()
 

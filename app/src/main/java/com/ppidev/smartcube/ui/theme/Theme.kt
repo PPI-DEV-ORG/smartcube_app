@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
@@ -20,15 +21,17 @@ import androidx.core.view.WindowCompat
 
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80,
+    primary = AppRedDark,
+    secondary = AppOrangeDark,
+    tertiary = AppPurpleDark,
+    onPrimary = Color.White,
+    onSecondary = Color.White,
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40,
+    primary = AppRed,
+    secondary = AppOrange,
+    tertiary = AppPurple,
 
 //    Other default colors to override
 //    background = Color(0xFFFFFBFE),
@@ -39,6 +42,9 @@ private val LightColorScheme = lightColorScheme(
 //    onBackground = Color(0xFF1C1B1F),
 //    onSurface = Color(0xFF1C1B1F)
 )
+
+@Composable
+fun ColorScheme.isLight() = this.background.luminance() > 0.5
 
 @Composable
 fun SmartcubeAppTheme(

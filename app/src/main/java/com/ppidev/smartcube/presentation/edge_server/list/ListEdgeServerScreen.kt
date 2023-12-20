@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ppidev.smartcube.common.EDGE_SERVER_ID_ARG
 import com.ppidev.smartcube.ui.Screen
+import com.ppidev.smartcube.ui.theme.isLight
 
 @Composable
 fun ListEdgeServerScreen(
@@ -43,7 +45,7 @@ fun ListEdgeServerScreen(
         modifier = Modifier
             .fillMaxWidth()
             .background(
-                Color(0xFFF6F6F6)
+                MaterialTheme.colorScheme.primary
             )
     ) {
         Row(
@@ -53,21 +55,31 @@ fun ListEdgeServerScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Cube Server")
+            Text(text = "Cube Server", color = Color.White)
 
             IconButton(onClick = {
                 navHostController.navigate(Screen.FormAddEdgeServer.screenRoute)
             }) {
-                Icon(imageVector = Icons.Filled.Add, contentDescription = "Add new edge server")
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = "Add new edge server",
+                    tint = Color.White
+                )
             }
         }
 
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.White)
-                .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)),
-            contentPadding = PaddingValues(bottom = 120.dp, top =16.dp, start = 16.dp, end = 16.dp),
+                .background(if (MaterialTheme.colorScheme.isLight()) Color.White else MaterialTheme.colorScheme.surface)
+                .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
+                .padding(bottom = 100.dp),
+            contentPadding = PaddingValues(
+                bottom = 120.dp,
+                top = 16.dp,
+                start = 16.dp,
+                end = 16.dp
+            ),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             itemsIndexed(
@@ -79,15 +91,23 @@ fun ListEdgeServerScreen(
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(8.dp))
                         .background(
-                            Color(0xFFF6F6F6)
+                            if (MaterialTheme.colorScheme.isLight()) Color.LightGray else MaterialTheme.colorScheme.surfaceVariant
                         )
                         .clickable {
                             navHostController.navigate(Screen.DetailEdgeServer.screenRoute + "?$EDGE_SERVER_ID_ARG=${item.id}")
                         }
                         .padding(16.dp)
                 ) {
-                    Text(text = item.name, fontSize = 20.sp)
-                    Text(text = "${item.vendor}", fontSize = 12.sp, color = Color.Gray)
+                    Text(
+                        text = item.name,
+                        fontSize = 20.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        text = "${item.vendor}",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
             }
         }
