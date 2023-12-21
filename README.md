@@ -2,9 +2,9 @@
 ### Jetpack Compose Project
 ---------------------------
 ### Design 
-![Splash](https://github.com/PPI-Capstone-Project/smartcube_app/blob/dev/screen/Splash%20screen.png?raw=true | width=390)
-![Detail Server](https://github.com/PPI-Capstone-Project/smartcube_app/blob/dev/screen/detail-server.jpg?raw=true | width=390)
-![Login Screen](https://github.com/PPI-Capstone-Project/smartcube_app/blob/dev/screen/login.jpg?raw=true | width=390)
+<img src='https://github.com/PPI-Capstone-Project/smartcube_app/blob/dev/screen/login.jpg?raw=true' width='390'>
+<img src='https://github.com/PPI-Capstone-Project/smartcube_app/blob/dev/screen/detail-server.jpg?raw=true' width='390'>
+<img src='https://github.com/PPI-Capstone-Project/smartcube_app/blob/dev/screen/login.jpg?raw=true' width='390'>
 
 
 
