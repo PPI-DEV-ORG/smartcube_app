@@ -32,12 +32,6 @@ class ProfileViewModel @Inject constructor(
     var state by mutableStateOf(ProfileState())
         private set
 
-    init {
-        viewModelScope.launch(Dispatchers.IO) {
-            getProfile()
-            getListEdgeServer()
-        }
-    }
 
     fun onEvent(event: ProfileEvent) {
         viewModelScope.launch {
@@ -103,6 +97,10 @@ class ProfileViewModel @Inject constructor(
                     state = state.copy(
                         isShowAlertLogout = event.status
                     )
+                }
+
+                ProfileEvent.GetListServer -> {
+                    getListEdgeServer()
                 }
             }
         }

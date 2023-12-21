@@ -4,6 +4,8 @@ import com.ppidev.smartcube.data.remote.dto.EdgeServerItemDto
 
 sealed class ProfileEvent {
     object GetUserProfile: ProfileEvent()
+    object GetListServer: ProfileEvent()
+
     object UpdateProfile: ProfileEvent()
     object JoinUserGroup: ProfileEvent()
     data class SetAlertLogoutStatus(val status: Boolean): ProfileEvent()

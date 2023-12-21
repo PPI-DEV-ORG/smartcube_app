@@ -47,14 +47,14 @@ data class InvitationCodeDto(
 @Serializable
 data class JoinServerDto(
     @SerializedName("id")
-    val id: UInt? = null,
+    val id: UInt,
 
     @SerializedName("user_id")
-    val userId: UInt? = null,
+    val userId: UInt,
 
     @SerializedName("edge_server_id")
-    val edgeServerId: UInt? = null,
+    val edgeServerId: UInt,
 
     @SerializedName("role_id")
-    val roleId: UInt? = null,
+    val roleId: UInt,
 )
