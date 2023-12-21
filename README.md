@@ -2,11 +2,11 @@
 ### Jetpack Compose Project
 ---------------------------
 ### Design 
-<img src='https://github.com/PPI-Capstone-Project/smartcube_app/blob/dev/screen/login.jpg?raw=true' width='390'>
-<img src='https://github.com/PPI-Capstone-Project/smartcube_app/blob/dev/screen/detail-server.jpg?raw=true' width='390'>
-<img src='https://github.com/PPI-Capstone-Project/smartcube_app/blob/dev/screen/login.jpg?raw=true' width='390'>
-
-
+<div float="left">
+  <img src='https://github.com/PPI-Capstone-Project/smartcube_app/blob/dev/screen/login.jpg?raw=true' width="33%">
+  <img src='https://github.com/PPI-Capstone-Project/smartcube_app/blob/dev/screen/detail-server.jpg?raw=true' width="33%">
+  <img src='https://github.com/PPI-Capstone-Project/smartcube_app/blob/dev/screen/login.jpg?raw=true' width="33%">
+</div>
 
 ## How to setup project
 1. Pull this project to your local devices
