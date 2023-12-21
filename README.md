@@ -3,9 +3,9 @@
 ---------------------------
 ### Design 
 <div float="left">
-  <img src='https://github.com/PPI-Capstone-Project/smartcube_app/blob/dev/screen/Splash%20screen.png?raw=true' width="33%">
-  <img src='https://github.com/PPI-Capstone-Project/smartcube_app/blob/dev/screen/detail-server.jpg?raw=true' width="33%">
-  <img src='https://github.com/PPI-Capstone-Project/smartcube_app/blob/dev/screen/login.jpg?raw=true' width="33%">
+  <img src='https://github.com/PPI-Capstone-Project/smartcube_app/blob/dev/screen/Splash%20screen.png?raw=true' width="30%">
+  <img src='https://github.com/PPI-Capstone-Project/smartcube_app/blob/dev/screen/detail-server.jpg?raw=true' width="30%">
+  <img src='https://github.com/PPI-Capstone-Project/smartcube_app/blob/dev/screen/login.jpg?raw=true' width="30%">
 </div>
 
 ## How to setup project
