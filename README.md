@@ -2,7 +2,11 @@
 ### Jetpack Compose Project
 ---------------------------
 ### Design 
-![Home page](https://github.com/PPI-Capstone-Project/smartcube_app/blob/dev/screen/Home%20-%20many%20server.png?raw=true)
+![Splash](https://github.com/PPI-Capstone-Project/smartcube_app/blob/dev/screen/Splash%20screen.png?raw=true | width=390)
+![Detail Server](https://github.com/PPI-Capstone-Project/smartcube_app/blob/dev/screen/detail-server.jpg?raw=true | width=390)
+![Login Screen](https://github.com/PPI-Capstone-Project/smartcube_app/blob/dev/screen/login.jpg?raw=true | width=390)
+
+
 
 ## How to setup project
 1. Pull this project to your local devices
