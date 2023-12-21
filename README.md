@@ -11,6 +11,7 @@
 ## Using SDK
 1. minSdk = 30
 2. targetSdk = 33
+2. compileSdk = 34
 
 ## Running testing 
 Unit Test using JUnit4 = https://junit.org/junit4/
