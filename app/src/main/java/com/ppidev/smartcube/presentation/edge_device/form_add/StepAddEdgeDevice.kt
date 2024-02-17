@@ -37,7 +37,7 @@ import com.ppidev.smartcube.domain.model.DeviceSourceType
 import com.ppidev.smartcube.domain.model.DeviceType
 import com.ppidev.smartcube.domain.model.TypeEdgeDevice
 import com.ppidev.smartcube.ui.components.card.CardTypeDevice
-import com.ppidev.smartcube.ui.components.form.CustomInputField
+import com.ppidev.smartcube.ui.components.form.AppInput
 import com.ppidev.smartcube.ui.components.form.CustomSelectInput
 import com.ppidev.smartcube.ui.components.form.InputLabel
 
@@ -89,7 +89,7 @@ fun Step2(
     Column(
         modifier = modifier.verticalScroll(rememberScrollState())
     ) {
-        CustomInputField(
+        AppInput(
             text = vendorName,
             customLabel = {
                 InputLabel(label = "Vendor Name", isRequired = true)
@@ -103,7 +103,7 @@ fun Step2(
 
         Spacer(modifier = Modifier.size(16.dp))
 
-        CustomInputField(
+        AppInput(
             text = serialNumberName,
             customLabel = {
                 InputLabel(label = "Serial Number", isRequired = true)
@@ -191,7 +191,7 @@ fun Step3(
 
         Spacer(modifier = Modifier.size(14.dp))
 
-        CustomInputField(
+        AppInput(
             text = sourceAddress,
             customLabel = {
                 InputLabel(label = "Source Address", isRequired = true)

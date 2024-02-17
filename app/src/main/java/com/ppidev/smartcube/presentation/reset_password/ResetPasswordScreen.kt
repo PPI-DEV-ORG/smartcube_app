@@ -1,6 +1,5 @@
 package com.ppidev.smartcube.presentation.reset_password
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.ppidev.smartcube.ui.components.form.CustomInputField
+import com.ppidev.smartcube.ui.components.form.AppInput
 import com.ppidev.smartcube.ui.components.modal.DialogApp
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
@@ -68,7 +67,7 @@ fun ResetPasswordScreen(
 
             Spacer(modifier = Modifier.size(20.dp))
 
-            CustomInputField(modifier = Modifier
+            AppInput(modifier = Modifier
                 .semantics { testTagsAsResourceId = true }
                 .testTag("input_email"),
                 placeholder = "Enter email registered",

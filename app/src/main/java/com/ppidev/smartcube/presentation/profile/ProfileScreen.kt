@@ -31,7 +31,6 @@ import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.SupervisedUserCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -56,7 +55,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.ppidev.smartcube.R
 import com.ppidev.smartcube.ui.Screen
-import com.ppidev.smartcube.ui.components.form.CustomInputField
+import com.ppidev.smartcube.ui.components.form.AppInput
 import com.ppidev.smartcube.ui.components.modal.DialogInviteUser
 import com.ppidev.smartcube.ui.components.modal.DialogJoinUserGroup
 import com.ppidev.smartcube.ui.components.modal.SimpleAlertDialog
@@ -233,7 +232,7 @@ fun ProfileScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    CustomInputField(
+                    AppInput(
                         label = "Your invitation token",
                         enabled = false,
                         text = state.invitationCode,

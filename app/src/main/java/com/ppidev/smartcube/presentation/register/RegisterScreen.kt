@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.RemoveRedEye
-import androidx.compose.material.icons.outlined.HideSource
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -41,7 +40,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ppidev.smartcube.R
 import com.ppidev.smartcube.ui.Screen
-import com.ppidev.smartcube.ui.components.form.CustomInputField
+import com.ppidev.smartcube.ui.components.form.AppInput
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -82,7 +81,7 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.size(20.dp))
 
-        CustomInputField(
+        AppInput(
             modifier = Modifier
                 .semantics { testTagsAsResourceId = true }
                 .testTag("input_username"),
@@ -97,7 +96,7 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.size(20.dp))
 
-        CustomInputField(
+        AppInput(
             modifier = Modifier
                 .semantics { testTagsAsResourceId = true }
                 .testTag("input_email"),
@@ -114,7 +113,7 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.size(20.dp))
 
-        CustomInputField(
+        AppInput(
             modifier = Modifier
                 .semantics { testTagsAsResourceId = true }
                 .testTag("input_password"),
@@ -147,7 +146,7 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.size(20.dp))
 
-        CustomInputField(
+        AppInput(
             modifier = Modifier
                 .semantics { testTagsAsResourceId = true }
                 .testTag("input_confirm_password"),

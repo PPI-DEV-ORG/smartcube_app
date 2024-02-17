@@ -39,10 +39,9 @@ import com.ppidev.smartcube.common.EDGE_SERVER_ACCESS_TOKEN
 import com.ppidev.smartcube.common.EDGE_SERVER_ID_ARG
 import com.ppidev.smartcube.ui.Screen
 import com.ppidev.smartcube.ui.components.TagLabel
-import com.ppidev.smartcube.ui.components.form.CustomInputField
+import com.ppidev.smartcube.ui.components.form.AppInput
 import com.ppidev.smartcube.ui.components.form.InputLabel
 import com.ppidev.smartcube.ui.components.modal.DialogApp
-import com.ppidev.smartcube.utils.bottomBorder
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -203,7 +202,7 @@ private fun CardItemAddServer(
         Column(
             modifier = Modifier.padding(vertical = 32.dp)
         ) {
-            CustomInputField(
+            AppInput(
                 label = "Cluster Name",
                 customLabel = {
                     InputLabel(label = "Cluster Name", isRequired = true)
@@ -212,7 +211,7 @@ private fun CardItemAddServer(
                 text = serverName,
                 errorText = errorServerName,
                 onTextChanged = { onServerNameChange(it) })
-            CustomInputField(
+            AppInput(
                 customLabel = {
                     InputLabel(label = "Server vendor", isRequired = true)
                 },
@@ -220,7 +219,7 @@ private fun CardItemAddServer(
                 placeholder = "Enter server vendor name",
                 errorText = errorVendor,
                 onTextChanged = { onServerVendorChange(it) })
-            CustomInputField(
+            AppInput(
                 label = "Description",
                 placeholder = "Enter description cluster",
                 text = description,

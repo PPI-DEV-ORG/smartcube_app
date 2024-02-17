@@ -1,6 +1,9 @@
 package com.ppidev.smartcube.ui.components.form
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,7 +28,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
@@ -36,12 +43,13 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ppidev.smartcube.ui.theme.Neutral70
 import com.ppidev.smartcube.ui.theme.SmartcubeAppTheme
 
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun CustomInputField(
+fun AppInput(
     modifier: Modifier = Modifier,
     textStyle: TextStyle = TextStyle(
         fontWeight = FontWeight.Normal,
@@ -62,6 +70,10 @@ fun CustomInputField(
     icon: (@Composable () -> Unit)? = null,
     onClickIcon: (() -> Unit)? = null
 ) {
+    val focusRequester = remember { FocusRequester() }
+    val interactionSource = remember { MutableInteractionSource() }
+    val isFocused = interactionSource.collectIsFocusedAsState().value
+
     Column {
         if (customLabel != null) {
             customLabel()
@@ -71,22 +83,30 @@ fun CustomInputField(
         Spacer(modifier = Modifier.size(5.dp))
         BasicTextField(
             modifier = modifier,
-            enabled = enabled,
-            value = text, onValueChange = {
-                onTextChanged(it)
-            },
-            textStyle = textStyle,
             singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+            enabled = enabled,
+            value = text,
+            textStyle = textStyle,
+            interactionSource = interactionSource,
             visualTransformation = if (showText) VisualTransformation.None else PasswordVisualTransformation(),
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground),
+            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
             decorationBox = { innerTextField ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .border(1.dp, Color.Gray, shape = RoundedCornerShape(10.dp))
-                        .padding(horizontal = 20.dp, vertical = 19.dp),
+                        .border(
+                            width = 1.dp,
+                            color = when (isFocused) {
+                                true -> MaterialTheme.colorScheme.primary
+                                else -> Color(0xFFE6E6E6)
+                            }, shape = RoundedCornerShape(8.dp)
+                        )
+                        .padding(horizontal = 20.dp, vertical = 19.dp)
+                        .focusRequester(focusRequester)
+                        .focusable(interactionSource = interactionSource),
                     horizontalArrangement = if (iconStart) Arrangement.Start else Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     if (icon != null && iconStart) {
                         IconButton(modifier = Modifier.size(24.dp), onClick = onClickIcon ?: {}) {
@@ -102,9 +122,10 @@ fun CustomInputField(
 
                         if (text.isEmpty()) {
                             Text(
+                                maxLines = 1,
                                 text = placeholder,
                                 fontWeight = FontWeight.Normal,
-                                color = Color.LightGray
+                                color = Color(0xFF999999),
                             )
                         }
 
@@ -112,13 +133,22 @@ fun CustomInputField(
 
                     if (icon != null && !iconStart) {
                         Spacer(modifier = Modifier.size(10.dp))
-                        IconButton(modifier = Modifier.size(24.dp), onClick = onClickIcon ?: {}) {
+                        IconButton(
+                            modifier = Modifier.size(24.dp),
+                            onClick = onClickIcon ?: {},
+                            colors = IconButtonDefaults.iconButtonColors(
+                                contentColor = Neutral70,
+                            )
+                        ) {
                             icon.invoke()
                         }
                     }
                 }
-            })
-
+            },
+            onValueChange = {
+                onTextChanged(it)
+            },
+        )
 
         Spacer(modifier = Modifier.size(5.dp))
 
@@ -130,7 +160,8 @@ fun CustomInputField(
                 text = errorText, style = TextStyle(
                     fontSize = 14.sp,
                     color = Color.Red
-                ))
+                )
+            )
         }
     }
 }
@@ -140,7 +171,7 @@ fun CustomInputField(
 fun DynamicTextFieldPreview() {
     SmartcubeAppTheme {
         val textState = remember { mutableStateOf("") }
-        CustomInputField(
+        AppInput(
             text = textState.value,
             onTextChanged = { newText ->
                 textState.value = newText
