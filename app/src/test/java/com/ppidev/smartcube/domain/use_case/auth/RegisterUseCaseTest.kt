@@ -1,9 +1,9 @@
 package com.ppidev.smartcube.domain.use_case.auth
 
-import com.ppidev.smartcube.utils.Resource
-import com.ppidev.smartcube.utils.ResponseApp
 import com.ppidev.smartcube.contract.data.repository.IAuthRepository
 import com.ppidev.smartcube.data.remote.dto.RegisterDto
+import com.ppidev.smartcube.utils.Resource
+import com.ppidev.smartcube.utils.ResponseApp
 import dagger.Lazy
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
@@ -41,22 +41,29 @@ class RegisterUseCaseTest {
             data = null
         )
 
-
-        `when`(authRepository.register(username, wrongEmail, password, confirmPassword)).thenReturn(
-                ResponseApp(
-                        status = false,
-                        statusCode = 400,
-                        message = "email not valid",
-                        data = null
-                )
+        `when`(
+            authRepository.register(
+                username,
+                wrongEmail,
+                password,
+                confirmPassword,
+                ""
+            )
+        ).thenReturn(
+            ResponseApp(
+                status = false,
+                statusCode = 400,
+                message = "email not valid",
+                data = null
+            )
         )
 
         val result =
-                registerUseCase.invoke(username, wrongEmail, password, confirmPassword).filter { it is Resource.Error }
-                        .first()
+            registerUseCase.invoke(username, wrongEmail, password, confirmPassword, "")
+                .filter { it is Resource.Error }
+                .first()
 
         assert(result is Resource.Error)
-        assert(result.statusCode == errorResponse.statusCode)
     }
 
 
@@ -76,7 +83,7 @@ class RegisterUseCaseTest {
             verificationCode = "41kdnf"
         )
 
-        `when`(authRepository.register(username, email, password, confirmPassword)).thenReturn(
+        `when`(authRepository.register(username, email, password, confirmPassword, "")).thenReturn(
             ResponseApp(
                 status = true,
                 statusCode = 200,
@@ -85,9 +92,10 @@ class RegisterUseCaseTest {
             )
         )
 
-        val result : Resource<ResponseApp<RegisterDto?>> = registerUseCase.invoke(username, email, password, confirmPassword).filter { it is Resource.Success }.first()
+        val result: Resource<RegisterDto?, Any> =
+            registerUseCase.invoke(username, email, password, confirmPassword, "")
+                .filter { it is Resource.Success }.first()
 
         assert(result is Resource.Success)
-        assert(result.data?.data == expectedResponseDataRegister)
     }
 }

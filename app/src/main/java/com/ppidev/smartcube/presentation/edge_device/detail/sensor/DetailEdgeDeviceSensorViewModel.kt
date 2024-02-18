@@ -188,7 +188,7 @@ class DetailEdgeDeviceSensorViewModel @Inject constructor(
                     if (!data.isNullOrEmpty()) {
                         for ((_, item) in data.withIndex()) {
                             val capturedAt = item.capturedAt
-                            val epochCapturedAt = isoDateToEpoch(capturedAt)
+                            val epochCapturedAt = isoDateToEpoch(capturedAt) ?: 0
 
                             for (measurement in item.dataMeasured) {
                                 val sensorType = measurement.sensorType

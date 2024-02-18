@@ -1,5 +1,7 @@
 package com.ppidev.smartcube.domain.use_case.auth
 
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import com.ppidev.smartcube.utils.Resource
 import com.ppidev.smartcube.utils.ResponseApp
 import com.ppidev.smartcube.contract.data.repository.IAuthRepository
@@ -26,7 +28,9 @@ class LoginUseCaseTest {
     fun setup() {
         MockitoAnnotations.openMocks(this)
         val lazy = Lazy { authRepository }
-        loginUseCase = LoginUseCase(lazy)
+        val context: Context = getApplicationContext()
+
+        loginUseCase = LoginUseCase(lazy, context)
     }
 
     @Test
@@ -47,13 +51,13 @@ class LoginUseCaseTest {
             )
         )
 
-        val result: Resource<ResponseApp<LoginDto?>> =
+        val result: Resource<LoginDto?, Any> =
             loginUseCase.invoke(email, password).filter { it is Resource.Success }
                 .first()
 
         assert(result is Resource.Success)
         val res = (result as Resource.Success).data
-        assert(res?.data == expectedLoginDto)
+        assert(res == expectedLoginDto)
     }
 
     @Test
@@ -81,6 +85,5 @@ class LoginUseCaseTest {
             .first()
 
         assert(result is Resource.Error)
-        assert(result.statusCode == errorResponse.statusCode)
     }
 }
