@@ -6,9 +6,9 @@ import com.ppidev.smartcube.domain.model.NotificationModel
 import kotlinx.coroutines.flow.Flow
 
 interface IListNotificationUseCase {
-    operator fun invoke(): Flow<Resource<List<NotificationModel>>>
+    operator fun invoke(): Flow<Resource<List<NotificationModel>?, Any>>
 }
 
 interface IViewNotificationUseCase {
-    operator fun invoke(notificationId: UInt, edgeServerId: UInt): Flow<Resource<ResponseApp<NotificationModel?>>>
+    operator fun invoke(notificationId: UInt, edgeServerId: UInt): Flow<Resource<NotificationModel?, Any>>
 }

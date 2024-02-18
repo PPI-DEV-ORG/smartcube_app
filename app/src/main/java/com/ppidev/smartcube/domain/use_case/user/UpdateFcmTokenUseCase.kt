@@ -13,12 +13,12 @@ import javax.inject.Inject
 class UpdateFcmTokenUseCase @Inject constructor(
     private val userRepository: Lazy<IUserRepository>
 ) : IUpdateFcmTokenUseCase {
-    override suspend fun invoke(fcmToken: String): Flow<Resource<ResponseApp<Any?>>> = flow {
+    override suspend fun invoke(fcmToken: String): Flow<Resource<Any?, Any>> = flow {
         emit(Resource.Loading())
         emit(updateFcmToken(fcmToken))
     }
 
-    private suspend fun updateFcmToken(fcmToken: String): Resource<ResponseApp<Any?>> {
+    private suspend fun updateFcmToken(fcmToken: String): Resource<Any?, Any> {
         return try {
             val response =
                 userRepository.get().updateFcmToken(fcmToken = fcmToken)
@@ -36,7 +36,7 @@ class UpdateFcmTokenUseCase @Inject constructor(
                 data = response.data
             )
 
-            Resource.Success(result)
+            Resource.Success(result.message, result.data)
         } catch (e: Exception) {
             Resource.Error<ResponseApp<Any?>>(
                 EExceptionCode.HTTPException.ordinal, e.message ?: "Something wrong"

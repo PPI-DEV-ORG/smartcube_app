@@ -102,10 +102,10 @@ class DetailEdgeDeviceViewModel @Inject constructor(
                     state = state.copy(
                         isLoading = false,
                         isDialogMsgOpen = true,
-                        messageDialog = it.data?.message.toString(),
+                        messageDialog = it.message,
                         isSuccess = true
                     )
-                    Log.d("START_SUCC", it.data?.message.toString())
+                    Log.d("START_SUCC", it.message)
                 }
             }
         }.launchIn(viewModelScope)
@@ -125,7 +125,7 @@ class DetailEdgeDeviceViewModel @Inject constructor(
                     state = state.copy(
                         isLoading = false,
                         isDialogMsgOpen = true,
-                        messageDialog = it.message.toString(),
+                        messageDialog = it.message,
                         isSuccess = false
                     )
                 }
@@ -140,7 +140,7 @@ class DetailEdgeDeviceViewModel @Inject constructor(
                     state = state.copy(
                         isLoading = false,
                         isDialogMsgOpen = true,
-                        messageDialog = it.data?.message.toString(),
+                        messageDialog = it.message.toString(),
                         isSuccess = true
                     )
                 }
@@ -165,12 +165,12 @@ class DetailEdgeDeviceViewModel @Inject constructor(
                     }
 
                     is Resource.Success -> {
-                        val notifications = it.data?.data?.notifications?.map { item ->
+                        val notifications = it.data?.notifications?.map { item ->
                             item.toNotificationModel()
                         } ?: emptyList()
 
                         state = state.copy(
-                            edgeDeviceDetail = it.data?.data,
+                            edgeDeviceDetail = it.data,
                             notifications = notifications,
                             isLoadingDetailDevice = false
                         )
@@ -197,7 +197,7 @@ class DetailEdgeDeviceViewModel @Inject constructor(
 
                     is Resource.Success -> {
                         state = state.copy(
-                            notificationDetail = it.data?.data,
+                            notificationDetail = it.data,
                             isLoadingDetailNotification = false
                         )
                     }

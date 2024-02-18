@@ -13,17 +13,17 @@ interface IAddEdgeServerUseCase {
         name: String,
         vendor: String,
         description: String
-    ): Flow<Resource<ResponseApp<CreateEdgeServerDto?>>>
+    ): Flow<Resource<CreateEdgeServerDto?, Any>>
 }
 
 interface IListEdgeServerUseCase {
-    operator fun invoke(): Flow<Resource<ResponseApp<List<EdgeServerItemDto>>>>
+    operator fun invoke(): Flow<Resource<List<EdgeServerItemDto>, Any>>
 }
 
 interface IInviteUserUseCase {
-    operator fun invoke(edgeServerId: UInt): Flow<Resource<ResponseApp<InvitationCodeDto?>>>
+    operator fun invoke(edgeServerId: UInt): Flow<Resource<InvitationCodeDto?, Any>>
 }
 
 interface IJoinUserUseCase {
-    operator fun invoke(invitationCode: String): Flow<Resource<ResponseApp<JoinServerDto?>>>
+    operator fun invoke(invitationCode: String): Flow<Resource<JoinServerDto?, Any>>
 }

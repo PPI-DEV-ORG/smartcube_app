@@ -86,7 +86,7 @@ class ListEdgeDeviceViewModel @Inject constructor(
                 is Resource.Success -> {
                     state = state.copy(
                         isLoading = false,
-                        edgeDevicesInfo = it.data?.data
+                        edgeDevicesInfo = it.data
                     )
                 }
             }
@@ -103,10 +103,10 @@ class ListEdgeDeviceViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
-                    if (it.data?.data != null && it.data.data.isNotEmpty()) {
+                    if (it.data != null && it.data.isNotEmpty()) {
                         state = state.copy(
-                            listEdgeServer = it.data.data,
-                            serverId = it.data.data[0].id
+                            listEdgeServer = it.data,
+                            serverId = it.data[0].id
                         )
                     }
                 }

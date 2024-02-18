@@ -123,7 +123,7 @@ class ProfileViewModel @Inject constructor(
                 is Resource.Success -> {
                     state = state.copy(
                         isLoading = false,
-                        user = it.data?.data
+                        user = it.data
                     )
                 }
             }
@@ -137,7 +137,7 @@ class ProfileViewModel @Inject constructor(
                 is Resource.Loading -> {}
                 is Resource.Success -> {
                     state = state.copy(
-                        listServer = it.data?.data ?: emptyList()
+                        listServer = it.data ?: emptyList()
                     )
                 }
             }
@@ -172,7 +172,7 @@ class ProfileViewModel @Inject constructor(
                     state = state.copy(
                         errorSelectServer = "",
                         isLoadingGetInvitationCode = false,
-                        invitationCode = it.data?.data?.invitationCode.toString(),
+                        invitationCode = it.data?.invitationCode.toString(),
                         isOpenDialogSuccessGetInvitationCode = true,
                         isOpenDialogInviteUser = false
                     )

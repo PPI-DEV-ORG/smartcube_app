@@ -1,11 +1,10 @@
 package com.ppidev.smartcube.domain.use_case.auth
 
-import com.ppidev.smartcube.utils.EExceptionCode
-import com.ppidev.smartcube.utils.Resource
-import com.ppidev.smartcube.utils.ResponseApp
 import com.ppidev.smartcube.contract.data.repository.IAuthRepository
 import com.ppidev.smartcube.contract.domain.use_case.auth.IRegisterUseCase
 import com.ppidev.smartcube.data.remote.dto.RegisterDto
+import com.ppidev.smartcube.utils.EExceptionCode
+import com.ppidev.smartcube.utils.Resource
 import dagger.Lazy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -20,7 +19,7 @@ class RegisterUseCase @Inject constructor(
         password: String,
         confirmPassword: String,
         fcmRegistrationToken: String
-    ): Flow<Resource<ResponseApp<RegisterDto?>>> = flow {
+    ): Flow<Resource<RegisterDto?, Any>> = flow {
         emit(Resource.Loading())
         emit(register(username, email, password, confirmPassword, fcmRegistrationToken))
     }
@@ -31,7 +30,7 @@ class RegisterUseCase @Inject constructor(
         password: String,
         confirmPassword: String,
         fcmRegistrationToken: String
-    ): Resource<ResponseApp<RegisterDto?>> {
+    ): Resource<RegisterDto?, Any> {
         try {
             val registerResponse = authRepository.get().register(
                 email = email,
@@ -47,7 +46,7 @@ class RegisterUseCase @Inject constructor(
                     registerResponse.message
                 )
             }
-            return Resource.Success(registerResponse)
+            return Resource.Success(registerResponse.message, registerResponse.data)
         } catch (e: Exception) {
             return Resource.Error(
                 EExceptionCode.UseCaseError.code,

@@ -36,6 +36,10 @@ fun validateEmail(email: String): Boolean {
     return email.matches(emailRegex)
 }
 
+fun validatePassword(password: String): Boolean {
+    return password.length >= 8
+}
+
 fun getFloatFromPercentageString(percentage: String): Float {
     return try {
         val cleanedPercentage = percentage.replace("%", "").trim()

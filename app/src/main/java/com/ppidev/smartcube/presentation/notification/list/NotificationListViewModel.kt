@@ -83,9 +83,9 @@ class NotificationViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
-                    Log.d("TEST", it.data?.data.toString())
+                    Log.d("TEST", it.data.toString())
                     state = state.copy(
-                        detailNotification = it.data?.data
+                        detailNotification = it.data
                     )
                 }
 

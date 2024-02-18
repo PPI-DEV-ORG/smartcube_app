@@ -50,7 +50,7 @@ class ListEdgeServerViewModel @Inject constructor(
                 }
                 is Resource.Success -> {
                     state = state.copy(
-                        listEdgeServer = it.data?.data ?: emptyList(),
+                        listEdgeServer = it.data ?: emptyList(),
                         isLoading = false
                     )
                 }

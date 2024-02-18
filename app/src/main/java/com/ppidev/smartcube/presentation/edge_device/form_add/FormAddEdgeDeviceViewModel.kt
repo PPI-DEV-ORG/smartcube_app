@@ -7,12 +7,12 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
-import com.ppidev.smartcube.utils.Resource
 import com.ppidev.smartcube.contract.data.remote.service.IMqttService
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IAddEdgeDevicesUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IListEdgeDevicesByEdgeServerIdUseCase
 import com.ppidev.smartcube.data.remote.dto.EdgeServerInstalledModelDto
 import com.ppidev.smartcube.utils.MQTTCommand
+import com.ppidev.smartcube.utils.Resource
 import com.ppidev.smartcube.utils.convertJsonToDto
 import com.ppidev.smartcube.utils.extractCommandAndDataMqtt
 import dagger.Lazy
@@ -144,58 +144,55 @@ class FormAddEdgeDeviceViewModel @Inject constructor(
         val assignedModelType = state.assignedModelType
         val assignedModelIndex = state.assignedModelIndex
 
-        val errorState = FormAddEdgeDeviceState.FormAddEdgeDeviceError(
-            sourceAddress = if (state.sourceAddress.isEmpty()) "Cannot be empty" else "",
-            assignedModelIndex = if (assignedModelIndex == null) "Cannot be empty" else "",
-            assignedModelType = if (assignedModelType == null) "Cannot be empty" else ""
-        )
-
-        if (errorState.hasError()) {
-            state = state.copy(
-                error = errorState
-            )
+        if (edgeServerId == null || assignedModelIndex == null || assignedModelType == null) {
+            FormAddEdgeDeviceState.FormAddEdgeDeviceError(
+                sourceAddress = if (state.sourceAddress.isEmpty()) "Cannot be empty" else "",
+                assignedModelIndex = if (assignedModelIndex == null) "Cannot be empty" else "",
+                assignedModelType = if (assignedModelType == null) "Cannot be empty" else ""
+            ).takeIf { it.hasError() }?.let { errorState ->
+                state = state.copy(error = errorState)
+            }
             return
         }
 
-        if (edgeServerId != null && assignedModelIndex != null && assignedModelType != null) {
-            addEdgeDevicesUseCase.get().invoke(
-                edgeServerId = edgeServerId,
-                vendorName = state.vendorName,
-                vendorNumber = state.vendorNumber,
-                type = state.type,
-                sourceType = state.sourceType,
-                sourceAddress = state.sourceAddress,
-                assignedModelType = assignedModelType,
-                assignedModelIndex = assignedModelIndex,
-                additionalInfo = state.additionalInfo
-            ).onEach {
-                when (it) {
-                    is Resource.Error -> {
-                        Log.d("ERR", it.message.toString())
-                        state = state.copy(
-                            isLoading = false,
-                            isSuccess = false,
-                            message = it.message ?: "Error"
-                        )
-                    }
-
-                    is Resource.Loading -> {
-                        state = state.copy(
-                            isLoading = true
-                        )
-                    }
-
-                    is Resource.Success -> {
-                        Log.d("ADD", it.data?.data.toString())
-                        state = state.copy(
-                            isLoading = false,
-                            isSuccess = true,
-                            message = it.data?.message ?: "Success added new device"
-                        )
-                    }
+        addEdgeDevicesUseCase.get().invoke(
+            edgeServerId = edgeServerId,
+            vendorName = state.vendorName,
+            vendorNumber = state.vendorNumber,
+            type = state.type,
+            sourceType = state.sourceType,
+            sourceAddress = state.sourceAddress,
+            assignedModelType = assignedModelType,
+            assignedModelIndex = assignedModelIndex,
+            additionalInfo = state.additionalInfo
+        ).onEach {
+            when (it) {
+                is Resource.Error -> {
+                    Log.d("ERR", it.message.toString())
+                    state = state.copy(
+                        isLoading = false,
+                        isSuccess = false,
+                        message = it.message ?: "Error"
+                    )
                 }
-            }.launchIn(viewModelScope)
-        }
+
+                is Resource.Loading -> {
+                    state = state.copy(
+                        isLoading = true
+                    )
+                }
+
+                is Resource.Success -> {
+                    Log.d("ADD", it.data.toString())
+                    state = state.copy(
+                        isLoading = false,
+                        isSuccess = true,
+                        message = it.message ?: "Success added new device"
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
+
     }
 
     private suspend fun getEdgeDevicesInfo(edgeServerId: UInt) {
@@ -210,7 +207,7 @@ class FormAddEdgeDeviceViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
-                    val response = it.data?.data
+                    val response = it.data
 
                     if (response != null) {
                         state = state.copy(

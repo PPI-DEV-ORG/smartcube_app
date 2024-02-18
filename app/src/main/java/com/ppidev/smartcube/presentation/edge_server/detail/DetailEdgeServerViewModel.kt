@@ -75,8 +75,8 @@ class DetailEdgeServerViewModel @Inject constructor(
                 is Resource.Success -> {
                     state = state.copy(
                         isLoading = false,
-                        edgeDevicesInfo = it.data?.data,
-                        devices = it.data?.data?.devices ?: emptyList()
+                        edgeDevicesInfo = it.data,
+                        devices = it.data?.devices ?: emptyList()
                     )
                 }
             }
