@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat
 import java.time.Instant
 import java.util.Date
 import java.util.TimeZone
+import java.util.regex.Pattern
 
 fun urlToBitmap(imageUrl: String): Bitmap? {
     return try {
@@ -32,8 +33,14 @@ fun urlToBitmap(imageUrl: String): Bitmap? {
 }
 
 fun validateEmail(email: String): Boolean {
-    val emailRegex = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+".toRegex()
-    return email.matches(emailRegex)
+    return Pattern.compile(
+        "^(([\\w-]+\\.)+[\\w-]+|([a-zA-Z]|[\\w-]{2,}))@"
+                + "((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
+                + "[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\."
+                + "([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
+                + "[0-9]{1,2}|25[0-5]|2[0-4][0-9]))|"
+                + "([a-zA-Z]+[\\w-]+\\.)+[a-zA-Z]{2,4})$"
+    ).matcher(email).matches()
 }
 
 fun validatePassword(password: String): Boolean {
@@ -58,7 +65,10 @@ fun convertMillisecondsToHoursAndMinutes(milliseconds: Long): String {
 
 fun extractNumberFromString(inputString: String): Long? {
     return try {
-        val number = inputString.split(" ")[0].toDouble().toLong()
+        val number = inputString.split(" ")[0].toLongOrNull()
+        if (number == null) {
+            println("Invalid input: $inputString does not contain a valid number.")
+        }
         number
     } catch (e: NumberFormatException) {
         println("Invalid input: $inputString does not contain a valid number.")
@@ -67,10 +77,25 @@ fun extractNumberFromString(inputString: String): Long? {
 }
 
 fun extractFloatFromString(input: String): Float? {
-    val regex = Regex("""\d+\.\d+""")
+    // Coba konversi langsung ke float
+    val floatValue = input.toFloatOrNull()
+    if (floatValue != null) {
+        return floatValue
+    }
+
+    // Jika konversi langsung gagal, gunakan regex untuk mencari float dalam string
+    val regex = Regex("""-?\d+(\.\d+)?""")
     val matchResult = regex.find(input)
-    return matchResult?.value?.toFloatOrNull()
+    val extractedFloat = matchResult?.value?.toFloatOrNull()
+
+    // Jika string input mengandung lebih dari satu tanda desimal, kembalikan null
+    if (extractedFloat != null && input.count { it == '.' } > 1) {
+        return null
+    }
+
+    return extractedFloat
 }
+
 
 @SuppressLint("SimpleDateFormat")
 fun isoDateFormatToStringDate(isoDate: String): String {
@@ -86,17 +111,22 @@ fun isoDateFormatToStringDate(isoDate: String): String {
     }
 }
 
-fun isoDateToEpoch(isoDateString: String): Long {
-    val instant = Instant.parse(isoDateString)
-    return instant.epochSecond
+fun isoDateToEpoch(isoDateString: String): Long? {
+    return try {
+        val instant = Instant.parse(isoDateString)
+        instant.epochSecond
+    } catch (e: Exception) {
+        null
+    }
 }
 
 inline fun <reified T> parseJson(json: String): T {
     return try {
-        Gson().fromJson(json, object: TypeToken<T>() {}.type)
+        Gson().fromJson(json, object : TypeToken<T>() {}.type)
     } catch (e: JsonSyntaxException) {
         throw JsonParsingException("Failed to parse JSON", e)
     }
 }
 
-class JsonParsingException(message: String, cause: Throwable? = null) : RuntimeException(message, cause)
+class JsonParsingException(message: String, cause: Throwable? = null) :
+    RuntimeException(message, cause)
