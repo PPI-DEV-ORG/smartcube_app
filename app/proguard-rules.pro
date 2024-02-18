@@ -19,9 +19,11 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
--keepclassmembers class * extends androidx.datastore.preferences.protobuf.GeneratedMessageLite {
-    <fields>;
-}
 
--keepclassmembernames class io.netty.** { *; }
--keepclassmembers class org.jctools.** { *; }
+#-keepclassmembers class * extends androidx.datastore.preferences.protobuf.GeneratedMessageLite {
+#    <fields>;
+#}
+
+#-dontwarn reactor.blockhound.integration.BlockHoundIntegration
+#-keepclassmembernames class io.netty.** { *; }
+#-keepclassmembers class org.jctools.** { *; }

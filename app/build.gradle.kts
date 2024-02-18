@@ -1,17 +1,16 @@
-import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
-
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.google.dagger.hilt.android")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     kotlin("kapt")
 }
 
 android {
     namespace = "com.ppidev.smartcube"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.ppidev.smartcube"
@@ -24,11 +23,12 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+//        compileSdkPreview = "UpsideDownCake"
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -44,29 +44,37 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
     }
     packaging {
         resources {
-//            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-            excludes += listOf("/META-INF/{AL2.0,LGPL2.1}","META-INF/INDEX.LIST", "META-INF/io.netty.versions.properties")
-
+//            excludes += "META-INF/*"
+//            excludes += "META-INF/io.netty.versions.properties"
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+    }
+    testOptions {
+        unitTests.isReturnDefaultValues = true
     }
 }
 
 dependencies {
     // === default dependencies ===
-    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-    implementation("androidx.activity:activity-compose:1.7.2")
+    implementation("androidx.activity:activity-compose:1.8.2")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material3:material3:1.1.2")
+    implementation("com.google.android.gms:play-services-wallet:19.2.1")
+    implementation("androidx.test:core-ktx:1.5.0")
+    implementation("androidx.test.ext:junit-ktx:1.1.5")
+    implementation("com.google.firebase:firebase-messaging:23.4.0")
     // test dependencies
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -78,10 +86,12 @@ dependencies {
 
     // === additional dependencies ===
 
+    implementation("androidx.compose.material:material-icons-extended")
+
     // firebase
     implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
     implementation("com.google.firebase:firebase-analytics-ktx")
-    implementation("com.google.firebase:firebase-messaging-ktx:23.2.1")
+    implementation("com.google.firebase:firebase-messaging-ktx:23.3.1")
 
     // permission manager
     implementation("com.google.accompanist:accompanist-permissions:0.28.0")
@@ -93,20 +103,22 @@ dependencies {
 
     // coil image loader
     implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("io.coil-kt:coil-svg:2.4.0")
 
     // navigation
-    val navVersion = "2.6.0"
-    val lifecycleVersion = "2.6.0"
-    implementation("androidx.navigation:navigation-compose:$navVersion")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:$lifecycleVersion")
+    implementation("androidx.navigation:navigation-compose:2.7.6")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+
+    // ViewModel Compose
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
 
     // Dagger - hilt
-    val hiltVersion = "2.44"
+    val hiltVersion = "2.48"
+    implementation("com.google.dagger:hilt-android:$hiltVersion")
     kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
-    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
-    kapt("androidx.hilt:hilt-compiler:1.0.0")
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
-    implementation("com.google.dagger:hilt-android:2.44")
+//    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
+    kapt("androidx.hilt:hilt-compiler:1.1.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -115,10 +127,35 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
 
     // MQTT
-    implementation("com.hivemq:hivemq-mqtt-client:1.3.0")
+    implementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")
+    implementation("org.eclipse.paho:org.eclipse.paho.android.service:1.1.1")
+    implementation("org.bouncycastle:bcpkix-jdk15on:1.67")
 
-//    retrofix("net.sourceforge.streamsupport:android-retrostreams:1.7.4")
-//    retrofix("net.sourceforge.streamsupport:android-retrofuture:1.7.4")
+    // chart library
+    implementation("co.yml:ycharts:2.1.0")
+    // For Jetpack Compose.
+    implementation("com.patrykandpatrick.vico:compose:1.13.1")
+    // For `compose`. Creates a `ChartStyle` based on an M3 Material Theme.
+    implementation("com.patrykandpatrick.vico:compose-m3:1.13.1")
+
+    // Houses the core logic for charts and other elements. Included in all other modules.
+    implementation("com.patrykandpatrick.vico:core:1.13.1")
+
+    // For the view system.
+    implementation("com.patrykandpatrick.vico:views:1.13.1")
+
+    implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
+    implementation("androidx.activity:activity-ktx:1.8.1")
+
+    implementation("com.google.accompanist:accompanist-flowlayout:0.20.0")
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.27.0")
+
+    // testing
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation("org.mockito:mockito-core:5.6.0")
+    testImplementation("org.mockito:mockito-inline:5.2.0")
 }
 
 kapt {

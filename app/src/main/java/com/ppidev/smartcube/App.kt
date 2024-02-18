@@ -1,25 +1,21 @@
 package com.ppidev.smartcube
 
-import android.util.Log
-import androidx.compose.runtime.Composable
-import com.ppidev.smartcube.domain.permission.RequestNotificationPermission
-import com.ppidev.smartcube.domain.service.HiveMqttService
+import android.app.Application
+import android.os.Build
+import com.ppidev.smartcube.utils.NotificationChannelManager
+import dagger.hilt.android.HiltAndroidApp
 
-@Composable
-fun App() {
-    SetupPermissions()
-//    setupServices()
-    BottomAppBar()
+@HiltAndroidApp
+class App : Application() {
+    override fun onCreate() {
+        super.onCreate()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            NotificationChannelManager.apply {
+                createNotificationChannelFCM(applicationContext)
+                createNotificationChannelTest(applicationContext)
+            }
+        }
+    }
 }
-
-@Composable
-fun SetupPermissions() {
-//    RequestNotificationPermission()
-}
-
-//fun setupServices() {
-//    val mqttService = HiveMqttService.getInstance()
-//    mqttService.subscribeToTopic(HiveMqttService.MQTT_TOPIC, callback = {
-//        Log.d("PAYLOAD : ", String(it.payloadAsBytes))
-//    })
-//}
