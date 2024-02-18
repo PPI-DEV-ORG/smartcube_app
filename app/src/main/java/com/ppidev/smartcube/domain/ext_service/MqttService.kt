@@ -74,7 +74,7 @@ class MqttService @Inject constructor(@ApplicationContext private val context: C
     override fun subscribeToTopic(
         topic: String,
         callback: (topic: String, data: MqttMessage) -> Unit
-    ): Resource<Boolean> {
+    ): Resource<Boolean, Any> {
         if (!checkIfMqttIsConnected()) {
             return Resource.Error(503, "MQTT Client is not Connected", false)
         }
@@ -82,10 +82,10 @@ class MqttService @Inject constructor(@ApplicationContext private val context: C
         mqttClient.subscribe(topic, 1, IMqttMessageListener { topic, message ->
             callback(topic, message)
         })
-        return Resource.Success(true)
+        return Resource.Success("success subscribed", true)
     }
 
-    override fun publishToTopic(topic: String, message: String): Resource<Boolean> {
+    override fun publishToTopic(topic: String, message: String): Resource<Boolean, Any> {
         if (!checkIfMqttIsConnected()) {
             return Resource.Error(
                 EHttpCode.ServiceUnavailable.code,
@@ -95,7 +95,7 @@ class MqttService @Inject constructor(@ApplicationContext private val context: C
         }
 
         mqttClient.publish(topic, MqttMessage(message.toByteArray()))
-        return Resource.Success(true)
+        return Resource.Success("success published", true)
     }
 
     override fun unsubscribeFromTopic(topic: String) {

@@ -1,10 +1,9 @@
 package com.ppidev.smartcube.domain.use_case.edge_device
 
-import com.ppidev.smartcube.utils.EExceptionCode
-import com.ppidev.smartcube.utils.Resource
-import com.ppidev.smartcube.utils.ResponseApp
 import com.ppidev.smartcube.contract.data.repository.IEdgeDeviceRepository
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IUpdateEdgeDeviceUseCase
+import com.ppidev.smartcube.utils.EExceptionCode
+import com.ppidev.smartcube.utils.Resource
 import dagger.Lazy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -24,7 +23,7 @@ class UpdateEdgeDeviceUseCase @Inject constructor(
         assignedModelType: UInt,
         assignedModelIndex: UInt,
         additionalInfo: String
-    ): Flow<Resource<ResponseApp<String?>>> = flow {
+    ): Flow<Resource<String?, Any>> = flow {
         emit(Resource.Loading())
         emit(
             updateEdgeDevice(
@@ -53,7 +52,7 @@ class UpdateEdgeDeviceUseCase @Inject constructor(
         assignedModelType: UInt,
         assignedModelIndex: UInt,
         additionalInfo: String
-    ): Resource<ResponseApp<String?>> {
+    ): Resource<String?, Any> {
         try {
             val response = edgeDeviceRepository.get().updateEdgeDevice(
                 edgeDeviceId,
@@ -75,7 +74,7 @@ class UpdateEdgeDeviceUseCase @Inject constructor(
                 )
             }
 
-            return Resource.Success(response)
+            return Resource.Success(response.message, response.data)
         } catch (e: Exception) {
             return Resource.Error(
                 EExceptionCode.UseCaseError.code,

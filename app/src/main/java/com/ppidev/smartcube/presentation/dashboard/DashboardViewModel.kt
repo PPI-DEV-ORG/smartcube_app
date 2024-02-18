@@ -137,7 +137,7 @@ class DashboardViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
-                    val data = it.data?.data
+                    val data = it.data
 
                     state = state.copy(
                         username = data?.userName.toString(),
@@ -169,12 +169,12 @@ class DashboardViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
-                    val res = it.data?.data
-                    val servers: List<String> = res?.map { server -> server.name } ?: emptyList()
-                    val serverIds: List<UInt> = res?.map { server -> server.id } ?: emptyList()
+                    val res = it.data
+                    val servers: List<String> = res.map { server -> server.name } ?: emptyList()
+                    val serverIds: List<UInt> = res.map { server -> server.id } ?: emptyList()
                     state = state.copy(
                         listServer = servers,
-                        edgeServerId = res?.firstOrNull()?.id,
+                        edgeServerId = res.firstOrNull()?.id,
                         listServerId = serverIds,
                         isLoadingListServer = false,
                         error = DashboardState.Error(
@@ -205,7 +205,7 @@ class DashboardViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
-                    val res = it.data?.data
+                    val res = it.data
 
                     state = state.copy(
                         listDevices = res?.devices ?: emptyList(),

@@ -6,9 +6,9 @@ import com.ppidev.smartcube.utils.ResponseApp
 import kotlinx.coroutines.flow.Flow
 
 interface IUpdateFcmTokenUseCase {
-    suspend fun invoke(fcmToken: String): Flow<Resource<ResponseApp<Any?>>>
+    suspend fun invoke(fcmToken: String): Flow<Resource<Any?, Any>>
 }
 
 interface IViewUserUseCase {
-    suspend fun invoke(): Flow<Resource<ResponseApp<UserDto?>>>
+    suspend fun invoke(): Flow<Resource<UserDto?, Any>>
 }

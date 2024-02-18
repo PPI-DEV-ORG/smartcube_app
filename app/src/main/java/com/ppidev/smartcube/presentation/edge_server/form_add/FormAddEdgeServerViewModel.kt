@@ -97,7 +97,7 @@ class FormAddEdgeServerViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
-                    val responseData = it.data?.data
+                    val responseData = it.data
 
                     if (responseData != null) {
                         state = state.copy(

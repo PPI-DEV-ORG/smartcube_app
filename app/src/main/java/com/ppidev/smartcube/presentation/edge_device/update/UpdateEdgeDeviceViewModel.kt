@@ -175,7 +175,7 @@ class UpdateEdgeDeviceViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
-                    Log.d("EDIT_SUCESSS", it.data?.data.toString())
+                    Log.d("EDIT_SUCESSS", it.data.toString())
                     state = state.copy(
                         isLoading = false,
                         isShowDialog = true
@@ -200,7 +200,7 @@ class UpdateEdgeDeviceViewModel @Inject constructor(
                         )
                     }
                     is Resource.Success -> {
-                        val data = it.data?.data
+                        val data = it.data
                         if (data != null) {
                             state = state.copy(
                                 vendorName = data.vendorName,

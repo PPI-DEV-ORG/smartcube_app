@@ -9,14 +9,14 @@ import com.ppidev.smartcube.utils.ResponseApp
 import kotlinx.coroutines.flow.Flow
 
 interface IListEdgeDevicesByEdgeServerIdUseCase {
-    suspend fun invoke(edgeServerId: UInt): Flow<Resource<ResponseApp<EdgeDevicesInfoDto?>>>
+    suspend fun invoke(edgeServerId: UInt): Flow<Resource<EdgeDevicesInfoDto?, Any>>
 }
 
 interface IViewEdgeDeviceUseCase {
     suspend fun invoke(
         edgeServerId: UInt,
         edgeDeviceId: UInt,
-    ): Flow<Resource<ResponseApp<DetailEdgeDeviceDto?>>>
+    ): Flow<Resource<DetailEdgeDeviceDto?, Any>>
 }
 
 interface IAddEdgeDevicesUseCase {
@@ -30,21 +30,21 @@ interface IAddEdgeDevicesUseCase {
         assignedModelType: UInt,
         assignedModelIndex: UInt,
         additionalInfo: String
-    ): Flow<Resource<ResponseApp<CreateEdgeDeviceDto?>>>
+    ): Flow<Resource<CreateEdgeDeviceDto?, Any>>
 }
 
 interface IStartEdgeDeviceUseCase {
     suspend fun invoke(
         edgeServerId: UInt,
         processIndex: Int
-    ): Flow<Resource<ResponseApp<out Any?>>>
+    ): Flow<Resource<Any?, Any>>
 }
 
 interface IRestartEdgeDeviceUseCase {
     suspend fun invoke(
         edgeServerId: UInt,
         processIndex: Int
-    ): Flow<Resource<ResponseApp<out Any?>>>
+    ): Flow<Resource<Any?, Any>>
 }
 
 interface IUpdateEdgeDeviceUseCase {
@@ -59,7 +59,7 @@ interface IUpdateEdgeDeviceUseCase {
         assignedModelType: UInt,
         assignedModelIndex: UInt,
         additionalInfo: String
-    ): Flow<Resource<ResponseApp<String?>>>
+    ): Flow<Resource<String?, Any>>
 }
 
 interface IReadEdgeDeviceSensorUseCase {
@@ -68,5 +68,5 @@ interface IReadEdgeDeviceSensorUseCase {
         edgeDeviceId: UInt,
         startDate: String,
         endDate: String
-    ): Flow<Resource<ResponseApp<List<EdgeDeviceSensorDto>?>>>
+    ): Flow<Resource<List<EdgeDeviceSensorDto>?, Any>>
 }

@@ -6,5 +6,5 @@ import com.ppidev.smartcube.utils.ResponseApp
 import kotlinx.coroutines.flow.Flow
 
 interface IViewCurrentWeather {
-    operator fun invoke(): Flow<Resource<ResponseApp<WeatherDto?>>>
+    operator fun invoke(): Flow<Resource<WeatherDto?, Any>>
 }

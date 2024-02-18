@@ -112,7 +112,7 @@ class DetailEdgeDeviceSensorViewModel @Inject constructor(
 
                 is Resource.Success -> {
                     state = state.copy(
-                        edgeDeviceDetail = it.data?.data,
+                        edgeDeviceDetail = it.data,
                         isLoadingDeviceDetail = false
                     )
                 }
@@ -145,7 +145,7 @@ class DetailEdgeDeviceSensorViewModel @Inject constructor(
 
                     is Resource.Success -> {
                         state = state.copy(
-                            detailNotification = it.data?.data,
+                            detailNotification = it.data,
                             isLoadingNotificationDetail = false
                         )
                     }
@@ -183,7 +183,7 @@ class DetailEdgeDeviceSensorViewModel @Inject constructor(
                     val listHumidity: MutableList<Pair<Long, Float>> = mutableListOf()
                     val listGas: MutableList<Pair<Long, Float>> = mutableListOf()
 
-                    val data = it.data?.data
+                    val data = it.data
 
                     if (!data.isNullOrEmpty()) {
                         for ((_, item) in data.withIndex()) {

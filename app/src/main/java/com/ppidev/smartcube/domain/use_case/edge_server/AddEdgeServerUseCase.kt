@@ -1,11 +1,10 @@
 package com.ppidev.smartcube.domain.use_case.edge_server
 
-import com.ppidev.smartcube.utils.EExceptionCode
-import com.ppidev.smartcube.utils.Resource
-import com.ppidev.smartcube.utils.ResponseApp
 import com.ppidev.smartcube.contract.data.repository.IEdgeServerRepository
 import com.ppidev.smartcube.contract.domain.use_case.edge_server.IAddEdgeServerUseCase
 import com.ppidev.smartcube.data.remote.dto.CreateEdgeServerDto
+import com.ppidev.smartcube.utils.EExceptionCode
+import com.ppidev.smartcube.utils.Resource
 import dagger.Lazy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -18,7 +17,7 @@ class AddEdgeServerUseCase @Inject constructor(
         name: String,
         vendor: String,
         description: String
-    ): Flow<Resource<ResponseApp<CreateEdgeServerDto?>>> = flow {
+    ): Flow<Resource<CreateEdgeServerDto?, Any>> = flow {
         emit(Resource.Loading())
         emit(addEdgeServer(name, vendor, description))
     }
@@ -27,7 +26,7 @@ class AddEdgeServerUseCase @Inject constructor(
         name: String,
         vendor: String,
         description: String
-    ) : Resource<ResponseApp<CreateEdgeServerDto?>> {
+    ): Resource<CreateEdgeServerDto?, Any> {
         try {
             val response = edgeServerRepository.get().addEdgeServer(name, vendor, description)
 
@@ -38,7 +37,7 @@ class AddEdgeServerUseCase @Inject constructor(
                 )
             }
 
-            return Resource.Success(response)
+            return Resource.Success(response.message, response.data)
         } catch (e: Exception) {
             return Resource.Error(
                 EExceptionCode.UseCaseError.code,

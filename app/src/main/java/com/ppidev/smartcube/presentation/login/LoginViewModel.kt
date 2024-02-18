@@ -1,5 +1,6 @@
 package com.ppidev.smartcube.presentation.login
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -57,27 +58,6 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun handleLogin(callbackOnSuccess: () -> Unit) {
-
-        if (state.email.isEmpty()) {
-            state = state.copy(
-                error = LoginState.LoginError(
-                    email = "Email cannot be empty"
-                )
-            )
-
-            return
-        }
-
-        if (state.password.isEmpty()) {
-            state = state.copy(
-                error = LoginState.LoginError(
-                    password = "Password cannot be empty"
-                )
-            )
-
-            return
-        }
-
         loginUseCase.get().invoke(state.email, state.password).onEach {
             when (it) {
                 is Resource.Loading -> {
@@ -96,11 +76,19 @@ class LoginViewModel @Inject constructor(
 
                 is Resource.Error -> {
                     setIsLoading(false)
-                    state = state.copy(
-                        error = LoginState.LoginError(
-                            message = it.message ?: ""
+                    state = if (it.data != null) {
+                        val errorEmptyField = it.data as LoginState.LoginError
+                        state.copy(
+                            error = errorEmptyField
                         )
-                    )
+                    } else {
+                        state.copy(
+                            error = LoginState.LoginError(
+                                message = it.message ?: ""
+                            )
+                        )
+                    }
+
                 }
             }
         }.launchIn(viewModelScope)
@@ -128,14 +116,6 @@ class LoginViewModel @Inject constructor(
 
     private fun onPasswordChange(str: String) {
         viewModelScope.launch {
-            if (state.password.isNotEmpty()) {
-                state = state.copy(
-                    error = LoginState.LoginError(
-                        password = ""
-                    )
-                )
-            }
-
             state = state.copy(
                 password = str
             )

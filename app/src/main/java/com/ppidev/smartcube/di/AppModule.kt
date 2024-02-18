@@ -1,5 +1,7 @@
 package com.ppidev.smartcube.di
 
+import android.app.Application
+import android.content.Context
 import com.ppidev.smartcube.BuildConfig
 import com.ppidev.smartcube.contract.data.local.storage.ITokenAppDataStorePref
 import com.ppidev.smartcube.data.local.entity.TokenAppEntity
@@ -9,6 +11,7 @@ import com.ppidev.smartcube.data.remote.api.WeatherApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.internal.managers.ApplicationComponentManager
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -65,4 +68,13 @@ object AppModule {
             .create(WeatherApi::class.java)
     }
 
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+object ContextModule {
+    @Provides
+    fun provideContext(application: Application): Context {
+        return application.applicationContext
+    }
 }

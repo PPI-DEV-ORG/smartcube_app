@@ -1,26 +1,29 @@
 package com.ppidev.smartcube.domain.use_case.edge_device
 
-import com.ppidev.smartcube.utils.EExceptionCode
-import com.ppidev.smartcube.utils.Resource
-import com.ppidev.smartcube.utils.ResponseApp
 import com.ppidev.smartcube.contract.data.repository.IEdgeDeviceRepository
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IViewEdgeDeviceUseCase
 import com.ppidev.smartcube.data.remote.dto.DetailEdgeDeviceDto
+import com.ppidev.smartcube.utils.EExceptionCode
+import com.ppidev.smartcube.utils.Resource
 import dagger.Lazy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class ViewEdgeDeviceUseCase @Inject constructor(private val edgeDeviceRepository: Lazy<IEdgeDeviceRepository>): IViewEdgeDeviceUseCase {
+class ViewEdgeDeviceUseCase @Inject constructor(private val edgeDeviceRepository: Lazy<IEdgeDeviceRepository>) :
+    IViewEdgeDeviceUseCase {
     override suspend fun invoke(
         edgeServerId: UInt,
         edgeDeviceId: UInt
-    ): Flow<Resource<ResponseApp<DetailEdgeDeviceDto?>>> = flow {
+    ): Flow<Resource<DetailEdgeDeviceDto?, Any>> = flow {
         emit(Resource.Loading())
         emit(getDetailEdgeDevice(edgeServerId, edgeDeviceId))
     }
 
-    private suspend fun getDetailEdgeDevice(edgeServerId: UInt, edgeDeviceId: UInt): Resource<ResponseApp<DetailEdgeDeviceDto?>> {
+    private suspend fun getDetailEdgeDevice(
+        edgeServerId: UInt,
+        edgeDeviceId: UInt
+    ): Resource<DetailEdgeDeviceDto?, Any> {
         try {
             val response = edgeDeviceRepository.get().getDetailEdgeDevice(
                 edgeServerId = edgeServerId,
@@ -34,7 +37,7 @@ class ViewEdgeDeviceUseCase @Inject constructor(private val edgeDeviceRepository
                 )
             }
 
-            return Resource.Success(response)
+            return Resource.Success(response.message, response.data)
         } catch (e: Exception) {
             return Resource.Error(
                 EExceptionCode.UseCaseError.code,

@@ -1,12 +1,12 @@
 package com.ppidev.smartcube.domain.use_case.notification
 
-import com.ppidev.smartcube.utils.EExceptionCode
-import com.ppidev.smartcube.utils.Resource
-import com.ppidev.smartcube.utils.ResponseApp
 import com.ppidev.smartcube.contract.data.repository.INotificationRepository
 import com.ppidev.smartcube.contract.domain.use_case.notification.IViewNotificationUseCase
 import com.ppidev.smartcube.data.remote.dto.toNotificationModel
 import com.ppidev.smartcube.domain.model.NotificationModel
+import com.ppidev.smartcube.utils.EExceptionCode
+import com.ppidev.smartcube.utils.Resource
+import com.ppidev.smartcube.utils.ResponseApp
 import dagger.Lazy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -15,16 +15,25 @@ import javax.inject.Inject
 class ViewNotificationUseCase @Inject constructor(
     private val notificationRepository: Lazy<INotificationRepository>
 ) : IViewNotificationUseCase {
-    override fun invoke(notificationId: UInt, edgeServerId: UInt): Flow<Resource<ResponseApp<NotificationModel?>>> =
+    override fun invoke(
+        notificationId: UInt,
+        edgeServerId: UInt
+    ): Flow<Resource<NotificationModel?, Any>> =
         flow {
             emit(Resource.Loading())
             emit(getDetailNotification(notificationId, edgeServerId))
         }
 
-    private suspend fun getDetailNotification(notificationId: UInt, edgeServerId: UInt): Resource<ResponseApp<NotificationModel?>> {
+    private suspend fun getDetailNotification(
+        notificationId: UInt,
+        edgeServerId: UInt
+    ): Resource<NotificationModel?, Any> {
         return try {
             val notificationResponse =
-                notificationRepository.get().getDetailNotification(notificationId = notificationId, edgeServerId = edgeServerId)
+                notificationRepository.get().getDetailNotification(
+                    notificationId = notificationId,
+                    edgeServerId = edgeServerId
+                )
             if (!notificationResponse.status) {
                 return Resource.Error<ResponseApp<NotificationModel?>>(
                     notificationResponse.statusCode, notificationResponse.message
@@ -38,10 +47,10 @@ class ViewNotificationUseCase @Inject constructor(
                 data = notificationResponse.data?.toNotificationModel()
             )
 
-            Resource.Success(result)
+            Resource.Success(result.message, result.data)
         } catch (e: Exception) {
             Resource.Error<ResponseApp<NotificationModel?>>(
-                EExceptionCode.HTTPException.ordinal, e.message ?: "Something wrong"
+                EExceptionCode.HTTPException.code, e.message ?: "Something wrong"
             )
         }
     }

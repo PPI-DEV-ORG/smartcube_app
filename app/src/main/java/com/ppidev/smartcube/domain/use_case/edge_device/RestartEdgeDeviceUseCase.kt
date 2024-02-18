@@ -1,10 +1,9 @@
 package com.ppidev.smartcube.domain.use_case.edge_device
 
-import com.ppidev.smartcube.utils.EExceptionCode
-import com.ppidev.smartcube.utils.Resource
-import com.ppidev.smartcube.utils.ResponseApp
 import com.ppidev.smartcube.contract.data.repository.IEdgeDeviceRepository
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IRestartEdgeDeviceUseCase
+import com.ppidev.smartcube.utils.EExceptionCode
+import com.ppidev.smartcube.utils.Resource
 import dagger.Lazy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -16,7 +15,7 @@ class RestartEdgeDeviceUseCase @Inject constructor(
     override suspend fun invoke(
         edgeServerId: UInt,
         processIndex: Int
-    ): Flow<Resource<ResponseApp<out Any?>>> = flow {
+    ): Flow<Resource<Any?, Any>> = flow {
         emit(Resource.Loading())
         emit(restartDevice(edgeServerId, processIndex))
     }
@@ -24,7 +23,7 @@ class RestartEdgeDeviceUseCase @Inject constructor(
     private suspend fun restartDevice(
         edgeServerId: UInt,
         processIndex: Int
-    ): Resource<ResponseApp<out Any?>> {
+    ): Resource<Any?, Any> {
         try {
             val response = edgeDeviceRepository.get().restartEdgeDevice(edgeServerId, processIndex)
 
@@ -35,7 +34,7 @@ class RestartEdgeDeviceUseCase @Inject constructor(
                 )
             }
 
-            return Resource.Success(response)
+            return Resource.Success(response.message, response.data)
         } catch (e: Exception) {
             return Resource.Error(
                 EExceptionCode.UseCaseError.code,

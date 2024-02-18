@@ -45,7 +45,7 @@ class NotificationDetailViewModel @Inject constructor(
                 is Resource.Loading -> {}
                 is Resource.Success -> {
                     state = state.copy(
-                        notificationModel = it.data?.data
+                        notificationModel = it.data
                     )
                 }
             }
