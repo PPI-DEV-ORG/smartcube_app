@@ -1,6 +1,5 @@
 package com.ppidev.smartcube.data.local.storage
 
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -16,11 +15,9 @@ import java.io.IOException
 import javax.inject.Inject
 
 const val TOKEN_APP_PREFERENCE = "app-token-ds"
-//val Context.appTokenDataStore by preferencesDataStore(name = TOKEN_APP_PREFERENCE)
 
 class TokenAppDatastorePref @Inject constructor(private val dataStore: DataStore<Preferences>) :
     ITokenAppDataStorePref<TokenAppEntity> {
-
     override fun get(): Flow<TokenAppEntity> = dataStore.data.catch { exception ->
         if (exception is IOException) {
             emit(emptyPreferences())
@@ -28,7 +25,7 @@ class TokenAppDatastorePref @Inject constructor(private val dataStore: DataStore
             throw exception
         }
     }.map {
-            TokenAppEntity(
+        TokenAppEntity(
             accessToken = it[ACCESS_TOKEN_KEY] ?: "",
             fcmToken = it[FCM_TOKEN_KEY] ?: ""
         )

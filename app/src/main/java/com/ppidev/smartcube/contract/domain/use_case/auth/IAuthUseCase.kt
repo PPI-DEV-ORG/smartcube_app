@@ -1,10 +1,10 @@
 package com.ppidev.smartcube.contract.domain.use_case.auth
 
-import com.ppidev.smartcube.common.Resource
-import com.ppidev.smartcube.common.ResponseApp
 import com.ppidev.smartcube.data.remote.dto.LoginDto
 import com.ppidev.smartcube.data.remote.dto.RegisterDto
 import com.ppidev.smartcube.data.remote.dto.VerificationDto
+import com.ppidev.smartcube.utils.Resource
+import com.ppidev.smartcube.utils.ResponseApp
 import kotlinx.coroutines.flow.Flow
 
 interface ILoginUseCase {
@@ -27,7 +27,6 @@ interface IVerificationUseCase {
         verificationCode: String
     ): Flow<Resource<ResponseApp<VerificationDto?>>>
 }
-
 
 interface IRequestLinkResetPasswordUseCase {
     operator fun invoke(email: String): Flow<Resource<ResponseApp<String?>>>

@@ -4,9 +4,9 @@ import android.content.Context
 import android.util.Log
 import com.ppidev.smartcube.BuildConfig
 import com.ppidev.smartcube.R
-import com.ppidev.smartcube.common.EHTTPCode
-import com.ppidev.smartcube.common.Resource
 import com.ppidev.smartcube.contract.data.remote.service.IMqttService
+import com.ppidev.smartcube.utils.EHttpCode
+import com.ppidev.smartcube.utils.Resource
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
@@ -27,7 +27,6 @@ import javax.inject.Inject
 import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLSocketFactory
 import javax.net.ssl.TrustManagerFactory
-
 
 class MqttService @Inject constructor(@ApplicationContext private val context: Context) :
     IMqttService {
@@ -75,7 +74,7 @@ class MqttService @Inject constructor(@ApplicationContext private val context: C
     override fun subscribeToTopic(
         topic: String,
         callback: (topic: String, data: MqttMessage) -> Unit
-    ) : Resource<Boolean> {
+    ): Resource<Boolean> {
         if (!checkIfMqttIsConnected()) {
             return Resource.Error(503, "MQTT Client is not Connected", false)
         }
@@ -88,7 +87,11 @@ class MqttService @Inject constructor(@ApplicationContext private val context: C
 
     override fun publishToTopic(topic: String, message: String): Resource<Boolean> {
         if (!checkIfMqttIsConnected()) {
-            return Resource.Error(EHTTPCode.ServiceUnavailable.code, "MQTT Client is not connected", false)
+            return Resource.Error(
+                EHttpCode.ServiceUnavailable.code,
+                "MQTT Client is not connected",
+                false
+            )
         }
 
         mqttClient.publish(topic, MqttMessage(message.toByteArray()))

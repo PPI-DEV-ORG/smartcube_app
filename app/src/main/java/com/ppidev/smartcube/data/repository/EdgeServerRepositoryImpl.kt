@@ -1,20 +1,17 @@
 package com.ppidev.smartcube.data.repository
 
-import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
-import com.ppidev.smartcube.common.EExceptionCode
-import com.ppidev.smartcube.common.ResponseApp
 import com.ppidev.smartcube.contract.data.repository.IEdgeServerRepository
 import com.ppidev.smartcube.data.remote.api.SmartCubeApi
 import com.ppidev.smartcube.data.remote.dto.CreateEdgeServerDto
 import com.ppidev.smartcube.data.remote.dto.EdgeServerItemDto
 import com.ppidev.smartcube.data.remote.dto.InvitationCodeDto
 import com.ppidev.smartcube.data.remote.dto.JoinServerDto
-import org.json.JSONObject
+import com.ppidev.smartcube.utils.EExceptionCode
+import com.ppidev.smartcube.utils.ResponseApp
 import javax.inject.Inject
-
 
 class EdgeServerRepositoryImpl @Inject constructor(
     private val smartCubeApi: SmartCubeApi
@@ -136,8 +133,6 @@ class EdgeServerRepositoryImpl @Inject constructor(
 
     override suspend fun joinInvitationCode(invitationCode: String): ResponseApp<JoinServerDto?> {
         try {
-//            val paramObject = JSONObject()
-//            paramObject.put("invitation_code", invitationCode);
             val postParam = JsonObject()
             postParam.addProperty("invitation_code", invitationCode)
 

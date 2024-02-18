@@ -10,17 +10,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
-import com.ppidev.smartcube.common.APP_URL
-import com.ppidev.smartcube.common.CHANGE_PASSWORD_ARG
-import com.ppidev.smartcube.common.DEVICE_PROCESS_ID
-import com.ppidev.smartcube.common.EDGE_DEVICE_ID_ARG
-import com.ppidev.smartcube.common.EDGE_SERVER_ACCESS_TOKEN
-import com.ppidev.smartcube.common.EDGE_SERVER_ID_ARG
-import com.ppidev.smartcube.common.NOTIFICATION_ARG
+import com.ppidev.smartcube.utils.APP_URL
+import com.ppidev.smartcube.utils.CHANGE_PASSWORD_ARG
+import com.ppidev.smartcube.utils.DEVICE_PROCESS_ID
+import com.ppidev.smartcube.utils.EDGE_DEVICE_ID_ARG
+import com.ppidev.smartcube.utils.EDGE_SERVER_ACCESS_TOKEN
+import com.ppidev.smartcube.utils.EDGE_SERVER_ID_ARG
+import com.ppidev.smartcube.utils.NOTIFICATION_ARG
 import com.ppidev.smartcube.presentation.dashboard.DashboardScreen
 import com.ppidev.smartcube.presentation.dashboard.DashboardViewModel
-import com.ppidev.smartcube.presentation.edge_device.detail.DetailEdgeDeviceScreen
-import com.ppidev.smartcube.presentation.edge_device.detail.DetailEdgeDeviceViewModel
+import com.ppidev.smartcube.presentation.edge_device.detail.camera.DetailEdgeDeviceScreen
+import com.ppidev.smartcube.presentation.edge_device.detail.camera.DetailEdgeDeviceViewModel
 import com.ppidev.smartcube.presentation.edge_device.detail.sensor.DetailEdgeDeviceSensorScreen
 import com.ppidev.smartcube.presentation.edge_device.detail.sensor.DetailEdgeDeviceSensorViewModel
 import com.ppidev.smartcube.presentation.edge_device.form_add.FormAddEdgeDeviceScreen
@@ -35,8 +35,8 @@ import com.ppidev.smartcube.presentation.edge_server.list.ListEdgeServerScreen
 import com.ppidev.smartcube.presentation.edge_server.list.ListEdgeServerViewModel
 import com.ppidev.smartcube.presentation.login.LoginScreen
 import com.ppidev.smartcube.presentation.login.LoginViewModel
-import com.ppidev.smartcube.presentation.notification.NotificationListScreen
-import com.ppidev.smartcube.presentation.notification.NotificationViewModel
+import com.ppidev.smartcube.presentation.notification.list.NotificationListScreen
+import com.ppidev.smartcube.presentation.notification.list.NotificationViewModel
 import com.ppidev.smartcube.presentation.notification.detail.NotificationDetailScreen
 import com.ppidev.smartcube.presentation.notification.detail.NotificationDetailViewModel
 import com.ppidev.smartcube.presentation.profile.ProfileScreen
@@ -172,7 +172,7 @@ fun NavigationApp(navController: NavHostController) {
             )
         }
         composable(
-            route = Screen.DetailNotification.screenRoute + "/{$NOTIFICATION_ARG}/{${EDGE_SERVER_ID_ARG}}/{deviceType}",
+            route = Screen.DetailNotification.screenRoute + "/{$NOTIFICATION_ARG}/{$EDGE_SERVER_ID_ARG}/{deviceType}",
             arguments = listOf(
                 navArgument(NOTIFICATION_ARG) { type = NavType.IntType },
                 navArgument(EDGE_SERVER_ID_ARG) { type = NavType.IntType },
@@ -222,7 +222,7 @@ fun NavigationApp(navController: NavHostController) {
         }
 
         composable(
-            route = Screen.FormAddEdgeDevice.screenRoute + "/{${EDGE_SERVER_ID_ARG}}",
+            route = Screen.FormAddEdgeDevice.screenRoute + "/{$EDGE_SERVER_ID_ARG}",
             arguments = listOf(navArgument(EDGE_SERVER_ID_ARG) { type = NavType.IntType }),
         ) {
             val viewModel = hiltViewModel<FormAddEdgeDeviceViewModel>()
@@ -239,7 +239,7 @@ fun NavigationApp(navController: NavHostController) {
         }
 
         composable(
-            route = Screen.DetailEdgeServer.screenRoute + "?${EDGE_SERVER_ID_ARG}={${EDGE_SERVER_ID_ARG}}&${EDGE_SERVER_ACCESS_TOKEN}={${EDGE_SERVER_ACCESS_TOKEN}}",
+            route = Screen.DetailEdgeServer.screenRoute + "?$EDGE_SERVER_ID_ARG={$EDGE_SERVER_ID_ARG}&$EDGE_SERVER_ACCESS_TOKEN={$EDGE_SERVER_ACCESS_TOKEN}",
             arguments = listOf(
                 navArgument(EDGE_SERVER_ID_ARG) { type = NavType.IntType },
                 navArgument(EDGE_SERVER_ACCESS_TOKEN) {
@@ -297,7 +297,7 @@ fun NavigationApp(navController: NavHostController) {
         }
 
         composable(
-            route = Screen.UpdateEdgeDevice.screenRoute + "/{${EDGE_SERVER_ID_ARG}}/{${EDGE_DEVICE_ID_ARG}}/{mqttPubTopic}/{mqttSubTopic}",
+            route = Screen.UpdateEdgeDevice.screenRoute + "/{$EDGE_SERVER_ID_ARG}/{$EDGE_DEVICE_ID_ARG}/{mqttPubTopic}/{mqttSubTopic}",
             arguments = listOf(
                 navArgument(EDGE_SERVER_ID_ARG) { type = NavType.IntType },
                 navArgument(EDGE_DEVICE_ID_ARG) { type = NavType.IntType },
@@ -326,7 +326,7 @@ fun NavigationApp(navController: NavHostController) {
         }
 
         composable(
-            route = Screen.DetailEdgeDeviceSensor.screenRoute + "/{${EDGE_SERVER_ID_ARG}}/{${EDGE_DEVICE_ID_ARG}}/{$DEVICE_PROCESS_ID}/{mqttPubTopic}/{mqttSubTopic}",
+            route = Screen.DetailEdgeDeviceSensor.screenRoute + "/{$EDGE_SERVER_ID_ARG}/{$EDGE_DEVICE_ID_ARG}/{$DEVICE_PROCESS_ID}/{mqttPubTopic}/{mqttSubTopic}",
             arguments = listOf(
                 navArgument(EDGE_SERVER_ID_ARG) { type = NavType.IntType },
                 navArgument(EDGE_DEVICE_ID_ARG) { type = NavType.IntType },

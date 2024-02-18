@@ -2,7 +2,7 @@ package com.ppidev.smartcube.data.remote.api
 
 import com.google.gson.JsonObject
 import com.ppidev.smartcube.BuildConfig
-import com.ppidev.smartcube.common.ResponseApp
+import com.ppidev.smartcube.utils.ResponseApp
 import com.ppidev.smartcube.data.remote.dto.CreateEdgeDeviceDto
 import com.ppidev.smartcube.data.remote.dto.CreateEdgeServerDto
 import com.ppidev.smartcube.data.remote.dto.DetailEdgeDeviceDto
@@ -151,7 +151,7 @@ interface EdgeDeviceApi {
 
 
     @GET("edge-device/{edgeServerId}")
-    suspend fun getEdgeDevices(
+    suspend fun getEdgeDevicesByEdgeServerId(
         @Path("edgeServerId") edgeServerId: UInt
     ): Response<ResponseApp<EdgeDevicesInfoDto?>>
 

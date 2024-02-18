@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ppidev.smartcube.common.Resource
+import com.ppidev.smartcube.utils.Resource
 import com.ppidev.smartcube.contract.domain.use_case.auth.IRequestLinkResetPasswordUseCase
 import com.ppidev.smartcube.utils.validateEmail
 import dagger.Lazy
@@ -114,4 +114,12 @@ class ResetPasswordViewModel @Inject constructor(
         }
     }
 
+}
+
+sealed class ResetPasswordEvent {
+    data class OnEmailChange(val str: String) : ResetPasswordEvent()
+    data class HandleRequestResetLinkPassword(
+        val callback: () -> Unit
+    ) : ResetPasswordEvent()
+    object HandleCloseDialog : ResetPasswordEvent()
 }

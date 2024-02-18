@@ -12,19 +12,18 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.ppidev.smartcube.R
-import com.ppidev.smartcube.common.APP_URL
-import com.ppidev.smartcube.common.EExceptionCode
-import com.ppidev.smartcube.common.NOTIFICATION_ARG
-import com.ppidev.smartcube.common.ResponseApp
-import com.ppidev.smartcube.contract.data.remote.service.IMessagingService
+import com.ppidev.smartcube.utils.APP_URL
+import com.ppidev.smartcube.utils.EExceptionCode
+import com.ppidev.smartcube.utils.ResponseApp
+import com.ppidev.smartcube.contract.data.remote.service.ICloudMessagingService
 import com.ppidev.smartcube.contract.data.repository.ITokenAppRepository
 import com.ppidev.smartcube.contract.data.repository.IUserRepository
-import com.ppidev.smartcube.data.local.entity.ENotificationChannel
+import com.ppidev.smartcube.utils.ENotificationChannel
 import com.ppidev.smartcube.data.remote.dto.FcmMessage
 import com.ppidev.smartcube.presentation.MainActivity
 import com.ppidev.smartcube.ui.Screen
-import com.ppidev.smartcube.utils.getBitmapFromUrl
-import com.ppidev.smartcube.utils.manager.MyNotificationManager
+import com.ppidev.smartcube.utils.urlToBitmap
+import com.ppidev.smartcube.utils.MyNotificationManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +31,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class FcmService : FirebaseMessagingService(), IMessagingService<RemoteMessage> {
+class FcmService : FirebaseMessagingService(), ICloudMessagingService<RemoteMessage> {
     @Inject
     lateinit var tokenAppRepositoryImpl: ITokenAppRepository
 
@@ -84,7 +83,7 @@ class FcmService : FirebaseMessagingService(), IMessagingService<RemoteMessage> 
 
     override fun showNotification(data: FcmMessage) {
         // convert image url to bitmap format
-        val bitmapImage = getBitmapFromUrl(data.imageUrl)
+        val bitmapImage = urlToBitmap(data.imageUrl)
 
         notificationManager.showNotification(channel = ENotificationChannel.FCM_CHANNEL) {
             setTitle(data.title)

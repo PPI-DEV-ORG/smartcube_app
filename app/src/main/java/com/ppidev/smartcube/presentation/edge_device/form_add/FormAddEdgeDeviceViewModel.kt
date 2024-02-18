@@ -7,12 +7,12 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
-import com.ppidev.smartcube.common.Resource
+import com.ppidev.smartcube.utils.Resource
 import com.ppidev.smartcube.contract.data.remote.service.IMqttService
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IAddEdgeDevicesUseCase
-import com.ppidev.smartcube.contract.domain.use_case.edge_device.IEdgeDevicesInfoUseCase
-import com.ppidev.smartcube.data.remote.dto.MLModelDto
-import com.ppidev.smartcube.utils.CommandMqtt
+import com.ppidev.smartcube.contract.domain.use_case.edge_device.IListEdgeDevicesByEdgeServerIdUseCase
+import com.ppidev.smartcube.data.remote.dto.EdgeServerInstalledModelDto
+import com.ppidev.smartcube.utils.MQTTCommand
 import com.ppidev.smartcube.utils.convertJsonToDto
 import com.ppidev.smartcube.utils.extractCommandAndDataMqtt
 import dagger.Lazy
@@ -26,7 +26,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FormAddEdgeDeviceViewModel @Inject constructor(
     private val addEdgeDevicesUseCase: Lazy<IAddEdgeDevicesUseCase>,
-    private val edgeDevicesInfoUseCase: Lazy<IEdgeDevicesInfoUseCase>,
+    private val edgeDevicesInfoUseCase: Lazy<IListEdgeDevicesByEdgeServerIdUseCase>,
     private val mqttService: Lazy<IMqttService>,
 ) : ViewModel() {
     var state by mutableStateOf(FormAddEdgeDeviceState())
@@ -231,8 +231,8 @@ class FormAddEdgeDeviceViewModel @Inject constructor(
             mqttService.get().subscribeToTopic(topic) { topic, msg ->
                 val (command, data) = extractCommandAndDataMqtt(msg)
                 when (command) {
-                    CommandMqtt.GET_INSTALLED_MODEL -> {
-                        val dataDecoded = convertJsonToDto<List<MLModelDto>>(data)
+                    MQTTCommand.GET_INSTALLED_MODEL -> {
+                        val dataDecoded = convertJsonToDto<List<EdgeServerInstalledModelDto>>(data)
                         Log.d("DATA", dataDecoded.toString())
                         if (dataDecoded != null) {
                             val dataMap: Map<Int, String> =
@@ -263,8 +263,32 @@ class FormAddEdgeDeviceViewModel @Inject constructor(
             Log.d("MQTT", "publish $topic")
             mqttService.get().publishToTopic(
                 topic,
-                CommandMqtt.GET_INSTALLED_MODEL
+                MQTTCommand.GET_INSTALLED_MODEL
             )
         }
     }
+}
+
+
+sealed class FormAddEdgeDeviceEvent {
+    object HandleAddEdgeDevice : FormAddEdgeDeviceEvent()
+    object CloseDialog : FormAddEdgeDeviceEvent()
+
+    data class GetInstalledModels(val topic: String) : FormAddEdgeDeviceEvent()
+    data class SubscribeToMqttTopic(val topic: String) : FormAddEdgeDeviceEvent()
+    data class UnsubscribeFromMqttTopic(val topic: String) : FormAddEdgeDeviceEvent()
+    data class GetEdgeDevicesInfo(val edgeServerId: UInt) : FormAddEdgeDeviceEvent()
+    data class OnChangeVendorName(val str: String) : FormAddEdgeDeviceEvent()
+    data class OnChangeVendorNumber(val str: String) : FormAddEdgeDeviceEvent()
+    data class OnChangeType(val str: String) : FormAddEdgeDeviceEvent()
+    data class OnChangeSourceType(val str: String) : FormAddEdgeDeviceEvent()
+    data class OnChangeAssignedModelType(val num: UInt, val value: String) :
+        FormAddEdgeDeviceEvent()
+
+    data class OnChangeAssignedModelIndex(val num: UInt, val value: String) :
+        FormAddEdgeDeviceEvent()
+
+    data class OnChangeAdditionalInfo(val str: String) : FormAddEdgeDeviceEvent()
+    data class SetStepValue(val step: Int) : FormAddEdgeDeviceEvent()
+    data class OnChangeSourceAddress(val str: String) : FormAddEdgeDeviceEvent()
 }

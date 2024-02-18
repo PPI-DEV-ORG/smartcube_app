@@ -6,7 +6,7 @@ import com.ppidev.smartcube.contract.domain.use_case.auth.IRegisterUseCase
 import com.ppidev.smartcube.contract.domain.use_case.auth.IRequestLinkResetPasswordUseCase
 import com.ppidev.smartcube.contract.domain.use_case.auth.IVerificationUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IAddEdgeDevicesUseCase
-import com.ppidev.smartcube.contract.domain.use_case.edge_device.IEdgeDevicesInfoUseCase
+import com.ppidev.smartcube.contract.domain.use_case.edge_device.IListEdgeDevicesByEdgeServerIdUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IReadEdgeDeviceSensorUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IRestartEdgeDeviceUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IStartEdgeDeviceUseCase
@@ -19,7 +19,7 @@ import com.ppidev.smartcube.contract.domain.use_case.edge_server.IListEdgeServer
 import com.ppidev.smartcube.contract.domain.use_case.notification.IListNotificationUseCase
 import com.ppidev.smartcube.contract.domain.use_case.notification.IViewNotificationUseCase
 import com.ppidev.smartcube.contract.domain.use_case.user.IUpdateFcmTokenUseCase
-import com.ppidev.smartcube.contract.domain.use_case.user.IUserProfileUseCase
+import com.ppidev.smartcube.contract.domain.use_case.user.IViewUserUseCase
 import com.ppidev.smartcube.contract.domain.use_case.weather.IViewCurrentWeather
 import com.ppidev.smartcube.domain.use_case.auth.ChangePasswordUseCase
 import com.ppidev.smartcube.domain.use_case.auth.LoginUseCase
@@ -27,9 +27,9 @@ import com.ppidev.smartcube.domain.use_case.auth.RegisterUseCase
 import com.ppidev.smartcube.domain.use_case.auth.RequestLinkResetPasswordUseCase
 import com.ppidev.smartcube.domain.use_case.auth.VerificationUseCase
 import com.ppidev.smartcube.domain.use_case.edge_device.AddEdgeDeviceUseCase
-import com.ppidev.smartcube.domain.use_case.edge_device.EdgeDevicesInfoUseCase
+import com.ppidev.smartcube.domain.use_case.edge_device.ListEdgeDevicesByListEdgeServerIdUseCase
 import com.ppidev.smartcube.domain.use_case.edge_device.ReadEdgeDeviceSensorUseCase
-import com.ppidev.smartcube.domain.use_case.edge_device.RestartEdgeEdgeDeviceUseCase
+import com.ppidev.smartcube.domain.use_case.edge_device.RestartEdgeDeviceUseCase
 import com.ppidev.smartcube.domain.use_case.edge_device.StartEdgeEdgeDeviceUseCase
 import com.ppidev.smartcube.domain.use_case.edge_device.UpdateEdgeDeviceUseCase
 import com.ppidev.smartcube.domain.use_case.edge_device.ViewEdgeDeviceUseCase
@@ -40,7 +40,7 @@ import com.ppidev.smartcube.domain.use_case.edge_server.ListEdgeServerUseCase
 import com.ppidev.smartcube.domain.use_case.notification.ListNotificationUseCase
 import com.ppidev.smartcube.domain.use_case.notification.ViewNotificationUseCase
 import com.ppidev.smartcube.domain.use_case.user.UpdateFcmTokenUseCase
-import com.ppidev.smartcube.domain.use_case.user.UserProfileUseCase
+import com.ppidev.smartcube.domain.use_case.user.ViewUserUseCase
 import com.ppidev.smartcube.domain.use_case.weather.ViewCurrentWeather
 import dagger.Binds
 import dagger.Module
@@ -116,8 +116,8 @@ abstract class UseCaseModule {
     @Binds
     @Singleton
     abstract fun bindEdgeDeviceInfoUseCase(
-        edgeDevicesInfoUseCase: EdgeDevicesInfoUseCase
-    ): IEdgeDevicesInfoUseCase
+        listEdgeDevicesByEdgeServerIdUseCase: ListEdgeDevicesByListEdgeServerIdUseCase
+    ): IListEdgeDevicesByEdgeServerIdUseCase
 
     @Binds
     @Singleton
@@ -134,7 +134,7 @@ abstract class UseCaseModule {
     @Binds
     @Singleton
     abstract fun bindRestartEdgeDeviceUseCase(
-        restartEdgeDeviceUseCase: RestartEdgeEdgeDeviceUseCase
+        restartEdgeDeviceUseCase: RestartEdgeDeviceUseCase
     ): IRestartEdgeDeviceUseCase
 
     @Binds
@@ -164,8 +164,8 @@ abstract class UseCaseModule {
     @Binds
     @Singleton
     abstract fun bindUserProfileUseCase(
-        userProfileUseCase: UserProfileUseCase
-    ): IUserProfileUseCase
+        userProfileUseCase: ViewUserUseCase
+    ): IViewUserUseCase
 
     @Binds
     @Singleton

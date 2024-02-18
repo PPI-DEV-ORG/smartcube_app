@@ -30,20 +30,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import co.yml.charts.common.extensions.isNotNull
 import coil.compose.AsyncImage
 import com.ppidev.smartcube.R
 import com.ppidev.smartcube.domain.model.TypeEdgeDevice
-import com.ppidev.smartcube.presentation.edge_device.detail.DetailEdgeDeviceEvent
 import com.ppidev.smartcube.ui.components.modal.DialogImageOverlay
-import com.ppidev.smartcube.utils.bottomBorder
 import com.ppidev.smartcube.utils.isoDateFormatToStringDate
 import java.util.Locale
 
@@ -86,7 +82,8 @@ fun NotificationDetailScreen(
                     AsyncImage(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(200.dp).clickable {
+                            .height(200.dp)
+                            .clickable {
                                 onEvent(NotificationDetailEvent.SetOverlayImageStatus(true))
                             },
                         placeholder = painterResource(id = R.drawable.thumb_flame),

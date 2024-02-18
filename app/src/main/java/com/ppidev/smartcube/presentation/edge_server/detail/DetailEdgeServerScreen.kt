@@ -56,7 +56,7 @@ import com.ppidev.smartcube.ui.components.card.CardServerInfo
 import com.ppidev.smartcube.ui.components.modal.ModalInfoServerConfig
 import com.ppidev.smartcube.ui.theme.Typography
 import com.ppidev.smartcube.utils.extractFloatFromString
-import com.ppidev.smartcube.utils.getNumberFromPercentage
+import com.ppidev.smartcube.utils.getFloatFromPercentageString
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -132,7 +132,7 @@ fun DetailEdgeServerScreen(
             Spacer(modifier = Modifier.size(14.dp))
 
             CardStorageIndicator(
-                storageProgressIndicator = getNumberFromPercentage(
+                storageProgressIndicator = getFloatFromPercentageString(
                     state.serverInfo?.storage?.diskUsage ?: "0%"
                 ).div(100),
                 totalStorage = state.serverInfo?.storage?.totalSpace ?: "0",

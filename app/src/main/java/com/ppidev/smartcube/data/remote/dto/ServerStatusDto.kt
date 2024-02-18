@@ -4,6 +4,7 @@ import com.ppidev.smartcube.domain.model.ServerStatusModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+// Response from MQTT using SerialName
 @Serializable
 data class ServerStatusDto(
     @SerialName("cpu_temp")

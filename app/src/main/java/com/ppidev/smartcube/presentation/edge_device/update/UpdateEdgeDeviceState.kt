@@ -1,8 +1,8 @@
 package com.ppidev.smartcube.presentation.edge_device.update
 
 import com.ppidev.smartcube.domain.model.DeviceSourceType
-import com.ppidev.smartcube.domain.model.DeviceType
-import com.ppidev.smartcube.domain.model.ListDeviceType
+import com.ppidev.smartcube.domain.model.EdgeDeviceTypeItem
+import com.ppidev.smartcube.domain.model.ListEdgeDeviceTypeItems
 import com.ppidev.smartcube.domain.model.ListSourceDeviceType
 
 data class UpdateEdgeDeviceState(
@@ -30,7 +30,7 @@ data class UpdateEdgeDeviceState(
     val lon: String = "",
 
     val listSourceTypes: List<DeviceSourceType> = ListSourceDeviceType,
-    val listTypes: List<DeviceType> = ListDeviceType,
+    val listTypes: List<EdgeDeviceTypeItem> = ListEdgeDeviceTypeItems,
 
     val listModelType: Map<Int, String> = mapOf(
         0 to "Realtime Object Detection",

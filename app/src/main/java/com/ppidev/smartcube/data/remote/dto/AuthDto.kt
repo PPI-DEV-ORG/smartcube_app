@@ -1,64 +1,63 @@
 package com.ppidev.smartcube.data.remote.dto
 
 import com.google.gson.annotations.SerializedName
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class LoginDto(
-    @SerializedName("accessToken")
+    @field:SerializedName("accessToken")
     val accessToken: String
 )
 
 @Serializable
 data class RegisterDto(
-    @SerializedName("id")
+    @field:SerializedName("id")
     val id: UInt,
 
-    @SerializedName("username")
+    @field:SerializedName("username")
     val username: String,
 
-    @SerializedName("email")
+    @field:SerializedName("email")
     val email: String,
 
-    @SerializedName("password")
+    @field:SerializedName("password")
     val password: String? = null,
 
-    @SerializedName("isVerified")
+    @field:SerializedName("isVerified")
     val isVerified: Boolean,
 
-    @SerializedName("verificationCode")
+    @field:SerializedName("verificationCode")
     val verificationCode: String,
 )
 
 @Serializable
 data class VerificationDto(
-   @SerializedName("id")
+    @field:SerializedName("id")
     val id: UInt,
 
-    @SerializedName("username")
+    @field:SerializedName("username")
     val username: String,
 
-    @SerializedName("email")
+    @field:SerializedName("email")
     val email : String,
 
-    @SerializedName("password")
+    @field:SerializedName("password")
     val password: String? = null,
 
-    @SerializedName("resetToken")
+    @field:SerializedName("resetToken")
     val resetToken : String? = null,
 
-    @SerializedName("isVerified")
+    @field:SerializedName("isVerified")
     val isVerified : Boolean,
 
-    @SerializedName("verificationCode")
+    @field:SerializedName("verificationCode")
     val verificationCode : String? = null,
 
-    @SerializedName("fcmRegistrationToken")
+    @field:SerializedName("fcmRegistrationToken")
     val fcmRegistrationToken : String? = null,
 )
 
 data class ResetPasswordRequestDto(
-    @SerializedName("data")
+    @field:SerializedName("data")
     val data: String
 )

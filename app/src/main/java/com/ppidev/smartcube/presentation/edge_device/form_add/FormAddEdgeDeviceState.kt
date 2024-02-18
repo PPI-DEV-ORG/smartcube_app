@@ -2,8 +2,8 @@ package com.ppidev.smartcube.presentation.edge_device.form_add
 
 import com.ppidev.smartcube.data.remote.dto.EdgeDevicesInfoDto
 import com.ppidev.smartcube.domain.model.DeviceSourceType
-import com.ppidev.smartcube.domain.model.DeviceType
-import com.ppidev.smartcube.domain.model.ListDeviceType
+import com.ppidev.smartcube.domain.model.EdgeDeviceTypeItem
+import com.ppidev.smartcube.domain.model.ListEdgeDeviceTypeItems
 import com.ppidev.smartcube.domain.model.ListSourceDeviceType
 
 data class FormAddEdgeDeviceState(
@@ -29,7 +29,7 @@ data class FormAddEdgeDeviceState(
     val error: FormAddEdgeDeviceError = FormAddEdgeDeviceError(),
 
     val listSourceTypes: List<DeviceSourceType> = ListSourceDeviceType,
-    val listTypes: List<DeviceType> = ListDeviceType,
+    val listTypes: List<EdgeDeviceTypeItem> = ListEdgeDeviceTypeItems,
 
     val listModelType: Map<Int, String> = mapOf(
         0 to "Realtime Object Detection",

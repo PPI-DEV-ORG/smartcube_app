@@ -1,9 +1,8 @@
 package com.ppidev.smartcube.domain.use_case.notification
 
-import android.util.Log
-import com.ppidev.smartcube.common.EExceptionCode
-import com.ppidev.smartcube.common.Resource
-import com.ppidev.smartcube.common.ResponseApp
+import com.ppidev.smartcube.utils.EExceptionCode
+import com.ppidev.smartcube.utils.Resource
+import com.ppidev.smartcube.utils.ResponseApp
 import com.ppidev.smartcube.contract.data.repository.INotificationRepository
 import com.ppidev.smartcube.contract.domain.use_case.notification.IViewNotificationUseCase
 import com.ppidev.smartcube.data.remote.dto.toNotificationModel

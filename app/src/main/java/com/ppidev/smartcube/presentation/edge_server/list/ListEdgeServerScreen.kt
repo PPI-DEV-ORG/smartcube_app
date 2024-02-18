@@ -29,7 +29,7 @@ import androidx.navigation.NavHostController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.ppidev.smartcube.common.EDGE_SERVER_ID_ARG
+import com.ppidev.smartcube.utils.EDGE_SERVER_ID_ARG
 import com.ppidev.smartcube.ui.Screen
 import com.ppidev.smartcube.ui.theme.isLight
 

@@ -2,11 +2,10 @@ package com.ppidev.smartcube.data.repository
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.ppidev.smartcube.common.EExceptionCode
-import com.ppidev.smartcube.common.ResponseApp
+import com.ppidev.smartcube.utils.EExceptionCode
+import com.ppidev.smartcube.utils.ResponseApp
 import com.ppidev.smartcube.contract.data.repository.IUserRepository
 import com.ppidev.smartcube.data.remote.api.SmartCubeApi
-import com.ppidev.smartcube.data.remote.dto.LoginDto
 import com.ppidev.smartcube.data.remote.dto.UserDto
 import javax.inject.Inject
 

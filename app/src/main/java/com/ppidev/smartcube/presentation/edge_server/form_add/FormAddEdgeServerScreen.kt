@@ -35,8 +35,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.ppidev.smartcube.common.EDGE_SERVER_ACCESS_TOKEN
-import com.ppidev.smartcube.common.EDGE_SERVER_ID_ARG
+import com.ppidev.smartcube.utils.EDGE_SERVER_ACCESS_TOKEN
+import com.ppidev.smartcube.utils.EDGE_SERVER_ID_ARG
 import com.ppidev.smartcube.ui.Screen
 import com.ppidev.smartcube.ui.components.TagLabel
 import com.ppidev.smartcube.ui.components.form.AppInput

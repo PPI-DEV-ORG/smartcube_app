@@ -2,8 +2,6 @@ package com.ppidev.smartcube.data.repository
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.ppidev.smartcube.common.EExceptionCode
-import com.ppidev.smartcube.common.ResponseApp
 import com.ppidev.smartcube.contract.data.repository.IEdgeDeviceRepository
 import com.ppidev.smartcube.data.remote.api.SmartCubeApi
 import com.ppidev.smartcube.data.remote.dto.CreateEdgeDeviceDto
@@ -11,15 +9,17 @@ import com.ppidev.smartcube.data.remote.dto.CreateEdgeServerDto
 import com.ppidev.smartcube.data.remote.dto.DetailEdgeDeviceDto
 import com.ppidev.smartcube.data.remote.dto.EdgeDeviceSensorDto
 import com.ppidev.smartcube.data.remote.dto.EdgeDevicesInfoDto
+import com.ppidev.smartcube.utils.EExceptionCode
+import com.ppidev.smartcube.utils.ResponseApp
 import retrofit2.HttpException
 import javax.inject.Inject
 
 class EdgeDeviceRepositoryImpl @Inject constructor(
     private val smartCubeApi: SmartCubeApi
 ) : IEdgeDeviceRepository {
-    override suspend fun getEdgeDevicesInfo(edgeServerId: UInt): ResponseApp<EdgeDevicesInfoDto?> {
+    override suspend fun getEdgeDevicesInfoByEdgeServerId(edgeServerId: UInt): ResponseApp<EdgeDevicesInfoDto?> {
         try {
-            val response = smartCubeApi.getEdgeDevices(edgeServerId)
+            val response = smartCubeApi.getEdgeDevicesByEdgeServerId(edgeServerId)
 
             if (!response.isSuccessful) {
                 val errorResponse = response.errorBody()?.string()
@@ -196,7 +196,10 @@ class EdgeDeviceRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getDetailEdgeDevice(edgeServerId: UInt, edgeDeviceId: UInt): ResponseApp<DetailEdgeDeviceDto?> {
+    override suspend fun getDetailEdgeDevice(
+        edgeServerId: UInt,
+        edgeDeviceId: UInt
+    ): ResponseApp<DetailEdgeDeviceDto?> {
         try {
             val response = smartCubeApi.getEdgeDeviceById(
                 edgeServerId = edgeServerId,

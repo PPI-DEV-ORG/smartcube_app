@@ -37,7 +37,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.ppidev.smartcube.ui.theme.Purple40
 import com.ppidev.smartcube.ui.theme.Typography
 import com.ppidev.smartcube.utils.convertMillisecondsToHoursAndMinutes
 import com.ppidev.smartcube.utils.extractNumberFromString
@@ -60,7 +59,12 @@ fun CardServerInfo(
 
     Box(
         modifier = modifier
-            .shadow(elevation = 2.dp, spotColor = Color.Gray, ambientColor = Color.Gray, clip = true)
+            .shadow(
+                elevation = 2.dp,
+                spotColor = Color.Gray,
+                ambientColor = Color.Gray,
+                clip = true
+            )
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
             .background(MaterialTheme.colorScheme.surface)

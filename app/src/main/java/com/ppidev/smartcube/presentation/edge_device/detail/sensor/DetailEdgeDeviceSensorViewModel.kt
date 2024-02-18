@@ -5,11 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ppidev.smartcube.common.Resource
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IReadEdgeDeviceSensorUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IViewEdgeDeviceUseCase
 import com.ppidev.smartcube.contract.domain.use_case.notification.IViewNotificationUseCase
 import com.ppidev.smartcube.utils.FilterChart
+import com.ppidev.smartcube.utils.Resource
 import com.ppidev.smartcube.utils.isoDateToEpoch
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -235,3 +235,26 @@ class DetailEdgeDeviceSensorViewModel @Inject constructor(
     }
 }
 
+sealed class DetailEdgeDeviceSensorEvent {
+    data class GetDataNotificationsByDevice(val serverId: UInt, val deviceId: UInt) :
+        DetailEdgeDeviceSensorEvent()
+
+    data class GetDetailDevice(val serverId: UInt, val deviceId: UInt) :
+        DetailEdgeDeviceSensorEvent()
+
+    data class GetSensorData(
+        val deviceId: UInt,
+        val serverId: UInt,
+        val startDate: String,
+        val endDate: String
+    ) : DetailEdgeDeviceSensorEvent()
+
+    data class SetNotificationId(
+        val notificationId: UInt
+    ) : DetailEdgeDeviceSensorEvent()
+
+    data class GetNotificationDetail(val edgeServerId: UInt, val notificationId: UInt) :
+        DetailEdgeDeviceSensorEvent()
+
+    data class SetFilterChart(val filter: FilterChart) : DetailEdgeDeviceSensorEvent()
+}

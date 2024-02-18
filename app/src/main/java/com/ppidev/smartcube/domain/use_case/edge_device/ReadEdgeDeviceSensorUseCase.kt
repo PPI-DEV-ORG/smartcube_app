@@ -1,8 +1,8 @@
 package com.ppidev.smartcube.domain.use_case.edge_device
 
-import com.ppidev.smartcube.common.EExceptionCode
-import com.ppidev.smartcube.common.Resource
-import com.ppidev.smartcube.common.ResponseApp
+import com.ppidev.smartcube.utils.EExceptionCode
+import com.ppidev.smartcube.utils.Resource
+import com.ppidev.smartcube.utils.ResponseApp
 import com.ppidev.smartcube.contract.data.repository.IEdgeDeviceRepository
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IReadEdgeDeviceSensorUseCase
 import com.ppidev.smartcube.data.remote.dto.EdgeDeviceSensorDto

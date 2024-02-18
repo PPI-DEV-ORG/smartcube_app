@@ -40,7 +40,6 @@ import com.ppidev.smartcube.ui.theme.isLight
 import com.ppidev.smartcube.utils.isoDateFormatToStringDate
 import java.util.Locale
 
-
 @Composable
 fun CardNotification(
     modifier: Modifier = Modifier,
@@ -69,6 +68,7 @@ fun CardNotification(
                 TypeEdgeDevice.SENSOR.typeName -> painterResource(
                     id = R.drawable.ic_sensor
                 )
+
                 else -> painterResource(id = R.drawable.img_no_image)
             },
             contentDescription = null,
@@ -78,7 +78,7 @@ fun CardNotification(
                 } else {
                     Color.Red
                 }
-            } else if (type ==  TypeEdgeDevice.SENSOR.typeName) {
+            } else if (type == TypeEdgeDevice.SENSOR.typeName) {
                 if (isFocus) {
                     MaterialTheme.colorScheme.primary
                 } else {

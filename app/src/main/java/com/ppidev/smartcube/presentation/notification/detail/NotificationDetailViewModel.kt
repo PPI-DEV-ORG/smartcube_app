@@ -5,9 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ppidev.smartcube.common.Resource
 import com.ppidev.smartcube.contract.domain.use_case.notification.IViewNotificationUseCase
-import com.ppidev.smartcube.domain.model.NotificationModel
+import com.ppidev.smartcube.utils.Resource
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -25,7 +24,11 @@ class NotificationDetailViewModel @Inject constructor(
     fun onEvent(event: NotificationDetailEvent) {
         viewModelScope.launch {
             when (event) {
-                is NotificationDetailEvent.GetDetailNotification -> getDetailNotification(event.notificationId, event.edgeServerId)
+                is NotificationDetailEvent.GetDetailNotification -> getDetailNotification(
+                    event.notificationId,
+                    event.edgeServerId
+                )
+
                 is NotificationDetailEvent.SetOverlayImageStatus -> {
                     state = state.copy(
                         isOpenImageOverlay = event.status
@@ -35,9 +38,9 @@ class NotificationDetailViewModel @Inject constructor(
         }
     }
 
-    private fun getDetailNotification(notificationId: UInt, edgeServerId: UInt ) {
+    private fun getDetailNotification(notificationId: UInt, edgeServerId: UInt) {
         viewNotificationUseCase.get().invoke(notificationId, edgeServerId).onEach {
-            when(it) {
+            when (it) {
                 is Resource.Error -> {}
                 is Resource.Loading -> {}
                 is Resource.Success -> {
@@ -49,4 +52,11 @@ class NotificationDetailViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
+}
+
+sealed class NotificationDetailEvent {
+    data class GetDetailNotification(val notificationId: UInt, val edgeServerId: UInt) :
+        NotificationDetailEvent()
+
+    data class SetOverlayImageStatus(val status: Boolean) : NotificationDetailEvent()
 }

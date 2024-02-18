@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ppidev.smartcube.common.Resource
+import com.ppidev.smartcube.utils.Resource
 import com.ppidev.smartcube.contract.domain.use_case.edge_server.IListEdgeServerUseCase
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -57,4 +57,9 @@ class ListEdgeServerViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
     }
+}
+
+sealed class ListEdgeServerEvent {
+    object GetListEdgeServer: ListEdgeServerEvent()
+    object OnRefresh: ListEdgeServerEvent()
 }

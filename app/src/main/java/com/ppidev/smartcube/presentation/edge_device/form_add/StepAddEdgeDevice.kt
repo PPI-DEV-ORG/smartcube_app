@@ -34,7 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ppidev.smartcube.R
 import com.ppidev.smartcube.domain.model.DeviceSourceType
-import com.ppidev.smartcube.domain.model.DeviceType
+import com.ppidev.smartcube.domain.model.EdgeDeviceTypeItem
 import com.ppidev.smartcube.domain.model.TypeEdgeDevice
 import com.ppidev.smartcube.ui.components.card.CardTypeDevice
 import com.ppidev.smartcube.ui.components.form.AppInput
@@ -44,14 +44,14 @@ import com.ppidev.smartcube.ui.components.form.InputLabel
 
 @Composable
 fun Step1(onDeviceTypeChange: (str: String) -> Unit) {
-    val devices: List<DeviceType> =
+    val devices: List<EdgeDeviceTypeItem> =
         listOf(
-            DeviceType(
+            EdgeDeviceTypeItem(
                 id = 0,
                 name = TypeEdgeDevice.CAMERA.typeName,
                 icon = painterResource(id = R.drawable.ic_camera)
             ),
-            DeviceType(
+            EdgeDeviceTypeItem(
                 id = 1,
                 name = TypeEdgeDevice.SENSOR.typeName,
                 icon = painterResource(id = R.drawable.ic_sensor)

@@ -5,11 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ppidev.smartcube.common.Resource
 import com.ppidev.smartcube.contract.domain.use_case.edge_server.IAddEdgeServerUseCase
+import com.ppidev.smartcube.utils.Resource
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -106,7 +105,7 @@ class FormAddEdgeServerViewModel @Inject constructor(
                             message = "Success add to server",
                             isSuccess = true,
                             edgeServerId = responseData.edgeServerId,
-                            edgeServerAccessToken = responseData.egdeServerAccessToken,
+                            edgeServerAccessToken = responseData.edgeServerAccessToken,
                             mqttPublishTopic = responseData.mqttPubTopic,
                             mqttSubscribeTopic = responseData.mqttSubTopic
                         )
@@ -123,5 +122,12 @@ class FormAddEdgeServerViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
     }
+}
 
+sealed class FormAddEdgeServerEvent {
+    object HandleAddEdgeServer : FormAddEdgeServerEvent()
+    data class OnNameEdgeServerChange(val name: String) : FormAddEdgeServerEvent()
+    data class OnDescriptionEdgeServerChange(val desc: String) : FormAddEdgeServerEvent()
+    data class OnVendorEdgeServerChange(val vendor: String) : FormAddEdgeServerEvent()
+    data class HandleCloseDialog(val callback: () -> Unit) : FormAddEdgeServerEvent()
 }

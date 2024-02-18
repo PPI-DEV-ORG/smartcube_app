@@ -21,9 +21,8 @@ data class CreateEdgeServerDto(
     val mqttSubTopic: String? = "",
 
     @SerializedName("egde_server_access_token")
-    val egdeServerAccessToken: String? = "",
-
-    )
+    val edgeServerAccessToken: String? = ""
+)
 
 @Serializable
 data class EdgeServerItemDto(
