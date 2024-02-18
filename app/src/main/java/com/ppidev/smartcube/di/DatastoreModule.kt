@@ -15,7 +15,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-
 @InstallIn(SingletonComponent::class)
 @Module
 object DataStoreModule {
@@ -30,7 +29,7 @@ object DataStoreModule {
             produceFile = { context.preferencesDataStoreFile(TOKEN_APP_PREFERENCE) },
         )
     }
-//
+
 //    @Provides
 //    fun provideAppSettingDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
 //        return PreferenceDataStoreFactory.create(

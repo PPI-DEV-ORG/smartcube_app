@@ -1,15 +1,14 @@
 package com.ppidev.smartcube.domain.use_case.auth
 
-import com.ppidev.smartcube.common.EExceptionCode
-import com.ppidev.smartcube.common.Resource
-import com.ppidev.smartcube.common.ResponseApp
+import com.ppidev.smartcube.utils.EExceptionCode
+import com.ppidev.smartcube.utils.Resource
+import com.ppidev.smartcube.utils.ResponseApp
 import com.ppidev.smartcube.contract.data.repository.IAuthRepository
 import com.ppidev.smartcube.contract.domain.use_case.auth.IVerificationUseCase
 import com.ppidev.smartcube.data.remote.dto.VerificationDto
 import dagger.Lazy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import java.io.IOException
 import javax.inject.Inject
 
 class VerificationUseCase @Inject constructor(

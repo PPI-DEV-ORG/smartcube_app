@@ -1,18 +1,12 @@
 package com.ppidev.smartcube.data.local.storage
 
-import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.dataStore
 import com.ppidev.smartcube.contract.data.local.storage.IAppSettingDataStore
 import com.ppidev.smartcube.data.local.entity.AppSettingEntity
 import com.ppidev.smartcube.data.local.entity.ELanguage
 import com.ppidev.smartcube.data.local.entity.ETheme
-import com.ppidev.smartcube.data.local.serializer.AppSettingSerializer
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
-
-const val DATASTORE_FILE_APP_SETTING = "app-settings-ds.json"
-//val Context.appSettingDataStore by dataStore(DATASTORE_FILE_APP_SETTING, AppSettingSerializer)
 
 class AppSettingDatastore @Inject constructor(private val dataStore: DataStore<AppSettingEntity>) :
     IAppSettingDataStore<AppSettingEntity> {

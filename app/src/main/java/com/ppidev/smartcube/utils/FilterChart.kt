@@ -18,27 +18,23 @@ fun createAxisValueFormatter(
 ): AxisValueFormatter<AxisPosition.Horizontal.Bottom> {
     return AxisValueFormatter { value, _ ->
         val epochSecondDate = xValuesToDates[value.toInt()].first
-
         val formattedDate = when (filter) {
             FilterChart.OneDay -> {
                 val format = SimpleDateFormat("HH:mm")
                 val netDate = Date(epochSecondDate * 1000)
                 format.format(netDate)
             }
-
             FilterChart.OneWeek -> {
                 val format = SimpleDateFormat("dd-MM")
                 val netDate = Date(epochSecondDate * 1000)
                 format.format(netDate)
             }
-
             else -> {
                 val date = Date(epochSecondDate)
                 val format = SimpleDateFormat("dd-MM-yyyy")
                 format.format(date)
             }
         }
-
         formattedDate
     }
 }

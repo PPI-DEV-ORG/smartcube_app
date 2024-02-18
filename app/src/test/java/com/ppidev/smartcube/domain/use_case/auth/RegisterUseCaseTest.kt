@@ -1,7 +1,7 @@
 package com.ppidev.smartcube.domain.use_case.auth
 
-import com.ppidev.smartcube.common.Resource
-import com.ppidev.smartcube.common.ResponseApp
+import com.ppidev.smartcube.utils.Resource
+import com.ppidev.smartcube.utils.ResponseApp
 import com.ppidev.smartcube.contract.data.repository.IAuthRepository
 import com.ppidev.smartcube.data.remote.dto.RegisterDto
 import dagger.Lazy

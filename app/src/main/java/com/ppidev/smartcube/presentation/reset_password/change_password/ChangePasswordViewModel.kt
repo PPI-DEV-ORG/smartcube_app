@@ -1,12 +1,11 @@
 package com.ppidev.smartcube.presentation.reset_password.change_password
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ppidev.smartcube.common.Resource
+import com.ppidev.smartcube.utils.Resource
 import com.ppidev.smartcube.contract.domain.use_case.auth.IChangePasswordUseCase
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -167,4 +166,13 @@ class ChangePasswordViewModel @Inject constructor(
             )
         }
     }
+}
+
+sealed class ChangePasswordEvent {
+    data class OnChangePassword(val str: String) : ChangePasswordEvent()
+    data class OnChangeConfirmPassword(val str: String) : ChangePasswordEvent()
+    object ToggleShowPassword: ChangePasswordEvent()
+    object ToggleShowConfirmPassword: ChangePasswordEvent()
+    data class HandleChangePassword(val resetToken: String, val callback: () -> Unit) : ChangePasswordEvent()
+    data class HandleCloseDialog(val callback: () -> Unit) : ChangePasswordEvent()
 }

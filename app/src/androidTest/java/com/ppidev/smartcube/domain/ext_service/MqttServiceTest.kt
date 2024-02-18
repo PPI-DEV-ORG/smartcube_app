@@ -2,7 +2,7 @@ package com.ppidev.smartcube.domain.ext_service
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import com.ppidev.smartcube.common.Resource
+import com.ppidev.smartcube.utils.Resource
 import org.junit.After
 import org.junit.Before
 import org.junit.Test

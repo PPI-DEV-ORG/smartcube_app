@@ -1,13 +1,12 @@
 package com.ppidev.smartcube.presentation.login
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ppidev.smartcube.common.Resource
 import com.ppidev.smartcube.contract.domain.use_case.auth.ILoginUseCase
+import com.ppidev.smartcube.utils.Resource
 import com.ppidev.smartcube.utils.validateEmail
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -150,4 +149,21 @@ class LoginViewModel @Inject constructor(
             )
         }
     }
+}
+
+sealed class LoginEvent {
+    data class HandleLogin(
+        val callback: () -> Unit
+    ) : LoginEvent()
+
+    data class OnEmailChange(val str: String) : LoginEvent()
+    data class OnPasswordChange(val str: String) : LoginEvent()
+    object ToggleShowPassword : LoginEvent()
+    data class ToRegisterScreen(
+        val callback: () -> Unit
+    ) : LoginEvent()
+
+    data class ToResetPasswordScreen(
+        val callback: () -> Unit
+    ) : LoginEvent()
 }

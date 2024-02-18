@@ -6,12 +6,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.ui.semantics.Role.Companion.Button
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,10 +18,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.ppidev.smartcube.presentation.reset_password.ResetPasswordEvent
 import com.ppidev.smartcube.ui.Screen
-import com.ppidev.smartcube.ui.Screen.Verification
-import com.ppidev.smartcube.ui.components.form.CustomInputField
+import com.ppidev.smartcube.ui.components.form.AppInput
 import com.ppidev.smartcube.ui.components.modal.DialogApp
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,7 +46,7 @@ fun VerificationScreen(
 
         Spacer(modifier = Modifier.height(35.dp))
 
-        CustomInputField(
+        AppInput(
             text = state.verificationCode,
             label = "Verification Code",
             placeholder = "Verification code",

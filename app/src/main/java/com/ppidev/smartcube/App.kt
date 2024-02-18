@@ -2,7 +2,7 @@ package com.ppidev.smartcube
 
 import android.app.Application
 import android.os.Build
-import com.ppidev.smartcube.utils.manager.NotificationChannelManager
+import com.ppidev.smartcube.utils.NotificationChannelManager
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp

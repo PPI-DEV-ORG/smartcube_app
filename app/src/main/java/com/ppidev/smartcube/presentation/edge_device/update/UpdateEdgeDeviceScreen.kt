@@ -29,7 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.ppidev.smartcube.ui.components.form.CustomInputField
+import com.ppidev.smartcube.ui.components.form.AppInput
 import com.ppidev.smartcube.ui.components.form.CustomSelectInput
 import com.ppidev.smartcube.ui.components.modal.DialogApp
 import com.ppidev.smartcube.ui.components.modal.SimpleAlertDialog
@@ -87,7 +87,7 @@ fun UpdateEdgeDeviceScreen(
             contentPadding = PaddingValues(16.dp)
         ) {
             item {
-                CustomInputField(
+                AppInput(
                     text = state.vendorName,
                     label = "Vendor Name",
                     placeholder = "Enter device vendor name",
@@ -98,7 +98,7 @@ fun UpdateEdgeDeviceScreen(
             }
 
             item {
-                CustomInputField(
+                AppInput(
                     text = state.vendorNumber,
                     label = "Vendor Serial Number",
                     placeholder = "Enter serial number device",
@@ -156,7 +156,7 @@ fun UpdateEdgeDeviceScreen(
 //            }
 
             item {
-                CustomInputField(
+                AppInput(
                     text = state.sourceAddress,
                     label = "Source address",
                     placeholder = "Enter source address device : IP/RTSP/USB",

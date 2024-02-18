@@ -5,16 +5,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ppidev.smartcube.common.Resource
 import com.ppidev.smartcube.contract.data.remote.service.IMqttService
 import com.ppidev.smartcube.contract.data.repository.ITokenAppRepository
 import com.ppidev.smartcube.contract.domain.use_case.edge_server.IInviteUserUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_server.IJoinUserUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_server.IListEdgeServerUseCase
-import com.ppidev.smartcube.contract.domain.use_case.user.IUserProfileUseCase
+import com.ppidev.smartcube.contract.domain.use_case.user.IViewUserUseCase
+import com.ppidev.smartcube.data.remote.dto.EdgeServerItemDto
+import com.ppidev.smartcube.utils.Resource
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -22,7 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val userProfileUseCase: Lazy<IUserProfileUseCase>,
+    private val userProfileUseCase: Lazy<IViewUserUseCase>,
     private val listEdgeServerUseCase: Lazy<IListEdgeServerUseCase>,
     private val inviteUserUseCase: Lazy<IInviteUserUseCase>,
     private val joinUserUseCase: Lazy<IJoinUserUseCase>,
@@ -31,7 +31,6 @@ class ProfileViewModel @Inject constructor(
 ) : ViewModel() {
     var state by mutableStateOf(ProfileState())
         private set
-
 
     fun onEvent(event: ProfileEvent) {
         viewModelScope.launch {
@@ -210,4 +209,19 @@ class ProfileViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
     }
+}
+
+sealed class ProfileEvent {
+    object GetUserProfile : ProfileEvent()
+    object GetListServer : ProfileEvent()
+    object UpdateProfile : ProfileEvent()
+    object JoinUserGroup : ProfileEvent()
+    data class SetAlertLogoutStatus(val status: Boolean) : ProfileEvent()
+    data class Logout(val callback: (status: Boolean) -> Unit) : ProfileEvent()
+    data class SetInputInvitationCode(val str: String) : ProfileEvent()
+    data class SetStatusOpenDialogJoinUser(val status: Boolean) : ProfileEvent()
+    data class GetTokenInviteUser(val edgeServerId: UInt) : ProfileEvent()
+    data class SetDialogSuccessGetInvitationCode(val status: Boolean) : ProfileEvent()
+    data class OnChangeServerId(val server: EdgeServerItemDto) : ProfileEvent()
+    data class SetStatusOpenDialogInviteUser(val status: Boolean) : ProfileEvent()
 }

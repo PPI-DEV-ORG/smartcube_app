@@ -45,8 +45,8 @@ object AppModule {
 
         return Retrofit.Builder()
             .baseUrl(BuildConfig.API_URL)
-            .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(SmartCubeApi::class.java)
     }

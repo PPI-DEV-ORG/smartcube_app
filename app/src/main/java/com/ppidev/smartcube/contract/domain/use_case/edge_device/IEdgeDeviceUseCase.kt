@@ -1,14 +1,14 @@
 package com.ppidev.smartcube.contract.domain.use_case.edge_device
 
-import com.ppidev.smartcube.common.Resource
-import com.ppidev.smartcube.common.ResponseApp
 import com.ppidev.smartcube.data.remote.dto.CreateEdgeDeviceDto
 import com.ppidev.smartcube.data.remote.dto.DetailEdgeDeviceDto
 import com.ppidev.smartcube.data.remote.dto.EdgeDeviceSensorDto
 import com.ppidev.smartcube.data.remote.dto.EdgeDevicesInfoDto
+import com.ppidev.smartcube.utils.Resource
+import com.ppidev.smartcube.utils.ResponseApp
 import kotlinx.coroutines.flow.Flow
 
-interface IEdgeDevicesInfoUseCase {
+interface IListEdgeDevicesByEdgeServerIdUseCase {
     suspend fun invoke(edgeServerId: UInt): Flow<Resource<ResponseApp<EdgeDevicesInfoDto?>>>
 }
 
@@ -16,7 +16,8 @@ interface IViewEdgeDeviceUseCase {
     suspend fun invoke(
         edgeServerId: UInt,
         edgeDeviceId: UInt,
-    ): Flow<Resource<ResponseApp<DetailEdgeDeviceDto?>>>}
+    ): Flow<Resource<ResponseApp<DetailEdgeDeviceDto?>>>
+}
 
 interface IAddEdgeDevicesUseCase {
     suspend fun invoke(

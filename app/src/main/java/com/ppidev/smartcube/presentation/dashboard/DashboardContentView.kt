@@ -33,6 +33,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -205,7 +206,7 @@ fun DashboardContentView(
                             shape = RoundedCornerShape(4.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = MaterialTheme.colorScheme.surface,
-                                contentColor =  MaterialTheme.colorScheme.onSurface
+                                contentColor = MaterialTheme.colorScheme.onSurface
                             ),
                             onClick = {
                                 navigateCreateNewServer()
@@ -324,4 +325,74 @@ private fun DashboardContentViewPreview() {
         navigateToDetailDevice = { _, _ -> },
         navigateCreateNewDevice = {}
     )
+}
+
+@Composable
+fun UserSection(
+    modifier: Modifier = Modifier,
+    username: String = "Jhon doew",
+    email: String = "Jhon@gmail.com",
+    isLoading: Boolean
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            if (isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)
+                        .height(24.dp)
+                        .clip(
+                            RoundedCornerShape(4.dp)
+                        )
+                        .shimmerEffect()
+                ) {}
+
+                Spacer(modifier = Modifier.size(3.dp))
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f)
+                        .height(16.dp)
+                        .clip(
+                            RoundedCornerShape(3.dp)
+                        )
+                        .shimmerEffect()
+                ) {}
+            } else {
+                Text(
+                    text = "Hi, $username",
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.titleLarge
+                )
+                Spacer(modifier = Modifier.size(2.dp))
+                Text(
+                    text = email,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    color = Color.Gray,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+        }
+        Image(
+            painter = painterResource(R.drawable.app_logo),
+            contentDescription = null,
+            modifier = Modifier
+                .size(35.dp)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun UserSectionPreview() {
+    UserSection(isLoading = true)
 }

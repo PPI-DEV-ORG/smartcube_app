@@ -5,11 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ppidev.smartcube.common.Resource
 import com.ppidev.smartcube.contract.data.remote.service.IMqttService
-import com.ppidev.smartcube.contract.domain.use_case.edge_device.IEdgeDevicesInfoUseCase
+import com.ppidev.smartcube.contract.domain.use_case.edge_device.IListEdgeDevicesByEdgeServerIdUseCase
 import com.ppidev.smartcube.data.remote.dto.ServerStatusDto
-import com.ppidev.smartcube.utils.CommandMqtt
+import com.ppidev.smartcube.utils.MQTTCommand
+import com.ppidev.smartcube.utils.Resource
 import com.ppidev.smartcube.utils.convertJsonToDto
 import com.ppidev.smartcube.utils.extractCommandAndDataMqtt
 import dagger.Lazy
@@ -21,7 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailEdgeServerViewModel @Inject constructor(
-    private val edgeDeviceInfoUse: Lazy<IEdgeDevicesInfoUseCase>,
+    private val edgeDeviceInfoUse: Lazy<IListEdgeDevicesByEdgeServerIdUseCase>,
     private val mqttService: IMqttService
 ) : ViewModel() {
 
@@ -93,7 +93,7 @@ class DetailEdgeServerViewModel @Inject constructor(
                 val (command, data) = extractCommandAndDataMqtt(msg)
 
                 when (command) {
-                    CommandMqtt.GET_SERVER_INFO -> {
+                    MQTTCommand.GET_SERVER_INFO -> {
                         val dataDecoded = convertJsonToDto<ServerStatusDto>(data)
                         if (dataDecoded != null) {
                             updateServerInfo(dataDecoded)
@@ -108,7 +108,7 @@ class DetailEdgeServerViewModel @Inject constructor(
         viewModelScope.launch {
             mqttService.publishToTopic(
                 topic,
-                CommandMqtt.GET_SERVER_INFO
+                MQTTCommand.GET_SERVER_INFO
             )
         }
     }
@@ -122,3 +122,10 @@ class DetailEdgeServerViewModel @Inject constructor(
     }
 }
 
+sealed class DetailEdgeServerEvent {
+    data class GetDetailDevicesInfo(val edgeServerId: UInt) : DetailEdgeServerEvent()
+    data class SetDialogStatus(val status: Boolean) : DetailEdgeServerEvent()
+    data class SubscribeToTopicMqtt(val topic: String) : DetailEdgeServerEvent()
+    data class GetServerInfoMqtt(val topic: String) : DetailEdgeServerEvent()
+    data class UnSubscribeFromMqttTopic(val topic: String) : DetailEdgeServerEvent()
+}

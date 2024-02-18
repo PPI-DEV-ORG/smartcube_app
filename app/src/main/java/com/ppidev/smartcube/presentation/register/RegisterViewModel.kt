@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ppidev.smartcube.common.Resource
+import com.ppidev.smartcube.utils.Resource
 import com.ppidev.smartcube.contract.data.repository.ITokenAppRepository
 import com.ppidev.smartcube.contract.domain.use_case.auth.IRegisterUseCase
 import com.ppidev.smartcube.utils.validateEmail
@@ -193,4 +193,21 @@ class RegisterViewModel @Inject constructor(
             )
         }
     }
+}
+
+
+sealed class RegisterEvent {
+    object HandleRegister : RegisterEvent()
+    data class OnUsernameChange(val str: String) : RegisterEvent()
+    data class OnEmailChange(val str: String) : RegisterEvent()
+    data class OnPasswordChange(val str: String) : RegisterEvent()
+    data class OnConfirmPasswordChange(val str: String) : RegisterEvent()
+    object ToggleShowPassword: RegisterEvent()
+    object ToggleShowConfirmPassword: RegisterEvent()
+    data class HandleCloseDialog(
+        val callback: () -> Unit
+    ): RegisterEvent()
+    data class ToLoginScreen(
+        val callback: () -> Unit
+    ): RegisterEvent()
 }

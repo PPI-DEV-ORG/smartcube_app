@@ -26,7 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.ppidev.smartcube.ui.components.form.CustomInputField
+import com.ppidev.smartcube.ui.components.form.AppInput
 
 @Composable
 fun DialogJoinUserGroup(
@@ -81,7 +81,7 @@ fun DialogJoinUserGroup(
 
                 Spacer(modifier = Modifier.size(24.dp))
 
-                CustomInputField(
+                AppInput(
                     placeholder = "invitation token",
                     label = "Invitation Code",
                     text = invitationCode,

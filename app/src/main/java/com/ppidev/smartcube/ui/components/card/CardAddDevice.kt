@@ -1,6 +1,5 @@
 package com.ppidev.smartcube.ui.components.card
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -42,7 +41,10 @@ fun CardAddDevice(
             )
             .fillMaxWidth()
             .height(172.dp)
-            .background(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(size = 8.dp))
+            .background(
+                color = MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(size = 8.dp)
+            )
             .clickable {
                 onClick()
             }
@@ -68,7 +70,7 @@ fun CardAddDevice(
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                color = if(MaterialTheme.colorScheme.isLight()) MaterialTheme.colorScheme.primary else Color.White ,
+                color = if (MaterialTheme.colorScheme.isLight()) MaterialTheme.colorScheme.primary else Color.White,
                 fontWeight = FontWeight.SemiBold
             )
         }

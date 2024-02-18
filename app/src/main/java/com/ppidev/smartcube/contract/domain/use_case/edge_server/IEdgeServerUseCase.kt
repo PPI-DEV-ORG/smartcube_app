@@ -1,11 +1,11 @@
 package com.ppidev.smartcube.contract.domain.use_case.edge_server
 
-import com.ppidev.smartcube.common.Resource
-import com.ppidev.smartcube.common.ResponseApp
 import com.ppidev.smartcube.data.remote.dto.CreateEdgeServerDto
 import com.ppidev.smartcube.data.remote.dto.EdgeServerItemDto
 import com.ppidev.smartcube.data.remote.dto.InvitationCodeDto
 import com.ppidev.smartcube.data.remote.dto.JoinServerDto
+import com.ppidev.smartcube.utils.Resource
+import com.ppidev.smartcube.utils.ResponseApp
 import kotlinx.coroutines.flow.Flow
 
 interface IAddEdgeServerUseCase {

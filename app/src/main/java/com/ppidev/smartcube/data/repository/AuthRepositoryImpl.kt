@@ -3,8 +3,6 @@ package com.ppidev.smartcube.data.repository
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.ppidev.smartcube.common.EExceptionCode
-import com.ppidev.smartcube.common.ResponseApp
 import com.ppidev.smartcube.contract.data.local.storage.ITokenAppDataStorePref
 import com.ppidev.smartcube.contract.data.repository.IAuthRepository
 import com.ppidev.smartcube.data.local.entity.TokenAppEntity
@@ -12,6 +10,8 @@ import com.ppidev.smartcube.data.remote.api.SmartCubeApi
 import com.ppidev.smartcube.data.remote.dto.LoginDto
 import com.ppidev.smartcube.data.remote.dto.RegisterDto
 import com.ppidev.smartcube.data.remote.dto.VerificationDto
+import com.ppidev.smartcube.utils.EExceptionCode
+import com.ppidev.smartcube.utils.ResponseApp
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -21,7 +21,7 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun login(email: String, password: String): ResponseApp<LoginDto?> {
         try {
             val response = api.login(email, password)
-            Log.d("LOGIN", response.toString())
+
             if (!response.isSuccessful) {
                 val errorResponse = response.errorBody()?.string()
                 return Gson().fromJson(
@@ -68,7 +68,8 @@ class AuthRepositoryImpl @Inject constructor(
         fcmRegistrationToken: String
     ): ResponseApp<RegisterDto?> {
         try {
-            val response = api.register(username, email, password, confirmPassword, fcmRegistrationToken)
+            val response =
+                api.register(username, email, password, confirmPassword, fcmRegistrationToken)
 
             if (!response.isSuccessful) {
                 val errorResponse = response.errorBody()?.string()
@@ -107,8 +108,8 @@ class AuthRepositoryImpl @Inject constructor(
         email: String,
         verificationCode: String
     ): ResponseApp<VerificationDto?> {
-         try {
-            val response = api.verification(email,verificationCode)
+        try {
+            val response = api.verification(email, verificationCode)
 
             if (!response.isSuccessful) {
                 val errorResponse = response.errorBody()?.string()
@@ -134,12 +135,12 @@ class AuthRepositoryImpl @Inject constructor(
             )
 
         } catch (e: Exception) {
-             return ResponseApp(
-                 status = false,
-                 statusCode = EExceptionCode.RepositoryError.code,
-                 message = e.message ?: "Repository Error",
-                 data = null
-             )
+            return ResponseApp(
+                status = false,
+                statusCode = EExceptionCode.RepositoryError.code,
+                message = e.message ?: "Repository Error",
+                data = null
+            )
         }
     }
 
@@ -187,7 +188,7 @@ class AuthRepositoryImpl @Inject constructor(
         confirmNewPassword: String
     ): ResponseApp<Boolean?> {
         try {
-            val response =  api.changePassword("Bearer $resetToken", newPassword, confirmNewPassword)
+            val response = api.changePassword("Bearer $resetToken", newPassword, confirmNewPassword)
             if (!response.isSuccessful) {
                 val errorResponse = response.errorBody()?.string()
                 return Gson().fromJson(

@@ -6,17 +6,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ppidev.smartcube.common.Resource
+import com.ppidev.smartcube.utils.Resource
 import com.ppidev.smartcube.contract.data.remote.service.IMqttService
 import com.ppidev.smartcube.contract.data.repository.ITokenAppRepository
-import com.ppidev.smartcube.contract.domain.use_case.edge_device.IEdgeDevicesInfoUseCase
+import com.ppidev.smartcube.contract.domain.use_case.edge_device.IListEdgeDevicesByEdgeServerIdUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_server.IListEdgeServerUseCase
 import com.ppidev.smartcube.contract.domain.use_case.user.IUpdateFcmTokenUseCase
-import com.ppidev.smartcube.contract.domain.use_case.user.IUserProfileUseCase
+import com.ppidev.smartcube.contract.domain.use_case.user.IViewUserUseCase
 import com.ppidev.smartcube.contract.domain.use_case.weather.IViewCurrentWeather
 import com.ppidev.smartcube.data.remote.dto.ServerStatusDto
 import com.ppidev.smartcube.domain.model.ServerStatusModel
-import com.ppidev.smartcube.utils.CommandMqtt
+import com.ppidev.smartcube.utils.MQTTCommand
 import com.ppidev.smartcube.utils.convertJsonToDto
 import com.ppidev.smartcube.utils.extractCommandAndDataMqtt
 import dagger.Lazy
@@ -33,9 +33,9 @@ class DashboardViewModel @Inject constructor(
     private val viewCurrentWeather: Lazy<IViewCurrentWeather>,
     private val mqttService: Lazy<IMqttService>,
     private val listEdgeServerUseCase: Lazy<IListEdgeServerUseCase>,
-    private val edgeDevicesInfo: Lazy<IEdgeDevicesInfoUseCase>,
+    private val edgeDevicesInfo: Lazy<IListEdgeDevicesByEdgeServerIdUseCase>,
     private val updateFcmTokenUseCase: Lazy<IUpdateFcmTokenUseCase>,
-    private val userProfileUserCase: Lazy<IUserProfileUseCase>,
+    private val userProfileUserCase: Lazy<IViewUserUseCase>,
     private val tokenRepository: Lazy<ITokenAppRepository>
 ) : ViewModel() {
     var state by mutableStateOf(DashboardState())
@@ -104,7 +104,7 @@ class DashboardViewModel @Inject constructor(
                 val (command, data) = extractCommandAndDataMqtt(msg)
                 Log.d("MQTT", "command : $command")
                 when (command) {
-                    CommandMqtt.GET_SERVER_INFO -> {
+                    MQTTCommand.GET_SERVER_INFO -> {
                         val dataDecoded = convertJsonToDto<ServerStatusDto>(data)
                         Log.d("MQTT", dataDecoded.toString())
                         if (dataDecoded != null) {
@@ -112,7 +112,7 @@ class DashboardViewModel @Inject constructor(
                         }
                     }
 
-                    CommandMqtt.GET_PROCESS_DEVICE_INDEX -> {
+                    MQTTCommand.GET_PROCESS_DEVICE_INDEX -> {
                         Log.d("MQTT", data.toString())
 
                     }
@@ -241,7 +241,7 @@ class DashboardViewModel @Inject constructor(
         viewModelScope.launch {
             Log.d("MQTT", "publish : $topic")
             mqttService.get()
-                .publishToTopic(topic, CommandMqtt.GET_SERVER_INFO)
+                .publishToTopic(topic, MQTTCommand.GET_SERVER_INFO)
         }
     }
 
@@ -249,7 +249,7 @@ class DashboardViewModel @Inject constructor(
         viewModelScope.launch {
             Log.d("MQTT", "publish $topic")
 
-            mqttService.get().publishToTopic(topic, CommandMqtt.GET_PROCESS_DEVICE_INDEX)
+            mqttService.get().publishToTopic(topic, MQTTCommand.GET_PROCESS_DEVICE_INDEX)
         }
     }
 
@@ -294,4 +294,18 @@ class DashboardViewModel @Inject constructor(
             )
         }
     }
+}
+
+sealed class DashboardEvent {
+    object UnsubscribeToMqttService : DashboardEvent()
+    object GetCurrentWeather : DashboardEvent()
+    object SetToEmptyServerInfo : DashboardEvent()
+    object GetListEdgeServer : DashboardEvent()
+    object GetUserProfile : DashboardEvent()
+    object StoreFCMToken : DashboardEvent()
+    data class GetServerInfoMqtt(val topic: String) : DashboardEvent()
+    data class GetDevicesConfig(val serverId: UInt) : DashboardEvent()
+    data class GetProcessDeviceId(val topic: String) : DashboardEvent()
+    data class SetEdgeServerId(val id: UInt) : DashboardEvent()
+    data class SubscribeTopicMqtt(val topic: String) : DashboardEvent()
 }

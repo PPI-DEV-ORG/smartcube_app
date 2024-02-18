@@ -1,7 +1,6 @@
 package com.ppidev.smartcube.presentation.login
 
 import android.util.Log
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,7 +11,6 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.RemoveRedEye
-import androidx.compose.material.icons.outlined.HideSource
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -38,7 +36,7 @@ import androidx.navigation.compose.rememberNavController
 import com.ppidev.smartcube.BuildConfig
 import com.ppidev.smartcube.R
 import com.ppidev.smartcube.ui.Screen
-import com.ppidev.smartcube.ui.components.form.CustomInputField
+import com.ppidev.smartcube.ui.components.form.AppInput
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -82,7 +80,7 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.size(20.dp))
 
-        CustomInputField(
+        AppInput(
             modifier = Modifier
                 .semantics { testTagsAsResourceId = true }
                 .testTag("input_email"),
@@ -99,7 +97,7 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.size(20.dp))
 
-        CustomInputField(
+        AppInput(
             modifier = Modifier
                 .semantics { testTagsAsResourceId = true }
                 .testTag("input_password"),

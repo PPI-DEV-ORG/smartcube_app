@@ -3,11 +3,11 @@ package com.ppidev.smartcube.data.repository
 import android.app.Application
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.ppidev.smartcube.common.EExceptionCode
-import com.ppidev.smartcube.common.ResponseApp
 import com.ppidev.smartcube.contract.data.repository.INotificationRepository
 import com.ppidev.smartcube.data.remote.api.SmartCubeApi
 import com.ppidev.smartcube.data.remote.dto.NotificationDto
+import com.ppidev.smartcube.utils.EExceptionCode
+import com.ppidev.smartcube.utils.ResponseApp
 import javax.inject.Inject
 
 class NotificationRepositoryImpl @Inject constructor(
@@ -50,7 +50,10 @@ class NotificationRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getDetailNotification(notificationId: UInt, edgeServerId: UInt): ResponseApp<NotificationDto?> {
+    override suspend fun getDetailNotification(
+        notificationId: UInt,
+        edgeServerId: UInt
+    ): ResponseApp<NotificationDto?> {
         try {
             val response = api.getListNotificationById(notificationId, edgeServerId)
             if (!response.isSuccessful) {

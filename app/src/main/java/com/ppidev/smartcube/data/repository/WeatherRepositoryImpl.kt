@@ -1,7 +1,7 @@
 package com.ppidev.smartcube.data.repository
 
-import com.ppidev.smartcube.common.EExceptionCode
-import com.ppidev.smartcube.common.ResponseApp
+import com.ppidev.smartcube.utils.EExceptionCode
+import com.ppidev.smartcube.utils.ResponseApp
 import com.ppidev.smartcube.contract.data.repository.IWeatherRepository
 import com.ppidev.smartcube.data.remote.api.WeatherApi
 import com.ppidev.smartcube.data.remote.dto.WeatherDto

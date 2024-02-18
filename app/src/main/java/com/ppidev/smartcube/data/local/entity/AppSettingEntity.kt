@@ -13,6 +13,7 @@ enum class ETheme {
     LIGHT,
     DARK
 }
+
 enum class ELanguage {
     ENGLISH,
     INDONESIA,

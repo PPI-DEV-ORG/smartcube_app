@@ -9,7 +9,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.RemoveRedEye
-import androidx.compose.material.icons.outlined.HideSource
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -31,7 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ppidev.smartcube.R
 import com.ppidev.smartcube.ui.Screen
-import com.ppidev.smartcube.ui.components.form.CustomInputField
+import com.ppidev.smartcube.ui.components.form.AppInput
 import com.ppidev.smartcube.ui.components.modal.DialogApp
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
@@ -74,7 +73,7 @@ fun ChangePasswordScreen(
             Spacer(modifier = Modifier.size(20.dp))
 
 
-            CustomInputField(modifier = Modifier
+            AppInput(modifier = Modifier
                 .semantics { testTagsAsResourceId = true }
                 .testTag("input_password"),
                 text = state.password,
@@ -106,7 +105,7 @@ fun ChangePasswordScreen(
             Spacer(modifier = Modifier.size(20.dp))
 
 
-            CustomInputField(modifier = Modifier
+            AppInput(modifier = Modifier
                 .semantics { testTagsAsResourceId = true }
                 .testTag("input_confirm_password"),
                 text = state.confirmPassword,

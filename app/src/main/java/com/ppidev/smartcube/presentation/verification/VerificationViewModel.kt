@@ -5,11 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ppidev.smartcube.common.Resource
-import com.ppidev.smartcube.contract.domain.use_case.auth.IRegisterUseCase
 import com.ppidev.smartcube.contract.domain.use_case.auth.IVerificationUseCase
-import com.ppidev.smartcube.domain.use_case.auth.VerificationUseCase
-import com.ppidev.smartcube.presentation.register.RegisterState
+import com.ppidev.smartcube.utils.Resource
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -59,6 +56,7 @@ class VerificationViewModel @Inject constructor(
                     state = state.copy(isVerificationSuccessful = true, isShowDialog = true)
                     callback()
                 }
+
                 is Resource.Error -> {
                     state = state.copy(isVerificationSuccessful = false, isShowDialog = true)
                 }
@@ -70,4 +68,14 @@ class VerificationViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
     }
+}
+
+sealed class VerificationEvent {
+    data class OnVerificationCodeChange(val code: String) : VerificationEvent()
+    data class HandleVerification(
+        val email: String,
+        val callback: () -> Unit
+    ) : VerificationEvent()
+
+    object HandleCloseDialog : VerificationEvent()
 }

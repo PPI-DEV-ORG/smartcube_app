@@ -31,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.ppidev.smartcube.presentation.edge_device.detail.DetailEdgeDeviceEvent
 import com.ppidev.smartcube.ui.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)

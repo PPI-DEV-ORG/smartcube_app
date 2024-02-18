@@ -6,11 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ppidev.smartcube.common.Resource
+import com.ppidev.smartcube.utils.Resource
 import com.ppidev.smartcube.contract.data.remote.service.IMqttService
-import com.ppidev.smartcube.contract.domain.use_case.edge_device.IEdgeDevicesInfoUseCase
+import com.ppidev.smartcube.contract.domain.use_case.edge_device.IListEdgeDevicesByEdgeServerIdUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_server.IListEdgeServerUseCase
-import com.ppidev.smartcube.utils.CommandMqtt
+import com.ppidev.smartcube.utils.MQTTCommand
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ListEdgeDeviceViewModel @Inject constructor(
-    private val edgeDeviceInfoUse: Lazy<IEdgeDevicesInfoUseCase>,
+    private val edgeDeviceInfoUse: Lazy<IListEdgeDevicesByEdgeServerIdUseCase>,
     private val listEdgeServerUseCase: Lazy<IListEdgeServerUseCase>,
     private val mqttService: IMqttService
 ) : ViewModel() {
@@ -126,7 +126,7 @@ class ListEdgeDeviceViewModel @Inject constructor(
                 Log.d("MQTT", "topic = $topic | Msg = $msg")
             }
 
-            mqttService.publishToTopic(pushTopic, CommandMqtt.GET_PROCESS_DEVICE_INDEX)
+            mqttService.publishToTopic(pushTopic, MQTTCommand.GET_PROCESS_DEVICE_INDEX)
         }
     }
 
@@ -136,4 +136,13 @@ class ListEdgeDeviceViewModel @Inject constructor(
             mqttService.unsubscribeFromTopic(topic)
         }
     }
+}
+
+sealed class ListEdgeDeviceEvent {
+    data class GetListEdgeDevice(val edgeServerId: UInt) : ListEdgeDeviceEvent()
+    object GetLstEdgeServer : ListEdgeDeviceEvent()
+    data class SetEdgeServerId(val edgeServerId: UInt) : ListEdgeDeviceEvent()
+    object ListenMqttClient : ListEdgeDeviceEvent()
+    object DisconnectMqtt : ListEdgeDeviceEvent()
+    object UnsubscribeFromTopicMqtt : ListEdgeDeviceEvent()
 }

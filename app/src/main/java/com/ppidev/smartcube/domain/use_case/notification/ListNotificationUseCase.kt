@@ -1,7 +1,7 @@
 package com.ppidev.smartcube.domain.use_case.notification
 
-import com.ppidev.smartcube.common.EExceptionCode
-import com.ppidev.smartcube.common.Resource
+import com.ppidev.smartcube.utils.EExceptionCode
+import com.ppidev.smartcube.utils.Resource
 import com.ppidev.smartcube.contract.data.repository.INotificationRepository
 import com.ppidev.smartcube.contract.domain.use_case.notification.IListNotificationUseCase
 import com.ppidev.smartcube.data.remote.dto.toNotificationModel

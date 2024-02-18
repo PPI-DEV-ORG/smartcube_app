@@ -1,13 +1,13 @@
 package com.ppidev.smartcube.contract.data.repository
 
-import com.ppidev.smartcube.common.ResponseApp
 import com.ppidev.smartcube.data.remote.dto.CreateEdgeDeviceDto
 import com.ppidev.smartcube.data.remote.dto.DetailEdgeDeviceDto
 import com.ppidev.smartcube.data.remote.dto.EdgeDeviceSensorDto
 import com.ppidev.smartcube.data.remote.dto.EdgeDevicesInfoDto
+import com.ppidev.smartcube.utils.ResponseApp
 
 interface IEdgeDeviceRepository {
-    suspend fun getEdgeDevicesInfo(edgeServerId: UInt): ResponseApp<EdgeDevicesInfoDto?>
+    suspend fun getEdgeDevicesInfoByEdgeServerId(edgeServerId: UInt): ResponseApp<EdgeDevicesInfoDto?>
 
     suspend fun addEdgeDevices(
         edgeServerId: UInt,
@@ -22,8 +22,14 @@ interface IEdgeDeviceRepository {
     ): ResponseApp<CreateEdgeDeviceDto?>
 
     suspend fun startEdgeDevice(edgeServerId: UInt, processIndex: Int): ResponseApp<out Any?>
+
     suspend fun restartEdgeDevice(edgeServerId: UInt, processIndex: Int): ResponseApp<out Any?>
-    suspend fun getDetailEdgeDevice(edgeServerId: UInt, edgeDeviceId: UInt): ResponseApp<DetailEdgeDeviceDto?>
+
+    suspend fun getDetailEdgeDevice(
+        edgeServerId: UInt,
+        edgeDeviceId: UInt
+    ): ResponseApp<DetailEdgeDeviceDto?>
+
     suspend fun updateEdgeDevice(
         edgeDeviceId: UInt,
         edgeServerId: UInt,

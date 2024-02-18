@@ -6,12 +6,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ppidev.smartcube.common.Resource
+import com.ppidev.smartcube.utils.Resource
 import com.ppidev.smartcube.contract.data.remote.service.IMqttService
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IUpdateEdgeDeviceUseCase
 import com.ppidev.smartcube.contract.domain.use_case.edge_device.IViewEdgeDeviceUseCase
-import com.ppidev.smartcube.data.remote.dto.MLModelDto
-import com.ppidev.smartcube.utils.CommandMqtt
+import com.ppidev.smartcube.data.remote.dto.EdgeServerInstalledModelDto
+import com.ppidev.smartcube.utils.MQTTCommand
 import com.ppidev.smartcube.utils.convertJsonToDto
 import com.ppidev.smartcube.utils.extractCommandAndDataMqtt
 import dagger.Lazy
@@ -252,8 +252,8 @@ class UpdateEdgeDeviceViewModel @Inject constructor(
             mqttService.get().subscribeToTopic(topic) { _, msg ->
                 val (command, data) = extractCommandAndDataMqtt(msg)
                 when (command) {
-                    CommandMqtt.GET_INSTALLED_MODEL -> {
-                        val dataDecoded = convertJsonToDto<List<MLModelDto>>(data)
+                    MQTTCommand.GET_INSTALLED_MODEL -> {
+                        val dataDecoded = convertJsonToDto<List<EdgeServerInstalledModelDto>>(data)
                         Log.d("TEST", dataDecoded.toString())
                         if (dataDecoded != null) {
                             val dataMap: Map<Int, String> =
@@ -277,7 +277,7 @@ class UpdateEdgeDeviceViewModel @Inject constructor(
                 mqttService.get().connect()
             }
 
-            mqttService.get().publishToTopic(topic, CommandMqtt.GET_INSTALLED_MODEL)
+            mqttService.get().publishToTopic(topic, MQTTCommand.GET_INSTALLED_MODEL)
         }
     }
 
@@ -290,4 +290,24 @@ class UpdateEdgeDeviceViewModel @Inject constructor(
             mqttService.get().unsubscribeFromTopic(topic)
         }
     }
+}
+
+sealed class UpdateEdgeDeviceEvent {
+    data class HandleEditEdgeDevice(val edgeDeviceId: UInt, val edgeServerId: UInt): UpdateEdgeDeviceEvent()
+    data class GetInstalledModels(val topic: String): UpdateEdgeDeviceEvent()
+    data class SubscribeToTopic(val topic: String): UpdateEdgeDeviceEvent()
+    data class UnsubscribeToMqttService(val topic: String): UpdateEdgeDeviceEvent()
+    data class GetDetailEdgeDevice(val edgeServerId: UInt, val edgeDeviceId: UInt):  UpdateEdgeDeviceEvent()
+    data class OnChangeVendorName(val str: String): UpdateEdgeDeviceEvent()
+    data class OnChangeVendorNumber(val str: String): UpdateEdgeDeviceEvent()
+    data class OnChangeType(val str: String): UpdateEdgeDeviceEvent()
+    data class OnChangeSourceType(val str: String): UpdateEdgeDeviceEvent()
+    data class OnChangeSourceAddress(val str: String): UpdateEdgeDeviceEvent()
+    data class OnChangeAssignedModelType(val num: UInt, val value: String): UpdateEdgeDeviceEvent()
+    data class OnChangeAssignedModelIndex(val num: UInt, val value: String): UpdateEdgeDeviceEvent()
+    data class OnChangeAdditionalInfo(val str: String): UpdateEdgeDeviceEvent()
+    data class SetAssignedModelIndex(val index: UInt): UpdateEdgeDeviceEvent()
+    data class SetShowAlertDialog(val status: Boolean): UpdateEdgeDeviceEvent()
+    data class SetShowDialog(val status: Boolean?): UpdateEdgeDeviceEvent()
+    data class ValidateForm(val callback: (status: Boolean) -> Unit): UpdateEdgeDeviceEvent()
 }
